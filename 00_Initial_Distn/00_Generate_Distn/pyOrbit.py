@@ -232,6 +232,54 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 
 	return bunch
 
+# Function to peform bunch twiss analysis, extract bunch info, and write to output file
+def Analyse_Bunch(bunch, p, rank=0):
+
+	print '\n\t\tAnalyse_Bunch:: Analysing bunch:', p['bunch_label'] ,' of type ', p['DistType'] ,' on MPI process: ', rank
+	bunchtwissanalysis = BunchTwissAnalysis() # Prepare the bunch analysis class
+	get_dpp = lambda b, bta: np.sqrt(bta.getCorrelation(5,5)) / (b.getSyncParticle().gamma()*b.mass()*b.getSyncParticle().beta()**2)
+	get_bunch_length = lambda b, bta: 4 * np.sqrt(bta.getCorrelation(4,4)) / (speed_of_light*b.getSyncParticle().beta())
+	get_eps_z = lambda b, bta: 1e9 * 4 * pi * bta.getEmittance(2) / (speed_of_light*b.getSyncParticle().beta())
+
+	output_file = str('Distributions/'+p['bunch_save_name']+'_analysis.mat')
+	output = Output_dictionary()
+	output.addParameter('gamma', lambda: bunch.getSyncParticle().gamma())
+	output.addParameter('intensity', lambda: bunchtwissanalysis.getGlobalMacrosize())
+	output.addParameter('n_mp', lambda: bunchtwissanalysis.getGlobalCount())
+	output.addParameter('epsn_x', lambda: bunchtwissanalysis.getEmittanceNormalized(0))
+	output.addParameter('epsn_y', lambda: bunchtwissanalysis.getEmittanceNormalized(1))
+	output.addParameter('eps_z', lambda: get_eps_z(bunch, bunchtwissanalysis))
+	output.addParameter('mean_dE', lambda: bunchtwissanalysis.getAverage(5))
+	output.addParameter('mean_x', lambda: bunchtwissanalysis.getAverage(0))
+	output.addParameter('mean_xp', lambda: bunchtwissanalysis.getAverage(1))
+	output.addParameter('mean_y', lambda: bunchtwissanalysis.getAverage(2))
+	output.addParameter('mean_yp', lambda: bunchtwissanalysis.getAverage(3))
+	output.addParameter('mean_z', lambda: bunchtwissanalysis.getAverage(4))
+	output.addParameter('beta_x', lambda: bunchtwissanalysis.getBeta(0))
+	output.addParameter('beta_y', lambda: bunchtwissanalysis.getBeta(1))
+	output.addParameter('alpha_x', lambda: bunchtwissanalysis.getAlpha(0))
+	output.addParameter('alpha_y', lambda: bunchtwissanalysis.getAlpha(1))
+	output.addParameter('D_x', lambda: bunchtwissanalysis.getDispersion(0))
+	output.addParameter('D_y', lambda: bunchtwissanalysis.getDispersion(1))
+	output.addParameter('bunchlength', lambda: get_bunch_length(bunch, bunchtwissanalysis))
+	output.addParameter('dpp_rms', lambda: get_dpp(bunch, bunchtwissanalysis))
+	output.addParameter('mu_x', lambda: GetBunchMus(bunch)[0])
+	output.addParameter('mu_y', lambda: GetBunchMus(bunch)[1])
+	output.addParameter('eff_beta_x', lambda: bunchtwissanalysis.getEffectiveBeta(0))
+	output.addParameter('eff_beta_y', lambda: bunchtwissanalysis.getEffectiveBeta(1))
+	output.addParameter('eff_epsn_x', lambda: bunchtwissanalysis.getEffectiveEmittance(0))
+	output.addParameter('eff_epsn_y', lambda: bunchtwissanalysis.getEffectiveEmittance(1))
+	output.addParameter('eff_alpha_x', lambda: bunchtwissanalysis.getEffectiveAlpha(0))
+	output.addParameter('eff_alpha_y', lambda: bunchtwissanalysis.getEffectiveAlpha(1))
+
+	bunchtwissanalysis.analyzeBunch(bunch)
+
+	output.update()
+	output.save_to_matfile(output_file)
+	print print '\n\t\tAnalyse_Bunch:: Analysis Complete, saved to file :', output_file ,' on MPI process: ', rank
+
+	return output_file
+
 ########################################################################
 #################			SIMULATION START			################
 ########################################################################
@@ -408,103 +456,25 @@ TwissDict['length'] 			= Lattice.getLength()/Lattice.nHarm
 #################			CREATE DISTRIBUTIONS		################
 ########################################################################
 gaussian_bunch = Create_Bunch(Lattice, p, TwissDict=None, label=p['bunch_label'], DistType = 'Gaussian', TwissType = 'Lattice', rank=rank)
+gaussian_analysis = Analyse_Bunch(gaussian_bunch, p)
+
 joho_bunch = Create_Bunch(Lattice, p, TwissDict=None, label=p['bunch_label'], DistType = 'Joho', TwissType = 'Lattice', rank=rank)
+joho_analysis = Analyse_Bunch(joho_bunch, p)
+
 tomo_bunch = Create_Bunch(Lattice, p, TwissDict=None, label=p['bunch_label'], DistType = 'Tomo', TwissType = 'Lattice', rank=rank)
+tomo_analysis = Analyse_Bunch(tomo_bunch, p)
 
 gaussian_mt_bunch = Create_Bunch(Lattice, p, TwissDict=TwissDict, label=p['bunch_label'], DistType = 'Gaussian', TwissType = 'Manual', rank=rank)
-joho_mt_bunch = Create_Bunch(Lattice, p, TwissDict=TwissDict, label=p['bunch_label'], DistType = 'Joho', TwissType = 'Manual', rank=rank)
-tomo_mt_bunch = Create_Bunch(Lattice, p, TwissDict=TwissDict, label=p['bunch_label'], DistType = 'Tomo', TwissType = 'Manual', rank=rank)
+gaussian_mt_analysis = Analyse_Bunch(gaussian_mt_bunch, p)
 
+joho_mt_bunch = Create_Bunch(Lattice, p, TwissDict=TwissDict, label=p['bunch_label'], DistType = 'Joho', TwissType = 'Manual', rank=rank)
+joho_analysis = Analyse_Bunch(joho_mt_bunch, p)
+
+tomo_mt_bunch = Create_Bunch(Lattice, p, TwissDict=TwissDict, label=p['bunch_label'], DistType = 'Tomo', TwissType = 'Manual', rank=rank)
+tomo_analysis = Analyse_Bunch(tomo_mt_bunch, p)
 
 ########################################################################
 #################			LOAD AND CHECK DISTNS		################
 ########################################################################
-
-def Analyse_Bunch(bunch, p):
-
-	print '\n\t\tAnalyse_Bunch:: Analysing bunch:', p['bunch_label'] ,' of type ', p['DistType'] ,' on MPI process: ', rank
-	bunchtwissanalysis = BunchTwissAnalysis() # Prepare the bunch analysis class
-	get_dpp = lambda b, bta: np.sqrt(bta.getCorrelation(5,5)) / (b.getSyncParticle().gamma()*b.mass()*b.getSyncParticle().beta()**2)
-	get_bunch_length = lambda b, bta: 4 * np.sqrt(bta.getCorrelation(4,4)) / (speed_of_light*b.getSyncParticle().beta())
-	get_eps_z = lambda b, bta: 1e9 * 4 * pi * bta.getEmittance(2) / (speed_of_light*b.getSyncParticle().beta())
-
-	# Do this for each distribution
-
-	output_file = 'Distributions/MD4224_Nominal_WP_Tomo_Distn_output.mat'
-	output = Output_dictionary()
-	output.addParameter('gamma', lambda: bunch.getSyncParticle().gamma())
-	output.addParameter('intensity', lambda: bunchtwissanalysis.getGlobalMacrosize())
-	output.addParameter('n_mp', lambda: bunchtwissanalysis.getGlobalCount())
-	output.addParameter('epsn_x', lambda: bunchtwissanalysis.getEmittanceNormalized(0))
-	output.addParameter('epsn_y', lambda: bunchtwissanalysis.getEmittanceNormalized(1))
-	output.addParameter('eps_z', lambda: get_eps_z(bunch, bunchtwissanalysis))
-	output.addParameter('mean_dE', lambda: bunchtwissanalysis.getAverage(5))
-	output.addParameter('mean_x', lambda: bunchtwissanalysis.getAverage(0))
-	output.addParameter('mean_xp', lambda: bunchtwissanalysis.getAverage(1))
-	output.addParameter('mean_y', lambda: bunchtwissanalysis.getAverage(2))
-	output.addParameter('mean_yp', lambda: bunchtwissanalysis.getAverage(3))
-	output.addParameter('mean_z', lambda: bunchtwissanalysis.getAverage(4))
-	output.addParameter('beta_x', lambda: bunchtwissanalysis.getBeta(0))
-	output.addParameter('beta_y', lambda: bunchtwissanalysis.getBeta(1))
-	output.addParameter('alpha_x', lambda: bunchtwissanalysis.getAlpha(0))
-	output.addParameter('alpha_y', lambda: bunchtwissanalysis.getAlpha(1))
-	output.addParameter('D_x', lambda: bunchtwissanalysis.getDispersion(0))
-	output.addParameter('D_y', lambda: bunchtwissanalysis.getDispersion(1))
-	output.addParameter('bunchlength', lambda: get_bunch_length(bunch, bunchtwissanalysis))
-	output.addParameter('dpp_rms', lambda: get_dpp(bunch, bunchtwissanalysis))
-	output.addParameter('mu_x', lambda: GetBunchMus(bunch)[0])
-	output.addParameter('mu_y', lambda: GetBunchMus(bunch)[1])
-	output.addParameter('eff_beta_x', lambda: bunchtwissanalysis.getEffectiveBeta(0))
-	output.addParameter('eff_beta_y', lambda: bunchtwissanalysis.getEffectiveBeta(1))
-	output.addParameter('eff_epsn_x', lambda: bunchtwissanalysis.getEffectiveEmittance(0))
-	output.addParameter('eff_epsn_y', lambda: bunchtwissanalysis.getEffectiveEmittance(1))
-	output.addParameter('eff_alpha_x', lambda: bunchtwissanalysis.getEffectiveAlpha(0))
-	output.addParameter('eff_alpha_y', lambda: bunchtwissanalysis.getEffectiveAlpha(1))
-
-	bunchtwissanalysis.analyzeBunch(bunch)
-
-	output.update()
-	output.save_to_matfile(output_file)
-
-	return
-
-
-# ~ # Define twiss analysis and output dictionary
-# ~ #-----------------------------------------------------------------------
-# ~ print '\n\t\tbunchtwissanalysis on MPI process: ', rank
-# ~ bunchtwissanalysis = BunchTwissAnalysis() #Prepare the analysis class that will look at emittances, etc.
-# ~ get_dpp = lambda b, bta: np.sqrt(bta.getCorrelation(5,5)) / (b.getSyncParticle().gamma()*b.mass()*b.getSyncParticle().beta()**2)
-# ~ get_bunch_length = lambda b, bta: 4 * np.sqrt(bta.getCorrelation(4,4)) / (speed_of_light*b.getSyncParticle().beta())
-# ~ get_eps_z = lambda b, bta: 1e9 * 4 * pi * bta.getEmittance(2) / (speed_of_light*b.getSyncParticle().beta())
-
-# ~ output_file = 'output/output.mat'
-# ~ output = Output_dictionary()
-# ~ output.addParameter('turn', lambda: turn)
-# ~ output.addParameter('intensity', lambda: bunchtwissanalysis.getGlobalMacrosize())
-# ~ output.addParameter('n_mp', lambda: bunchtwissanalysis.getGlobalCount())
-# ~ output.addParameter('gamma', lambda: bunch.getSyncParticle().gamma())
-# ~ output.addParameter('mean_x', lambda: bunchtwissanalysis.getAverage(0))
-# ~ output.addParameter('mean_xp', lambda: bunchtwissanalysis.getAverage(1))
-# ~ output.addParameter('mean_y', lambda: bunchtwissanalysis.getAverage(2))
-# ~ output.addParameter('mean_yp', lambda: bunchtwissanalysis.getAverage(3))
-# ~ output.addParameter('mean_z', lambda: bunchtwissanalysis.getAverage(4))
-# ~ output.addParameter('mean_dE', lambda: bunchtwissanalysis.getAverage(5))
-# ~ output.addParameter('epsn_x', lambda: bunchtwissanalysis.getEmittanceNormalized(0))
-# ~ output.addParameter('epsn_y', lambda: bunchtwissanalysis.getEmittanceNormalized(1))
-# ~ output.addParameter('eps_z', lambda: get_eps_z(bunch, bunchtwissanalysis))
-# ~ output.addParameter('bunchlength', lambda: get_bunch_length(bunch, bunchtwissanalysis))
-# ~ output.addParameter('dpp_rms', lambda: get_dpp(bunch, bunchtwissanalysis))
-# ~ output.addParameter('beta_x', lambda: bunchtwissanalysis.getBeta(0))
-# ~ output.addParameter('beta_y', lambda: bunchtwissanalysis.getBeta(1))
-# ~ output.addParameter('alpha_x', lambda: bunchtwissanalysis.getAlpha(0))
-# ~ output.addParameter('alpha_y', lambda: bunchtwissanalysis.getAlpha(1))
-# ~ output.addParameter('D_x', lambda: bunchtwissanalysis.getDispersion(0))
-# ~ output.addParameter('D_y', lambda: bunchtwissanalysis.getDispersion(1))
-# ~ output.addParameter('eff_beta_x', lambda: bunchtwissanalysis.getEffectiveBeta(0))
-# ~ output.addParameter('eff_beta_y', lambda: bunchtwissanalysis.getEffectiveBeta(1))
-# ~ output.addParameter('eff_epsn_x', lambda: bunchtwissanalysis.getEffectiveEmittance(0))
-# ~ output.addParameter('eff_epsn_y', lambda: bunchtwissanalysis.getEffectiveEmittance(1))
-# ~ output.addParameter('eff_alpha_x', lambda: bunchtwissanalysis.getEffectiveAlpha(0))
-# ~ output.addParameter('eff_alpha_y', lambda: bunchtwissanalysis.getEffectiveAlpha(1))
 
 print '\n\n\tFinish simulation main on MPI process: ', rank, '\n'
