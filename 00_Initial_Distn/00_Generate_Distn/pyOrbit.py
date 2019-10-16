@@ -164,13 +164,13 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 
 		if DistType is 'Gaussian':
 			print '\n\tCreate_Bunch::generate_initial_distribution_3DGaussian_manual_Twiss on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution_3DGaussian_manual_Twiss(p, twiss_dict, output_file='Distributions/GaussianDistribution_Manual.in', summary_file='Distributions/GaussianDistribution_Manual_summary.txt')
+			Particle_distribution_file = generate_initial_distribution_3DGaussian_manual_Twiss(p, TwissDict, output_file='Distributions/GaussianDistribution_Manual.in', summary_file='Distributions/GaussianDistribution_Manual_summary.txt')
 		elif DistType is 'Joho':
 			print '\n\tCreate_Bunch::generate_initial_distribution_manual_Twiss on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution_manual_Twiss(p, twiss_dict, output_file='Distributions/JohoDistribution_Manual.in', summary_file='Distributions/JohoDistribution_Manual_summary.txt')
+			Particle_distribution_file = generate_initial_distribution_manual_Twiss(p, TwissDict, output_file='Distributions/JohoDistribution_Manual.in', summary_file='Distributions/JohoDistribution_Manual_summary.txt')
 		elif DistType is 'Tomo':
 			print '\n\tCreate_Bunch::generate_initial_distribution_from_tomo_manual_Twiss on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution_from_tomo_manual_Twiss(p, twiss_dict, 1, Lattice, output_file='Distributions/TomoDistribution_Manual.in', summary_file='Distributions/TomoDistribution_Manual_summary.txt')
+			Particle_distribution_file = generate_initial_distribution_from_tomo_manual_Twiss(p, TwissDict, 1, Lattice, output_file='Distributions/TomoDistribution_Manual.in', summary_file='Distributions/TomoDistribution_Manual_summary.txt')
 		else:
 			print '\n\tCreate_Bunch::Error: Distribution Type not specified. Options are \'Gaussian\', \'Joho\', and \'Tomo\''
 			exit(0)
