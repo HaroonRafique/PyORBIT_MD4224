@@ -650,7 +650,7 @@ def generate_initial_distribution_3DGaussian_manual_Twiss(parameters, TwissDict,
 		fid.close()
 
 		fid = open(summary_file, 'w')
-		parameter_list = ['circumference', 'rf_voltage', 'phi_s', 'harmonic_number', 'gamma_transition', 'n_macroparticles', 'energy', 'gamma', 'bunch_length', 'LongitudinalCut', 'LongitudinalJohoParameter', 'x0', 'xp0', 'betax0', 'alphax0', 'etax0', 'etapx0', 'y0', 'yp0', 'betay0', 'alphay0', 'etay0', 'etapy0', 'epsn_x', 'epsn_y', 'TransverseCut']
+		parameter_list = ['circumference', 'rf_voltage', 'phi_s', 'harmonic_number', 'gamma_transition', 'n_macroparticles', 'energy', 'gamma', 'bunch_length', 'x0', 'xp0', 'betax0', 'alphax0', 'etax0', 'etapx0', 'y0', 'yp0', 'betay0', 'alphay0', 'etay0', 'etapy0', 'epsn_x', 'epsn_y', 'TransverseCut']
 		for key in parameter_list:
 			fid.write(key + ' = ' + str(parameters[key]) + '\n')
 		fid.close()
@@ -750,7 +750,7 @@ def generate_initial_distribution_3DGaussian(parameters, Lattice, output_file = 
 		fid.close()
 
 		fid = open(summary_file, 'w')
-		parameter_list = ['circumference', 'rf_voltage', 'phi_s', 'harmonic_number', 'gamma_transition', 'n_macroparticles', 'energy', 'gamma', 'bunch_length', 'LongitudinalCut', 'LongitudinalJohoParameter', 'x0', 'xp0', 'betax0', 'alphax0', 'etax0', 'etapx0', 'y0', 'yp0', 'betay0', 'alphay0', 'etay0', 'etapy0', 'epsn_x', 'epsn_y', 'TransverseCut']
+		parameter_list = ['circumference', 'rf_voltage', 'phi_s', 'harmonic_number', 'gamma_transition', 'n_macroparticles', 'energy', 'gamma', 'bunch_length', 'x0', 'xp0', 'betax0', 'alphax0', 'etax0', 'etapx0', 'y0', 'yp0', 'betay0', 'alphay0', 'etay0', 'etapy0', 'epsn_x', 'epsn_y', 'TransverseCut']
 		for key in parameter_list:
 			fid.write(key + ' = ' + str(parameters[key]) + '\n')
 		fid.close()
