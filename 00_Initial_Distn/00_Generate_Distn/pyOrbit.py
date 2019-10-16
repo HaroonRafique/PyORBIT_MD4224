@@ -285,11 +285,11 @@ def Read_Bunch_Analysis_File(filename):
 	return p
 
 def Compare_Parameter(b, p, n1, n2, tol):
-	print '\n\t\t Compare_Parameter:: n1 = ', n1
-	print '\n\t\t Compare_Parameter:: n2 = ', n2
-	print '\n\t\t Compare_Parameter:: b[n1][0][0] = ', b[n1][0][0]
-	print '\n\t\t Compare_Parameter:: p[n2] = ', p[str(n2)]
-	
+	# ~ print '\n\t\t Compare_Parameter:: n1 = ', n1
+	# ~ print '\n\t\t Compare_Parameter:: n2 = ', n2
+	# ~ print '\n\t\t Compare_Parameter:: b[n1][0][0] = ', b[n1][0][0]
+	# ~ print '\n\t\t Compare_Parameter:: p[n2] = ', p[str(n2)]
+
 	if (b[n1][0][0] - p[n2])/b[n1][0][0] < tolerance: 
 		print '\n\t\tCompare_Parameter:: ', n1, '=', b[n1][0][0] ,'with ', n2 , '=' ,p[n2], ' exceeds tolerance of ', (tol*100), '\%'
 	return
@@ -304,8 +304,8 @@ def Compare_Parameters(p, a, tolerance=0.05):
 	print 'b[\'D_x\'][0][0]=', b['D_x'][0][0]
 
 	# Iterate over parameters/outputs and compare
-	Compare_Parameter(b, p, 'D_x', 'D_x', tolerance)
-	Compare_Parameter(b, p, 'D_y', 'D_y', tolerance)
+	Compare_Parameter(b, p, 'D_x', 'etax0', tolerance)
+	Compare_Parameter(b, p, 'D_y', 'etay0', tolerance)
 	Compare_Parameter(b, p, 'beta_x', 'betax0', tolerance)
 	Compare_Parameter(b, p, 'beta_y', 'betay0', tolerance)
 	Compare_Parameter(b, p, 'alpha_x', 'alphax0', tolerance)
