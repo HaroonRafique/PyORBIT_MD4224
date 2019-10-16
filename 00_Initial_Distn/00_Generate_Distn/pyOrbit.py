@@ -273,9 +273,9 @@ p['LongitudinalCut'] = 2.4
 TwissDict = dict()	# Dictionary used to set initial TWISS parameters
 twissdict = None	# switch used to select vertical or horizontal scan data
 
-if float(p['tunex'])/100. not 6.21:
+if float(p['tunex'])/100. is not 6.21:
 	twissdict = 'H'
-elif float(p['tuney'])/100. not 6.24:
+elif float(p['tuney'])/100. is not 6.24:
 	twissdict = 'V'
 else: print: '\n\t Tune set to nominal value of ', (float(p['tunex'])/100.), ',', (float(p['tunex'])/100.)
 	if p['lattice_start'][3] is 'H':
