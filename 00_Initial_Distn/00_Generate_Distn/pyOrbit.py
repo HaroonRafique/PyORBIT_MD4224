@@ -512,18 +512,23 @@ Compare_Parameters(p, gaussian_analysis)
 
 joho_bunch = Create_Bunch(Lattice, p, TwissDict=None, label=p['bunch_label'], DistType = 'Joho', TwissType = 'Lattice', rank=rank)
 joho_analysis = Analyse_Bunch(joho_bunch, p)
+Compare_Parameters(p, joho_analysis)
 
 tomo_bunch = Create_Bunch(Lattice, p, TwissDict=None, label=p['bunch_label'], DistType = 'Tomo', TwissType = 'Lattice', rank=rank)
 tomo_analysis = Analyse_Bunch(tomo_bunch, p)
+Compare_Parameters(p, tomo_analysis)
 
 gaussian_mt_bunch = Create_Bunch(Lattice, p, TwissDict=TwissDict, label=p['bunch_label'], DistType = 'Gaussian', TwissType = 'Manual', rank=rank)
 gaussian_mt_analysis = Analyse_Bunch(gaussian_mt_bunch, p)
+Compare_Parameters(p, gaussian_mt_analysis)
 
 joho_mt_bunch = Create_Bunch(Lattice, p, TwissDict=TwissDict, label=p['bunch_label'], DistType = 'Joho', TwissType = 'Manual', rank=rank)
-joho_analysis = Analyse_Bunch(joho_mt_bunch, p)
+joho_mt_analysis = Analyse_Bunch(joho_mt_bunch, p)
+Compare_Parameters(p, joho_mt_analysis)
 
 tomo_mt_bunch = Create_Bunch(Lattice, p, TwissDict=TwissDict, label=p['bunch_label'], DistType = 'Tomo', TwissType = 'Manual', rank=rank)
-tomo_analysis = Analyse_Bunch(tomo_mt_bunch, p)
+tomo_mt_analysis = Analyse_Bunch(tomo_mt_bunch, p)
+Compare_Parameters(p, tomo_mt_analysis)
 
 ########################################################################
 #################			LOAD AND CHECK DISTNS		################
