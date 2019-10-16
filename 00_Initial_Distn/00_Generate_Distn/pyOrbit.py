@@ -197,6 +197,9 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 ########################################################################
 print '\n\n\tStart simulation main on MPI process: ', rank, '\n'
 
+print '\n\t\tImport simulation parameters from input file on MPI process: ', rank
+from simulation_parameters import parameters as p
+
 # Create folder structure
 #-----------------------------------------------------------------------
 # ~ print '\n\t\tmkdir on MPI process: ', rank
@@ -211,7 +214,7 @@ print '\n\n\tStart simulation main on MPI process: ', rank, '\n'
 print '\n\t\tCreate RF file on MPI process: ', rank
 from lib.write_ptc_table import write_RFtable
 from simulation_parameters import RFparameters as RF 
-write_RFtable('input/RF_table.ptc', *[RF[k] for k in ['harmonic_factors','time','Ekin_GeV','voltage_MV','phase']])
+write_RFtable('RF_table.ptc', *[RF[k] for k in ['harmonic_factors','time','Ekin_GeV','voltage_MV','phase']])
 
 # Initialize a Teapot-Style PTC lattice
 #-----------------------------------------------------------------------
@@ -223,7 +226,10 @@ Lattice.readPTC(PTC_File)
 print '\n\t\tRead PTC files on MPI process: ', rank
 CheckAndReadPTCFile('PTC/fringe.ptc')
 CheckAndReadPTCFile('PTC/time.ptc')
-CheckAndReadPTCFile('PTC/ramp_cavities.ptc')
+
+if p['lattice_version'] is 'Original':		CheckAndReadPTCFile('PTC/ramp_cavities.ptc')
+elif p['lattice_version'] is 'Optimised':	CheckAndReadPTCFile('PTC/ramp_cavities_optimised.ptc')
+else: print '\n\tERROR: p[\'lattice_version\'] = ', p['lattice_version'] ,' not recognised, options are \'Original\' and \'Optimised\''
 
 # Add apertures
 #-----------------------------------------------------------------------
@@ -243,9 +249,7 @@ for node in Lattice.getNodes():
 #################			BUNCH PARAMETERS			################
 ########################################################################
 
-
-from simulation_parameters import parameters as p
-p['gamma']			= 2.49253731343
+p['gamma']				= 2.49253731343
 p['intensity']			= 72.5E+10
 p['bunch_length']		= 140e-9
 p['blength']			= 140e-9
