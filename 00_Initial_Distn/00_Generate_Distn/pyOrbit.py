@@ -276,7 +276,7 @@ def Analyse_Bunch(bunch, p, rank=0):
 
 	output.update()
 	output.save_to_matfile(output_file)
-	print print '\n\t\tAnalyse_Bunch:: Analysis Complete, saved to file :', output_file ,' on MPI process: ', rank
+	print '\n\t\tAnalyse_Bunch:: Analysis Complete, saved to file :', output_file ,' on MPI process: ', rank
 
 	return output_file
 
