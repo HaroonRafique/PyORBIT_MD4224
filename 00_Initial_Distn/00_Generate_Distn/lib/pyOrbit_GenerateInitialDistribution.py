@@ -15,7 +15,6 @@ from orbit.utils.consts import mass_proton, speed_of_light, pi
 from orbit.utils.orbit_mpi_utils import bunch_orbit_to_pyorbit, bunch_pyorbit_to_orbit
 from orbit.bunch_utils import ParticleIdNumber
 
-
 class LongitudinalDistributionFromTomoscope():
 
 	def __init__(self, filename, matfile=0):
@@ -200,7 +199,7 @@ class LongitudinalJohoDistributionSingleHarmonic():
 				# ~ print '\n### Generate Initial Dsitribution 2: Returned LongitudinalJohoDistributionSingleHarmonic::is_inside_limiting_contour'
 				break
 		return phi, dE
-	
+
 def generate_initial_distribution_from_tomo_manual_Twiss(parameters, TwissDict, matfile=0, output_file='ParticleDistribution.in', outputFormat='pyOrbit', summary_file='ParticleDistribution_summary.txt', summary_mat_file=None):
 
 	# Get parameters from the TwissDict dictionary
@@ -219,7 +218,7 @@ def generate_initial_distribution_from_tomo_manual_Twiss(parameters, TwissDict, 
 	parameters['gamma_transition'] = TwissDict['gamma_transition']
 	parameters['circumference']    = TwissDict['circumference']
 	parameters['length'] = TwissDict['length']
-	
+
 	# Create Twiss containers
 	twissX = TwissContainer(alpha = parameters['alphax0'], beta = parameters['betax0'], emittance = parameters['epsn_x'] / parameters['gamma'] / parameters['beta'])
 	twissY = TwissContainer(alpha = parameters['alphay0'], beta = parameters['betay0'], emittance = parameters['epsn_y'] / parameters['gamma'] / parameters['beta'])
@@ -228,7 +227,7 @@ def generate_initial_distribution_from_tomo_manual_Twiss(parameters, TwissDict, 
 	closedOrbitx = {'x0': parameters['x0'], 'xp0': parameters['xp0']} 
 	closedOrbity = {'y0': parameters['y0'], 'yp0': parameters['yp0']} 
 
-	print dispersionx
+	print '\n\t\tgenerate_initial_distribution_from_tomo_manual_Twiss::dispersionx = ', dispersionx 
 
 	# Initialize empty particle arrays
 	x = np.zeros(parameters['n_macroparticles'])
@@ -301,8 +300,8 @@ def generate_initial_distribution_from_tomo_manual_Twiss(parameters, TwissDict, 
 	orbit_mpi.MPI_Barrier(comm)
 
 	return output_file
-	
-def generate_initial_distribution_from_tomo(parameters, matfile=0, Lattice=None, output_file='ParticleDistribution.in', outputFormat='pyOrbit', summary_file='ParticleDistribution_summary.txt', summary_mat_file=None):
+
+def generate_initial_distribution_from_tomo(parameters, matfile=0, Lattice, output_file='ParticleDistribution.in', outputFormat='pyOrbit', summary_file='ParticleDistribution_summary.txt', summary_mat_file=None):
 	
 	# Get parameters from the lattice
 	parameters['alphax0'] = Lattice.alphax0
@@ -404,22 +403,25 @@ def generate_initial_distribution_from_tomo(parameters, matfile=0, Lattice=None,
 
 	return output_file
 
-def generate_initial_distribution_dispersion_mismatch(parameters, Lattice, mismatch = 0.1, output_file = 'Input/ParticleDistribution.in', summary_file = 'Input/ParticleDistribution_summary.txt', outputFormat='Orbit'):
-	parameters['alphax0'] = Lattice.alphax0
-	parameters['betax0']  = Lattice.betax0
-	parameters['alphay0'] = Lattice.alphay0
-	parameters['betay0']  = Lattice.betay0
-	parameters['etax0']   = Lattice.etax0 * mismatch
-	parameters['etapx0']  = Lattice.etapx0
-	parameters['etay0']   = Lattice.etay0
-	parameters['etapy0']  = Lattice.etapy0
-	parameters['x0']      = Lattice.orbitx0
-	parameters['xp0']     = Lattice.orbitpx0
-	parameters['y0']      = Lattice.orbity0
-	parameters['yp0']     = Lattice.orbitpy0
-	parameters['gamma_transition'] = Lattice.gammaT
-	parameters['circumference']    = Lattice.getLength()
-	parameters['length'] = Lattice.getLength()/Lattice.nHarm
+def generate_initial_distribution_manual_Twiss(parameters, TwissDict, output_file = 'Input/ParticleDistribution.in', summary_file = 'Input/ParticleDistribution_summary.txt', outputFormat='Orbit'):
+	
+	# Get parameters from the TwissDict dictionary
+	parameters['alphax0'] = TwissDict['alpha_x']
+	parameters['betax0']  = TwissDict['beta_x']
+	parameters['alphay0'] = TwissDict['alpha_y']
+	parameters['betay0']  = TwissDict['beta_y']
+	parameters['etax0']   = TwissDict['D_x']
+	parameters['etapx0']  = TwissDict['D_xp']
+	parameters['etay0']   = TwissDict['D_y']
+	parameters['etapy0']  = TwissDict['D_yp']
+	parameters['x0']      = TwissDict['x0']
+	parameters['xp0']     = TwissDict['xp0']
+	parameters['y0']      = TwissDict['y0']
+	parameters['yp0']     = TwissDict['yp0']
+	parameters['gamma_transition'] = TwissDict['gamma_transition']
+	parameters['circumference']    = TwissDict['circumference']
+	parameters['length'] = TwissDict['length']
+	
 	# twiss containers
 	twissX = TwissContainer(alpha = parameters['alphax0'], beta = parameters['betax0'], emittance = parameters['epsn_x'] / parameters['gamma'] / parameters['beta'])
 	twissY = TwissContainer(alpha = parameters['alphay0'], beta = parameters['betay0'], emittance = parameters['epsn_y'] / parameters['gamma'] / parameters['beta'])
@@ -427,8 +429,8 @@ def generate_initial_distribution_dispersion_mismatch(parameters, Lattice, misma
 	dispersiony = {'etay0': parameters['etay0'], 'etapy0': parameters['etapy0']}
 	closedOrbitx = {'x0': parameters['x0'], 'xp0': parameters['xp0']} 
 	closedOrbity = {'y0': parameters['y0'], 'yp0': parameters['yp0']} 
-	
-	print dispersionx
+
+	print '\n\t\tgenerate_initial_distribution_manual_Twiss::dispersionx = ', dispersionx 
 
 	# initialize particle arrays
 	x = np.zeros(parameters['n_macroparticles'])
@@ -456,7 +458,8 @@ def generate_initial_distribution_dispersion_mismatch(parameters, Lattice, misma
 				xp[i] += closedOrbitx['xp0']
 				y[i] += closedOrbity['y0']
 				yp[i] += closedOrbity['yp0']
-				dpp = dE[i] / (parameters['energy']) / parameters['beta']**2
+				dpp = dE[i] / (parameters['energy']) / parameters['beta']**2 * 1E3
+				print '\n dpp = ', dpp
 				x[i] += dpp * dispersionx['etax0']
 				xp[i] += dpp * dispersionx['etapx0']
 				y[i] += dpp * dispersiony['etay0']
@@ -500,8 +503,6 @@ def generate_initial_distribution(parameters, Lattice,output_file = 'Input/Parti
 	twissY = TwissContainer(alpha = parameters['alphay0'], beta = parameters['betay0'], emittance = parameters['epsn_y'] / parameters['gamma'] / parameters['beta'])
 	dispersionx = {'etax0': parameters['etax0'], 'etapx0': parameters['etapx0']}
 	dispersiony = {'etay0': parameters['etay0'], 'etapy0': parameters['etapy0']}
-	# ~ dispersionx = {'etax0': parameters['etax0'], 'etapx0': parameters['etapx0']}
-	# ~ dispersiony = {'etay0': parameters['etay0'], 'etapy0': parameters['etapy0']}
 	closedOrbitx = {'x0': parameters['x0'], 'xp0': parameters['xp0']} 
 	closedOrbity = {'y0': parameters['y0'], 'yp0': parameters['yp0']} 
 	
@@ -557,54 +558,95 @@ def generate_initial_distribution(parameters, Lattice,output_file = 'Input/Parti
 
 	return output_file
 
-def generate_initial_distribution_FMA(parameters, output_file = 'Input/ParticleDistribution.in', summary_file = 'Input/ParticleDistribution_summary.txt', outputFormat='Orbit', triangular_grid = True):
+def generate_initial_distribution_3DGaussian_manual_Twiss(parameters, TwissDict, output_file = 'Input/ParticleDistribution.in', summary_file = 'Input/ParticleDistribution_summary.txt', outputFormat='Orbit'):
+
+	# Get parameters from the TwissDict dictionary
+	parameters['alphax0'] = TwissDict['alpha_x']
+	parameters['betax0']  = TwissDict['beta_x']
+	parameters['alphay0'] = TwissDict['alpha_y']
+	parameters['betay0']  = TwissDict['beta_y']
+	parameters['etax0']   = TwissDict['D_x']
+	parameters['etapx0']  = TwissDict['D_xp']
+	parameters['etay0']   = TwissDict['D_y']
+	parameters['etapy0']  = TwissDict['D_yp']
+	parameters['x0']      = TwissDict['x0']
+	parameters['xp0']     = TwissDict['xp0']
+	parameters['y0']      = TwissDict['y0']
+	parameters['yp0']     = TwissDict['yp0']
+	parameters['gamma_transition'] = TwissDict['gamma_transition']
+	parameters['circumference']    = TwissDict['circumference']
+	parameters['length'] = TwissDict['length']
 
 	# twiss containers
 	twissX = TwissContainer(alpha = parameters['alphax0'], beta = parameters['betax0'], emittance = parameters['epsn_x'] / parameters['gamma'] / parameters['beta'])
 	twissY = TwissContainer(alpha = parameters['alphay0'], beta = parameters['betay0'], emittance = parameters['epsn_y'] / parameters['gamma'] / parameters['beta'])
-	dispersionx = {'etax0': parameters['beta']*parameters['etax0'], 'etapx0': parameters['beta']*parameters['etapx0']}
-	dispersiony = {'etay0': parameters['beta']*parameters['etay0'], 'etapy0': parameters['beta']*parameters['etapy0']}
+	dispersionx = {'etax0': parameters['etax0'], 'etapx0': parameters['etapx0']}
+	dispersiony = {'etay0': parameters['etay0'], 'etapy0': parameters['etapy0']}
 	closedOrbitx = {'x0': parameters['x0'], 'xp0': parameters['xp0']} 
 	closedOrbity = {'y0': parameters['y0'], 'yp0': parameters['yp0']} 
+
+	print '\n\t\tgenerate_initial_distribution_3DGaussian_manual_Twiss::dispersionx = ', dispersionx 
 
 	# initialize particle arrays
 	x = np.zeros(parameters['n_macroparticles'])
 	xp = np.zeros(parameters['n_macroparticles'])
 	y = np.zeros(parameters['n_macroparticles'])
 	yp = np.zeros(parameters['n_macroparticles'])
-	phi = np.zeros(parameters['n_macroparticles']); phi.fill(parameters['phi_s'])
+	phi = np.zeros(parameters['n_macroparticles'])
+	# ~ z = np.zeros(parameters['n_macroparticles'])
 	dE = np.zeros(parameters['n_macroparticles'])
 
-	emittance_x = parameters['epsn_x'] / parameters['gamma'] / parameters['beta']
-	emittance_y = parameters['epsn_y'] / parameters['gamma'] / parameters['beta']
-	gamma_x = (1.+parameters['alphax0']**2) / parameters['betax0']
-	gamma_y = (1.+parameters['alphay0']**2) / parameters['betay0']
-
-	n_macroparticles_sqrt = np.floor(np.sqrt(parameters['n_macroparticles']))
-	Jx = np.linspace(emittance_x/gamma_x/n_macroparticles_sqrt/10, emittance_x/gamma_x, n_macroparticles_sqrt)
-	Jy = np.linspace(emittance_y/gamma_y, emittance_y/gamma_y/n_macroparticles_sqrt/10, n_macroparticles_sqrt)
-	x, y = np.meshgrid(np.sqrt(Jx)*parameters['TransverseCut'], np.sqrt(Jy)*parameters['TransverseCut'])
-
-	if triangular_grid:
-		indcs = np.tril_indices(len(x))
-		x = x[indcs]
-		y = y[indcs]
-
-	x = x.flatten()
-	y = y.flatten()	
+	# building the distributions
+	Transverse_distribution = GaussDist2D(twissX, twissY, cut_off=parameters['TransverseCut'])
+	
+	# We need to convert z into phi
+	h_main = np.atleast_1d(parameters['harmonic_number'])[0]
+	R = parameters['circumference'] / 2 / np.pi
+	sig_E = (parameters['dpp_rms'] * parameters['energy'] * parameters['beta']**2)
 
 	if orbit_mpi.MPI_Comm_rank(orbit_mpi.mpi_comm.MPI_COMM_WORLD) == 0:
 		fid = open(output_file,"w")
 		csv_writer = csv.writer(fid, delimiter=' ')
-		for i in range(len(x)):
-				
+		for i in range(parameters['n_macroparticles']):
+
+			# Longitudinal distn - use 5 sigma as cut-off (manual)
+
+			outside_limits_E = True
+			while outside_limits_E:
+				dE[i] = random.gauss(0., sig_E)	# Energy in eV
+				if abs(dE[i]) < (5*sig_E):
+					# ~ print '\n\tdE = ', dE[i]
+					outside_limits_E = False
+
+			outside_limits_z = True
+			while outside_limits_z:
+				z_temp = random.gauss(0., parameters['blength_rms'])
+				if abs(z_temp) < (5*parameters['blength_rms']):
+					# ~ print '\n\tz_temp = ', z_temp
+					phi[i] = - z_temp * h_main / R 
+					outside_limits_z = False
+
+			(x[i], xp[i], y[i], yp[i]) = Transverse_distribution.getCoordinates()
+			x[i] += closedOrbitx['x0']
+			xp[i] += closedOrbitx['xp0']
+			y[i] += closedOrbity['y0']
+			yp[i] += closedOrbity['yp0']
+			dpp = dE[i] / (parameters['energy']) / parameters['beta']**2
+			x[i] += dpp * dispersionx['etax0']
+			xp[i] += dpp * dispersionx['etapx0']
+			y[i] += dpp * dispersiony['etay0']
+			yp[i] += dpp * dispersiony['etapy0']
+
 			if outputFormat == 'Orbit':
 				x[i] *= 1000.
 				xp[i] *= 1000.
 				y[i] *= 1000.
-				yp[i] *= 1000.
-				dE[i] /= 1.e9		
+				yp[i] *= 1000
+				dE[i] /= 1.e9
 				csv_writer.writerow([x[i], xp[i], y[i], yp[i], phi[i], dE[i]])
+		#	else:
+				# still need to convert from phi to z!!
+				#csv_writer.writerow([x[i], xp[i], y[i], yp[i], z[i], dE[i]])
 		fid.close()
 
 		fid = open(summary_file, 'w')
@@ -613,8 +655,8 @@ def generate_initial_distribution_FMA(parameters, output_file = 'Input/ParticleD
 			fid.write(key + ' = ' + str(parameters[key]) + '\n')
 		fid.close()
 
-		print '\nCreated particle distribution with ' + str(len(x)) + ' macroparticles into file: ', output_file
-	
+		print '\nCreated particle distribution with ' + str(parameters['n_macroparticles']) + ' macroparticles into file: ', output_file
+
 	return output_file
 
 def generate_initial_distribution_3DGaussian(parameters, Lattice, output_file = 'Input/ParticleDistribution.in', summary_file = 'Input/ParticleDistribution_summary.txt', outputFormat='Orbit'):
@@ -803,4 +845,64 @@ def generate_initial_poincare_distribution(n_sigma, parameters, Lattice, horizon
 
 	orbit_mpi.MPI_Barrier(comm)
 
+	return output_file
+
+def generate_initial_distribution_FMA(parameters, output_file = 'Input/ParticleDistribution.in', summary_file = 'Input/ParticleDistribution_summary.txt', outputFormat='Orbit', triangular_grid = True):
+
+	# twiss containers
+	twissX = TwissContainer(alpha = parameters['alphax0'], beta = parameters['betax0'], emittance = parameters['epsn_x'] / parameters['gamma'] / parameters['beta'])
+	twissY = TwissContainer(alpha = parameters['alphay0'], beta = parameters['betay0'], emittance = parameters['epsn_y'] / parameters['gamma'] / parameters['beta'])
+	dispersionx = {'etax0': parameters['beta']*parameters['etax0'], 'etapx0': parameters['beta']*parameters['etapx0']}
+	dispersiony = {'etay0': parameters['beta']*parameters['etay0'], 'etapy0': parameters['beta']*parameters['etapy0']}
+	closedOrbitx = {'x0': parameters['x0'], 'xp0': parameters['xp0']} 
+	closedOrbity = {'y0': parameters['y0'], 'yp0': parameters['yp0']} 
+
+	# initialize particle arrays
+	x = np.zeros(parameters['n_macroparticles'])
+	xp = np.zeros(parameters['n_macroparticles'])
+	y = np.zeros(parameters['n_macroparticles'])
+	yp = np.zeros(parameters['n_macroparticles'])
+	phi = np.zeros(parameters['n_macroparticles']); phi.fill(parameters['phi_s'])
+	dE = np.zeros(parameters['n_macroparticles'])
+
+	emittance_x = parameters['epsn_x'] / parameters['gamma'] / parameters['beta']
+	emittance_y = parameters['epsn_y'] / parameters['gamma'] / parameters['beta']
+	gamma_x = (1.+parameters['alphax0']**2) / parameters['betax0']
+	gamma_y = (1.+parameters['alphay0']**2) / parameters['betay0']
+
+	n_macroparticles_sqrt = np.floor(np.sqrt(parameters['n_macroparticles']))
+	Jx = np.linspace(emittance_x/gamma_x/n_macroparticles_sqrt/10, emittance_x/gamma_x, n_macroparticles_sqrt)
+	Jy = np.linspace(emittance_y/gamma_y, emittance_y/gamma_y/n_macroparticles_sqrt/10, n_macroparticles_sqrt)
+	x, y = np.meshgrid(np.sqrt(Jx)*parameters['TransverseCut'], np.sqrt(Jy)*parameters['TransverseCut'])
+
+	if triangular_grid:
+		indcs = np.tril_indices(len(x))
+		x = x[indcs]
+		y = y[indcs]
+
+	x = x.flatten()
+	y = y.flatten()	
+
+	if orbit_mpi.MPI_Comm_rank(orbit_mpi.mpi_comm.MPI_COMM_WORLD) == 0:
+		fid = open(output_file,"w")
+		csv_writer = csv.writer(fid, delimiter=' ')
+		for i in range(len(x)):
+				
+			if outputFormat == 'Orbit':
+				x[i] *= 1000.
+				xp[i] *= 1000.
+				y[i] *= 1000.
+				yp[i] *= 1000.
+				dE[i] /= 1.e9		
+				csv_writer.writerow([x[i], xp[i], y[i], yp[i], phi[i], dE[i]])
+		fid.close()
+
+		fid = open(summary_file, 'w')
+		parameter_list = ['circumference', 'rf_voltage', 'phi_s', 'harmonic_number', 'gamma_transition', 'n_macroparticles', 'energy', 'gamma', 'bunch_length', 'LongitudinalCut', 'LongitudinalJohoParameter', 'x0', 'xp0', 'betax0', 'alphax0', 'etax0', 'etapx0', 'y0', 'yp0', 'betay0', 'alphay0', 'etay0', 'etapy0', 'epsn_x', 'epsn_y', 'TransverseCut']
+		for key in parameter_list:
+			fid.write(key + ' = ' + str(parameters[key]) + '\n')
+		fid.close()
+
+		print '\nCreated particle distribution with ' + str(len(x)) + ' macroparticles into file: ', output_file
+	
 	return output_file
