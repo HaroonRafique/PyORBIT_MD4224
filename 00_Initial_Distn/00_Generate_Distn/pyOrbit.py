@@ -277,7 +277,8 @@ if float(p['tunex'])/100. is not 6.21:
 	twissdict = 'H'
 elif float(p['tuney'])/100. is not 6.24:
 	twissdict = 'V'
-else: print '\n\t Tune set to nominal value of ', (float(p['tunex'])/100.), ',', (float(p['tunex'])/100.)
+else: 
+	print '\n\t Tune set to nominal value of ', (float(p['tunex'])/100.), ',', (float(p['tunex'])/100.)
 	if p['lattice_start'][3] is 'H':
 		twissdict = 'H'
 	elif p['lattice_start'][3] is 'V':
