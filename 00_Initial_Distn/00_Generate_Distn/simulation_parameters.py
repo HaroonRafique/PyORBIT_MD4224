@@ -2,21 +2,20 @@ import numpy as np
 
 parameters = {}
 
-p['n_macroparticles']	= int(0.5E6)
-
+parameters['n_macroparticles']	= int(0.5E6)
 
 # Include machine (PS), tunes, lattice start position (BWS65H) for bunch output file label
-p['tunex']				= '621'
-p['tuney']				= '624'
-p['machine']			= 'PS'
-p['lattice_start'] 		= 'BWSH65'
-# ~ p['lattice_start'] 	= 'BWSV64'
-p['bunch_label'] 		= p['machine'] + '_Tune_' + p['tunex'] + '_' + p['tuney'] + '_' + p['lattice_start']
+parameters['tunex']				= '621'
+parameters['tuney']				= '624'
+parameters['machine']			= 'PS'
+parameters['lattice_start'] 		= 'BWSH65'
+# ~ parameters['lattice_start'] 	= 'BWSV64'
+parameters['bunch_label'] 		= parameters['machine'] + '_Tune_' + parameters['tunex'] + '_' + parameters['tuney'] + '_' + parameters['lattice_start']
 
-p['flat_file']			= str('../Original_Lattice/Flat_Files/'+p['lattice_start'][3]+'_'+p['tunex'][1:]+'_'+p['tunex'][1:]+'/PTC-PyORBIT_flat_file.flt')
-# ~ p['flat_file']			= str('../Optimised_Lattice/Flat_Files/V_'+p['tunex'][1:]+'_'+p['tunex'][1:]+'/PTC-PyORBIT_flat_file.flt')
+parameters['flat_file']			= str('../Original_Lattice/Flat_Files/'+parameters['lattice_start'][3]+'_'+parameters['tunex'][1:]+'_'+parameters['tunex'][1:]+'/PTC-PyORBIT_flat_file.flt')
+# ~ parameters['flat_file']			= str('../Optimised_Lattice/Flat_Files/V_'+parameters['tunex'][1:]+'_'+parameters['tunex'][1:]+'/PTC-PyORBIT_flat_file.flt')
 
-p['tomo_file']			= 'PyORBIT_Tomo_file_MD4224_HB.mat'
+parameters['tomo_file']			= 'PyORBIT_Tomo_file_MD4224_HB.mat'
 
 # PTC RF Table Parameters
 harmonic_factors = [1] # this times the base harmonic defines the RF harmonics (for SPS = 4620, PS 10MHz 7, 8, or 9)
