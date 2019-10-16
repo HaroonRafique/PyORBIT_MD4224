@@ -297,6 +297,8 @@ def Compare_Parameters(p, a, tolerance=0.05):
 
 	# Read analysis file
 	b = Read_Bunch_Analysis_File(a)
+	
+	print 'b[\'D_x\'][0][0]=', b['D_x'][0][0]
 
 	# Iterate over parameters/outputs and compare
 	Compare_Parameter(b, p, 'D_x', 'D_x', tolerance)
