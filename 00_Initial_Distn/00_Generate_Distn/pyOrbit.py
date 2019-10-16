@@ -301,7 +301,7 @@ def Compare_Parameter2(b, p, n1, n2, tol):
 	# ~ print '\n\t\t Compare_Parameter:: n2 = ', n2
 	# ~ print '\n\t\t Compare_Parameter:: b[n1][0][0] = ', b[n1][0][0]
 	# ~ print '\n\t\t Compare_Parameter:: p[n2] = ', p[str(n2)]
-	print '\t\t\tCompare_Parameter:: ', n1, '=', b[n1][0][0] ,'with ', n2 , '=' , p[n2], ', (b[\'',n1,'\'] - p[\'', n2,')/b[\'',n1,'\'] = ', (b[n1][0][0] - p[n2])/b[n1][0][0]
+	print '\t\t\tCompare_Parameter:: \t\t', n1, '=', b[n1][0][0] ,'\twith\t\t', n2 , '=' , p[n2], '\t\tDifference =\t\t', 100*(b[n1][0][0] - p[n2])/b[n1][0][0], '\%'
 	return
 	
 # Function to compare parameters and analysed parameters from Analyse_Bunch
