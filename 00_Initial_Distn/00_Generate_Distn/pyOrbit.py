@@ -303,7 +303,7 @@ def Compare_Parameter2(b, p, n1, n2, tol):
 	# ~ print '\n\t\t Compare_Parameter:: p[n2] = ', p[str(n2)]
 	print '\t\t\tCompare_Parameter:: \t\t', n1, '=', b[n1][0][0] ,'\twith\t\t', n2 , '=' , p[n2], '\t\tDifference =\t\t', 100*(b[n1][0][0] - p[n2])/b[n1][0][0], '%'
 	return
-	
+
 # Function to compare parameters and analysed parameters from Analyse_Bunch
 def Compare_Parameters(p, a, tolerance=0.05):
 	
@@ -344,8 +344,6 @@ print '\n\t\tmkdir on MPI process: ', rank
 from lib.mpi_helpers import mpi_mkdir_p
 mpi_mkdir_p('Distributions')
 mpi_mkdir_p('Bunches')
-# ~ mpi_mkdir_p('output')
-# ~ mpi_mkdir_p('lost')
 
 # Generate PTC RF table
 #-----------------------------------------------------------------------
@@ -379,9 +377,6 @@ for node in Lattice.getNodes():
 	node.addChildNode(myaperturenode, node.BODY)
 	node.addChildNode(myaperturenode, node.EXIT)
 	position += node.getLength()
-
-# Make a bunch and import relevant parameters for it
-#-----------------------------------------------------------------------
 
 ########################################################################
 #################			BUNCH PARAMETERS			################
@@ -529,9 +524,5 @@ Compare_Parameters(p, joho_mt_analysis)
 tomo_mt_bunch = Create_Bunch(Lattice, p, TwissDict=TwissDict, label=p['bunch_label'], DistType = 'Tomo', TwissType = 'Manual', rank=rank)
 tomo_mt_analysis = Analyse_Bunch(tomo_mt_bunch, p)
 Compare_Parameters(p, tomo_mt_analysis)
-
-########################################################################
-#################			LOAD AND CHECK DISTNS		################
-########################################################################
 
 print '\n\n\tFinish simulation main on MPI process: ', rank, '\n'
