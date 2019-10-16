@@ -186,7 +186,7 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 
 	# Dump and save as Matfile
 	#-----------------------------------------------------------------------
-	bunch_save_name = 'Bunches/PyORBIT_'+DistType+'_Bunch_'+TwissType+'_Tiwss_Nmp_' + str(p['n_macroparticles']) + '_' + p['bunch_label']
+	bunch_save_name = 'Bunches/PyORBIT_'+DistType+'_Bunch_'+TwissType+'_Twiss_Nmp_' + str(p['n_macroparticles']) + '_' + p['bunch_label']
 	print '\n\t\tSave bunch in ',bunch_save_name,'.mat on MPI process: ', rank
 	saveBunchAsMatfile(bunch, bunch_save_name)
 
