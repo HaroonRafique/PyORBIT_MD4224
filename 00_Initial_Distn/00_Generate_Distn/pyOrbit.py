@@ -145,13 +145,13 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 		
 		if DistType is 'Gaussian':
 			print '\n\tCreate_Bunch::generate_initial_distribution_3DGaussian on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution_3DGaussian(p, Lattice, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
+			Particle_distribution_file = generate_initial_distribution_3DGaussian(p, Lattice, output_file='Distributions/GaussianDistribution.in', summary_file='Distributions/GaussianDistribution_summary.txt')
 		elif DistType is 'Joho':
 			print '\n\tCreate_Bunch::generate_initial_distribution on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution(p, Lattice, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
+			Particle_distribution_file = generate_initial_distribution(p, Lattice, output_file='Distributions/JohoDistribution.in', summary_file='Distributions/JohoDistribution_summary.txt')
 		elif DistType is 'Tomo':
 			print '\n\tCreate_Bunch::generate_initial_distribution_from_tomo on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution_from_tomo(p,  Lattice, 1, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
+			Particle_distribution_file = generate_initial_distribution_from_tomo(p,  Lattice, 1, output_file='Distributions/TomoDistribution.in', summary_file='Distributions/TomoDistribution_summary.txt')
 		else:
 			print '\n\tCreate_Bunch::Error: Distribution Type not specified. Options are \'Gaussian\', \'Joho\', and \'Tomo\'. Exiting.'
 			exit(0)
@@ -164,13 +164,13 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 
 		if DistType is 'Gaussian':
 			print '\n\tCreate_Bunch::generate_initial_distribution_3DGaussian_manual_Twiss on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution_3DGaussian_manual_Twiss(p, twiss_dict, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
+			Particle_distribution_file = generate_initial_distribution_3DGaussian_manual_Twiss(p, twiss_dict, output_file='Distributions/GaussianDistribution_Manual.in', summary_file='Distributions/GaussianDistribution_Manual_summary.txt')
 		elif DistType is 'Joho':
 			print '\n\tCreate_Bunch::generate_initial_distribution_manual_Twiss on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution_manual_Twiss(p, twiss_dict, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
+			Particle_distribution_file = generate_initial_distribution_manual_Twiss(p, twiss_dict, output_file='Distributions/JohoDistribution_Manual.in', summary_file='Distributions/JohoDistribution_Manual_summary.txt')
 		elif DistType is 'Tomo':
 			print '\n\tCreate_Bunch::generate_initial_distribution_from_tomo_manual_Twiss on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution_from_tomo_manual_Twiss(p, twiss_dict, 1, Lattice, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
+			Particle_distribution_file = generate_initial_distribution_from_tomo_manual_Twiss(p, twiss_dict, 1, Lattice, output_file='Distributions/TomoDistribution_Manual.in', summary_file='Distributions/TomoDistribution_Manual_summary.txt')
 		else:
 			print '\n\tCreate_Bunch::Error: Distribution Type not specified. Options are \'Gaussian\', \'Joho\', and \'Tomo\''
 			exit(0)
@@ -186,7 +186,7 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 
 	# Dump and save as Matfile
 	#-----------------------------------------------------------------------
-	bunch_save_name = 'PyORBIT_'+DistType+'_Bunch_'+TwissType+'_Tiwss_Nmp_' + p['n_macroparticles'] + '_' + label
+	bunch_save_name = 'PyORBIT_'+DistType+'_Bunch_'+TwissType+'_Tiwss_Nmp_' + p['n_macroparticles'] + '_' + p['bunch_label']
 	print '\n\t\tSave bunch in ',bunch_save_name,'.mat on MPI process: ', rank
 	saveBunchAsMatfile(bunch, bunch_save_name)
 
@@ -205,10 +205,10 @@ for i in p:
 
 # Create folder structure
 #-----------------------------------------------------------------------
-# ~ print '\n\t\tmkdir on MPI process: ', rank
-# ~ from lib.mpi_helpers import mpi_mkdir_p
+print '\n\t\tmkdir on MPI process: ', rank
+from lib.mpi_helpers import mpi_mkdir_p
+mpi_mkdir_p('Distributions')
 # ~ mpi_mkdir_p('input')
-# ~ mpi_mkdir_p('bunch_output')
 # ~ mpi_mkdir_p('output')
 # ~ mpi_mkdir_p('lost')
 
