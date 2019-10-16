@@ -283,7 +283,8 @@ else:
 		twissdict = 'H'
 	elif p['lattice_start'][3] is 'V':
 		twissdict = 'V'
-	else: print '\n\t Error:: Start position not recognised, options are BWSH65 or BWSV64'
+	else: 
+		print '\n\t Error:: Start position not recognised, options are BWSH65 or BWSV64'
 		exit(0)
 
 if twissdict = 'H':
