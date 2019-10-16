@@ -17,10 +17,6 @@ import numpy as np
 import scipy.io as sio
 import os
 
-# Use switches in simulation_parameters.py in current folder
-#-------------------------------------------------------------
-from simulation_parameters import switches as s
-
 # utils
 from orbit.utils.orbit_mpi_utils import bunch_orbit_to_pyorbit, bunch_pyorbit_to_orbit
 from orbit.utils.consts import mass_proton, speed_of_light, pi
