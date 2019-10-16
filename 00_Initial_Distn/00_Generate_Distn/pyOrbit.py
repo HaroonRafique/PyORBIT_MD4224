@@ -173,13 +173,7 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 	p['macrosize']			= p['intensity']/float(p['n_macroparticles'])
 
 	p['bunch_save_name'] = 'PyORBIT_'+DistType+'_Bunch_'+TwissType+'_Twiss_Nmp_' + str(p['n_macroparticles']) + '_' + p['bunch_label']
-	
-	
-	print '\n\t\tCreate_Bunch: Output bunch parameters on MPI process: ', rank
-	for i in p:
-		print '\t', i, '\t = \t', p[i]
 
-	
 	if TwissType is 'Lattice':
 		
 		if DistType is 'Gaussian':
@@ -213,6 +207,10 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 		else:
 			print '\n\tCreate_Bunch::Error: Distribution Type not specified. Options are \'Gaussian\', \'Joho\', and \'Tomo\''
 			exit(0)
+
+	print '\n\t\tCreate_Bunch: Output bunch parameters on MPI process: ', rank
+	for i in p:
+		print '\t', i, '\t = \t', p[i]
 
 	print '\n\t\tbunch_orbit_to_pyorbit on MPI process: ', rank
 	bunch_orbit_to_pyorbit((Lattice.getLength()/Lattice.nHarm), p['kin_Energy'], Particle_distribution_file, bunch, p['n_macroparticles'] + 1) #read in only first N_mp particles.
