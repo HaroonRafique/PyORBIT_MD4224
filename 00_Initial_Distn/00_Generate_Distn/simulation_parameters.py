@@ -10,8 +10,8 @@ parameters['lattice_version']	='Original'
 parameters['tunex']				= '621'
 parameters['tuney']				= '624'
 parameters['machine']			= 'PS'
-parameters['lattice_start'] 		= 'BWSH65'
-# ~ parameters['lattice_start'] 	= 'BWSV64'
+# ~ parameters['lattice_start'] 		= 'BWSH65'
+parameters['lattice_start'] 	= 'BWSV64'
 parameters['bunch_label'] 		= parameters['machine'] + '_' + parameters['lattice_version'] + '_Lattice_Tune_' + parameters['tunex'] + '_' + parameters['tuney'] + '_' + parameters['lattice_start']
 
 parameters['flat_file']			= str('../'+parameters['lattice_version']+'_Lattice/Flat_Files/'+parameters['lattice_start'][3]+'_'+parameters['tunex'][1:]+'_'+parameters['tuney'][1:]+'/PTC-PyORBIT_flat_file.flt')
