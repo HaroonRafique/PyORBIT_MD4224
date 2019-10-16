@@ -148,11 +148,11 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 		p['dpp_rms']			= 8.7e-04
 		p['tomo_file']			= 'PyORBIT_Tomo_file_MD4224_HB.mat'
 		p['LongitudinalJohoParameter'] = 1.2
+		p['LongitudinalCut'] = 2.4
 		p['TransverseCut']		= 5
 		p['rf_voltage']			= 0.0212942055190595723
 		p['circumference']		= 2*np.pi*100
 		p['phi_s']				= 0
-		p['bunch_length']		= 140e-9
 	
 	# Have to be calculated in function
 	p['DistType']			= DistType
