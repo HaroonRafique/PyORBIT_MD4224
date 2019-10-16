@@ -49,10 +49,10 @@ parameters['macrosize']			= parameters['intensity']/float(parameters['n_macropar
 parameters['gamma'] = 2.49253731343
 parameters['beta'] = np.sqrt(parameters['gamma']**2-1)/parameters['gamma']
 c = 299792458
-parameters['sig_z'] = (beta * c * blength)/4.
+parameters['sig_z'] = (parameters['beta'] * c * parameters['blength'])/4.
 parameters['turns_max'] = int(20)
 
-tu1 = range(-1, turns_max, 200)
+tu1 = range(-1, parameters['turns_max'], 200)
 tu2 = range(10, 100, 10) 
 tu3 = range(1, 9)
 tu = tu2 + tu1 + tu3 
