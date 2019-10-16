@@ -301,7 +301,7 @@ def generate_initial_distribution_from_tomo_manual_Twiss(parameters, TwissDict, 
 
 	return output_file
 
-def generate_initial_distribution_from_tomo(parameters, matfile=0, Lattice, output_file='ParticleDistribution.in', outputFormat='pyOrbit', summary_file='ParticleDistribution_summary.txt', summary_mat_file=None):
+def generate_initial_distribution_from_tomo(parameters, Lattice, matfile=0, output_file='ParticleDistribution.in', outputFormat='pyOrbit', summary_file='ParticleDistribution_summary.txt', summary_mat_file=None):
 	
 	# Get parameters from the lattice
 	parameters['alphax0'] = Lattice.alphax0

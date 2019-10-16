@@ -87,7 +87,7 @@ def GetTunesFromPTC():
 # We want to create multiple bunch types for multiple laattices with multiple numbers of particles.
 
 # Function to return a bunch from some input parameters
-def Create_Bunch(Lattice, DistType = 'Gaussian', TwissType = 'Lattice', rank=0, p=None, TwissDict=None, label=None):
+def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussian', TwissType = 'Lattice', rank=0):
 
 	print '\n\t\tCreate_Bunch on MPI rank ', rank
 	bunch = Bunch()
@@ -151,7 +151,7 @@ def Create_Bunch(Lattice, DistType = 'Gaussian', TwissType = 'Lattice', rank=0, 
 			Particle_distribution_file = generate_initial_distribution(p, Lattice, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
 		elif DistType is 'Tomo':
 			print '\n\tCreate_Bunch::generate_initial_distribution_from_tomo on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution_from_tomo(p, 1, Lattice, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
+			Particle_distribution_file = generate_initial_distribution_from_tomo(p,  Lattice, 1, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
 		else:
 			print '\n\tCreate_Bunch::Error: Distribution Type not specified. Options are \'Gaussian\', \'Joho\', and \'Tomo\'. Exiting.'
 			exit(0)
