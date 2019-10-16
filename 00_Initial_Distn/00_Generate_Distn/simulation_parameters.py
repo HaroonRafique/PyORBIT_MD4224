@@ -2,7 +2,7 @@ import numpy as np
 
 parameters = {}
 
-parameters['n_macroparticles']	= int(50E3)
+parameters['n_macroparticles']	= int(0.5E6)
 parameters['lattice_version']	='Original'
 # ~ parameters['lattice_version']	='Optimised'
 
