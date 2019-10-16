@@ -227,7 +227,7 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 	# Dump and save as Matfile
 	#-----------------------------------------------------------------------
 	print '\n\t\tSave bunch in ',p['bunch_save_name'],'.mat on MPI process: ', rank
-	savename = str('Bunches/'+bunch_save_name)
+	savename = str('Bunches/'+p['bunch_save_name')
 	saveBunchAsMatfile(bunch, savename)
 
 	return bunch
