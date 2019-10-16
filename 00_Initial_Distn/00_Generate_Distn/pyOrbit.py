@@ -295,28 +295,35 @@ def Compare_Parameter(b, p, n1, n2, tol):
 	if (b[n1][0][0] - p[n2])/b[n1][0][0] < tol: 
 		print '\n\t\tCompare_Parameter:: ', n1, '=', b[n1][0][0] ,'with ', n2 , '=' ,p[n2], ' exceeds tolerance of ', (tol*100), '\%'
 	return
-
+	
+def Compare_Parameter2(b, p, n1, n2, tol):
+	# ~ print '\n\t\t Compare_Parameter:: n1 = ', n1
+	# ~ print '\n\t\t Compare_Parameter:: n2 = ', n2
+	# ~ print '\n\t\t Compare_Parameter:: b[n1][0][0] = ', b[n1][0][0]
+	# ~ print '\n\t\t Compare_Parameter:: p[n2] = ', p[str(n2)]
+	print '\t\t\tCompare_Parameter:: ', n1, '=', b[n1][0][0] ,'with ', n2 , '=' , p[n2], ', (b[\'',n1,'\'] - p[\'', n2,')', ,'/b[\'',n1,'\'] = ', (b[n1][0][0] - p[n2])/b[n1][0][0]
+	return
+	
 # Function to compare parameters and analysed parameters from Analyse_Bunch
 def Compare_Parameters(p, a, tolerance=0.05):
-
-
+	
 	# Read analysis file
 	b = Read_Bunch_Analysis_File(a)
 	
 	print 'b[\'D_x\'][0][0]=', b['D_x'][0][0]
 
 	# Iterate over parameters/outputs and compare
-	Compare_Parameter(b, p, 'D_x', 'etax0', tolerance)
-	Compare_Parameter(b, p, 'D_y', 'etay0', tolerance)
-	Compare_Parameter(b, p, 'beta_x', 'betax0', tolerance)
-	Compare_Parameter(b, p, 'beta_y', 'betay0', tolerance)
-	Compare_Parameter(b, p, 'alpha_x', 'alphax0', tolerance)
-	Compare_Parameter(b, p, 'alpha_y', 'alphay0', tolerance)
-	Compare_Parameter(b, p, 'n_mp', 'n_macroparticles', 0.001)
-	Compare_Parameter(b, p, 'gamma', 'gamma', 0.01)
-	Compare_Parameter(b, p, 'bunchlength', 'bunch_length', 0.01)
-	Compare_Parameter(b, p, 'epsn_x', 'epsn_x', 0.01)
-	Compare_Parameter(b, p, 'epsn_y', 'epsn_y', 0.01)
+	Compare_Parameter2(b, p, 'D_x', 'etax0', tolerance)
+	Compare_Parameter2(b, p, 'D_y', 'etay0', tolerance)
+	Compare_Parameter2(b, p, 'beta_x', 'betax0', tolerance)
+	Compare_Parameter2(b, p, 'beta_y', 'betay0', tolerance)
+	Compare_Parameter2(b, p, 'alpha_x', 'alphax0', tolerance)
+	Compare_Parameter2(b, p, 'alpha_y', 'alphay0', tolerance)
+	Compare_Parameter2(b, p, 'n_mp', 'n_macroparticles', 0.001)
+	Compare_Parameter2(b, p, 'gamma', 'gamma', 0.01)
+	Compare_Parameter2(b, p, 'bunchlength', 'bunch_length', 0.01)
+	Compare_Parameter2(b, p, 'epsn_x', 'epsn_x', 0.01)
+	Compare_Parameter2(b, p, 'epsn_y', 'epsn_y', 0.01)
 
 	return
 
