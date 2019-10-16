@@ -84,6 +84,43 @@ def GetTunesFromPTC():
 	os.system('rm TWISS_PTC_table.OUT')
 	return Qx, Qy
 
+# Function to return second moment (mu^2) of distribution
+def GetBunchMus(b, smooth=True):
+	window = 40
+
+	# MPI stuff to run on a single node
+	rank = 0
+	numprocs = 1
+
+	mpi_init = orbit_mpi.MPI_Initialized()
+	comm = orbit_mpi.mpi_comm.MPI_COMM_WORLD
+	orbit_mpi.MPI_Barrier(comm)
+
+	if(mpi_init):
+		rank = orbit_mpi.MPI_Comm_rank(comm)
+		numprocs = orbit_mpi.MPI_Comm_size(comm)
+
+	nparts_arr_local = []
+	for i in range(numprocs):
+		nparts_arr_local.append(0)
+
+	nparts_arr_local[rank] = b.getSize()
+	data_type = mpi_datatype.MPI_INT
+	op = mpi_op.MPI_SUM
+
+	nparts_arr = orbit_mpi.MPI_Allreduce(nparts_arr_local,data_type,op,comm)
+
+# Arrays to hold x and y data
+	x = []
+	y = []
+
+	for i in range(b.getSize()):
+		x.append(b.x(i))
+		y.append(b.y(i))
+
+# Calculate moments of the bunch
+	return moment(x, 2), moment(y, 2)
+
 # We want to create multiple bunch types for multiple laattices with multiple numbers of particles.
 
 # Function to return a bunch from some input parameters
@@ -119,6 +156,7 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 		p['bunch_length']		= 140e-9
 	
 	# Have to be calculated in function
+	p['DistType']			= DistType
 	p['kin_Energy']			= bunch.getSyncParticle().kinEnergy()
 	p['harmonic_number']	= Lattice.nHarm 
 	p['gamma']				= bunch.getSyncParticle().gamma()
@@ -135,6 +173,8 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 	
 	p['macrosize']			= p['intensity']/float(p['n_macroparticles'])
 
+	p['bunch_save_name'] = 'PyORBIT_'+DistType+'_Bunch_'+TwissType+'_Twiss_Nmp_' + str(p['n_macroparticles']) + '_' + p['bunch_label']
+	
 	
 	print '\n\t\tCreate_Bunch: Output bunch parameters on MPI process: ', rank
 	for i in p:
@@ -145,13 +185,13 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 		
 		if DistType is 'Gaussian':
 			print '\n\tCreate_Bunch::generate_initial_distribution_3DGaussian on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution_3DGaussian(p, Lattice, output_file='Distributions/GaussianDistribution.in', summary_file='Distributions/GaussianDistribution_summary.txt')
+			Particle_distribution_file = generate_initial_distribution_3DGaussian(p, Lattice, output_file=('Distributions/'+p['bunch_save_name']+'.in'), summary_file=('Distributions/'+p['bunch_save_name']+'_summary.txt'))
 		elif DistType is 'Joho':
 			print '\n\tCreate_Bunch::generate_initial_distribution on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution(p, Lattice, output_file='Distributions/JohoDistribution.in', summary_file='Distributions/JohoDistribution_summary.txt')
+			Particle_distribution_file = generate_initial_distribution(p, Lattice, output_file=('Distributions/'+p['bunch_save_name']+'.in'), summary_file=('Distributions/'+p['bunch_save_name']+'_summary.txt'))
 		elif DistType is 'Tomo':
 			print '\n\tCreate_Bunch::generate_initial_distribution_from_tomo on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution_from_tomo(p,  Lattice, 1, output_file='Distributions/TomoDistribution.in', summary_file='Distributions/TomoDistribution_summary.txt')
+			Particle_distribution_file = generate_initial_distribution_from_tomo(p,  Lattice, 1, output_file=('Distributions/'+p['bunch_save_name']+'.in'), summary_file=('Distributions/'+p['bunch_save_name']+'_summary.txt'))
 		else:
 			print '\n\tCreate_Bunch::Error: Distribution Type not specified. Options are \'Gaussian\', \'Joho\', and \'Tomo\'. Exiting.'
 			exit(0)
@@ -164,13 +204,13 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 
 		if DistType is 'Gaussian':
 			print '\n\tCreate_Bunch::generate_initial_distribution_3DGaussian_manual_Twiss on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution_3DGaussian_manual_Twiss(p, TwissDict, output_file='Distributions/GaussianDistribution_Manual.in', summary_file='Distributions/GaussianDistribution_Manual_summary.txt')
+			Particle_distribution_file = generate_initial_distribution_3DGaussian_manual_Twiss(p, TwissDict, output_file=('Distributions/'+p['bunch_save_name']+'.in'), summary_file=('Distributions/'+p['bunch_save_name']+'_summary.txt'))
 		elif DistType is 'Joho':
 			print '\n\tCreate_Bunch::generate_initial_distribution_manual_Twiss on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution_manual_Twiss(p, TwissDict, output_file='Distributions/JohoDistribution_Manual.in', summary_file='Distributions/JohoDistribution_Manual_summary.txt')
+			Particle_distribution_file = generate_initial_distribution_manual_Twiss(p, TwissDict, output_file=('Distributions/'+p['bunch_save_name']+'.in'), summary_file=('Distributions/'+p['bunch_save_name']+'_summary.txt'))
 		elif DistType is 'Tomo':
 			print '\n\tCreate_Bunch::generate_initial_distribution_from_tomo_manual_Twiss on MPI process: ', rank
-			Particle_distribution_file = generate_initial_distribution_from_tomo_manual_Twiss(p, TwissDict, 1, output_file='Distributions/TomoDistribution_Manual.in', summary_file='Distributions/TomoDistribution_Manual_summary.txt')
+			Particle_distribution_file = generate_initial_distribution_from_tomo_manual_Twiss(p, TwissDict, 1, output_file=('Distributions/'+p['bunch_save_name']+'.in'), summary_file=('Distributions/'+p['bunch_save_name']+'_summary.txt'))
 		else:
 			print '\n\tCreate_Bunch::Error: Distribution Type not specified. Options are \'Gaussian\', \'Joho\', and \'Tomo\''
 			exit(0)
@@ -186,9 +226,9 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 
 	# Dump and save as Matfile
 	#-----------------------------------------------------------------------
-	bunch_save_name = 'Bunches/PyORBIT_'+DistType+'_Bunch_'+TwissType+'_Twiss_Nmp_' + str(p['n_macroparticles']) + '_' + p['bunch_label']
 	print '\n\t\tSave bunch in ',bunch_save_name,'.mat on MPI process: ', rank
-	saveBunchAsMatfile(bunch, bunch_save_name)
+	savename = str('Bunches/'+bunch_save_name)
+	saveBunchAsMatfile(bunch, savename)
 
 	return bunch
 
@@ -380,6 +420,53 @@ tomo_mt_bunch = Create_Bunch(Lattice, p, TwissDict=TwissDict, label=p['bunch_lab
 #################			LOAD AND CHECK DISTNS		################
 ########################################################################
 
+def Analyse_Bunch(bunch, p):
+
+	print '\n\t\tAnalyse_Bunch:: Analysing bunch:', p['bunch_label'] ,' of type ', p['DistType'] ,' on MPI process: ', rank
+	bunchtwissanalysis = BunchTwissAnalysis() # Prepare the bunch analysis class
+	get_dpp = lambda b, bta: np.sqrt(bta.getCorrelation(5,5)) / (b.getSyncParticle().gamma()*b.mass()*b.getSyncParticle().beta()**2)
+	get_bunch_length = lambda b, bta: 4 * np.sqrt(bta.getCorrelation(4,4)) / (speed_of_light*b.getSyncParticle().beta())
+	get_eps_z = lambda b, bta: 1e9 * 4 * pi * bta.getEmittance(2) / (speed_of_light*b.getSyncParticle().beta())
+
+	# Do this for each distribution
+
+	output_file = 'Distributions/MD4224_Nominal_WP_Tomo_Distn_output.mat'
+	output = Output_dictionary()
+	output.addParameter('gamma', lambda: bunch.getSyncParticle().gamma())
+	output.addParameter('intensity', lambda: bunchtwissanalysis.getGlobalMacrosize())
+	output.addParameter('n_mp', lambda: bunchtwissanalysis.getGlobalCount())
+	output.addParameter('epsn_x', lambda: bunchtwissanalysis.getEmittanceNormalized(0))
+	output.addParameter('epsn_y', lambda: bunchtwissanalysis.getEmittanceNormalized(1))
+	output.addParameter('eps_z', lambda: get_eps_z(bunch, bunchtwissanalysis))
+	output.addParameter('mean_dE', lambda: bunchtwissanalysis.getAverage(5))
+	output.addParameter('mean_x', lambda: bunchtwissanalysis.getAverage(0))
+	output.addParameter('mean_xp', lambda: bunchtwissanalysis.getAverage(1))
+	output.addParameter('mean_y', lambda: bunchtwissanalysis.getAverage(2))
+	output.addParameter('mean_yp', lambda: bunchtwissanalysis.getAverage(3))
+	output.addParameter('mean_z', lambda: bunchtwissanalysis.getAverage(4))
+	output.addParameter('beta_x', lambda: bunchtwissanalysis.getBeta(0))
+	output.addParameter('beta_y', lambda: bunchtwissanalysis.getBeta(1))
+	output.addParameter('alpha_x', lambda: bunchtwissanalysis.getAlpha(0))
+	output.addParameter('alpha_y', lambda: bunchtwissanalysis.getAlpha(1))
+	output.addParameter('D_x', lambda: bunchtwissanalysis.getDispersion(0))
+	output.addParameter('D_y', lambda: bunchtwissanalysis.getDispersion(1))
+	output.addParameter('bunchlength', lambda: get_bunch_length(bunch, bunchtwissanalysis))
+	output.addParameter('dpp_rms', lambda: get_dpp(bunch, bunchtwissanalysis))
+	output.addParameter('mu_x', lambda: GetBunchMus(bunch)[0])
+	output.addParameter('mu_y', lambda: GetBunchMus(bunch)[1])
+	output.addParameter('eff_beta_x', lambda: bunchtwissanalysis.getEffectiveBeta(0))
+	output.addParameter('eff_beta_y', lambda: bunchtwissanalysis.getEffectiveBeta(1))
+	output.addParameter('eff_epsn_x', lambda: bunchtwissanalysis.getEffectiveEmittance(0))
+	output.addParameter('eff_epsn_y', lambda: bunchtwissanalysis.getEffectiveEmittance(1))
+	output.addParameter('eff_alpha_x', lambda: bunchtwissanalysis.getEffectiveAlpha(0))
+	output.addParameter('eff_alpha_y', lambda: bunchtwissanalysis.getEffectiveAlpha(1))
+
+	bunchtwissanalysis.analyzeBunch(bunch)
+
+	output.update()
+	output.save_to_matfile(output_file)
+
+	return
 
 
 # ~ # Define twiss analysis and output dictionary
