@@ -287,7 +287,9 @@ def Read_Bunch_Analysis_File(filename):
 	return p
 
 def Compare_Parameter(b, p, n1, n2, tol):
-	if (b[str(n1)][0][0] - p[str(n2)])/b[str(n1)][0][0] < tolerance: 
+	print '\n\t\ttCompare_Parameter:: n1 = ', n1
+	print '\n\t\ttCompare_Parameter:: n2 = ', n2
+	if (b[n1][0][0] - p[n2])/b[n1][0][0] < tolerance: 
 		print '\n\t\tCompare_Parameter:: ', n1, '=', b[n1][0][0] ,'with ', n2 , '=' ,p[n2], ' exceeds tolerance of ', (tol*100), '\%'
 	return
 
