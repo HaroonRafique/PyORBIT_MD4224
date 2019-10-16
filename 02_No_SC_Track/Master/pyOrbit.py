@@ -10,6 +10,7 @@ import os
 # Use switches in simulation_parameters.py in current folder
 #-------------------------------------------------------------
 from simulation_parameters import switches as s
+from simulation_parameters import parameters as p
 
 # utils
 from orbit.utils.orbit_mpi_utils import bunch_orbit_to_pyorbit, bunch_pyorbit_to_orbit
@@ -178,7 +179,6 @@ if sts['turn'] < 0:
 	bunch = Bunch()
 	setBunchParamsPTC(bunch)
 
-	from simulation_parameters import parameters as p
 	p['harmonic_number'] = Lattice.nHarm 
 	p['phi_s']           = 0
 	p['gamma']           = bunch.getSyncParticle().gamma()
