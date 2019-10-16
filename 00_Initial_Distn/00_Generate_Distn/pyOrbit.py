@@ -200,6 +200,9 @@ print '\n\n\tStart simulation main on MPI process: ', rank, '\n'
 print '\n\t\tImport simulation parameters from input file on MPI process: ', rank
 from simulation_parameters import parameters as p
 
+	for i in p:
+		print '\t', i, '\t = \t', p[i]
+
 # Create folder structure
 #-----------------------------------------------------------------------
 # ~ print '\n\t\tmkdir on MPI process: ', rank
