@@ -87,7 +87,7 @@ def GetTunesFromPTC():
 # We want to create multiple bunch types for multiple laattices with multiple numbers of particles.
 
 # Function to return a bunch from some input parameters
-def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussian', TwissType = 'Lattice', rank=0):
+def Create_Bunch(Lattice, DistType = 'Gaussian', TwissType = 'Lattice', rank=0, p=None, TwissDict=None, label=None):
 
 	print '\n\t\tCreate_Bunch on MPI rank ', rank
 	bunch = Bunch()
