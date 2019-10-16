@@ -620,8 +620,8 @@ def generate_initial_distribution_3DGaussian_manual_Twiss(parameters, TwissDict,
 
 			outside_limits_z = True
 			while outside_limits_z:
-				z_temp = random.gauss(0., parameters['blength_rms'])
-				if abs(z_temp) < (5*parameters['blength_rms']):
+				z_temp = random.gauss(0., parameters['sig_z'])
+				if abs(z_temp) < (5*parameters['sig_z']):
 					# ~ print '\n\tz_temp = ', z_temp
 					phi[i] = - z_temp * h_main / R 
 					outside_limits_z = False
@@ -720,8 +720,8 @@ def generate_initial_distribution_3DGaussian(parameters, Lattice, output_file = 
 
 			outside_limits_z = True
 			while outside_limits_z:
-				z_temp = random.gauss(0., parameters['blength_rms'])
-				if abs(z_temp) < (5*parameters['blength_rms']):
+				z_temp = random.gauss(0., parameters['sig_z'])
+				if abs(z_temp) < (5*parameters['sig_z']):
 					# ~ print '\n\tz_temp = ', z_temp
 					phi[i] = - z_temp * h_main / R 
 					outside_limits_z = False
