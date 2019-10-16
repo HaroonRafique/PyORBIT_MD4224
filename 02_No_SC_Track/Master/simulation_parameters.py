@@ -54,7 +54,7 @@ parameters['gamma'] = 2.49253731343
 parameters['beta'] = np.sqrt(gamma**2-1)/gamma
 c = 299792458
 parameters['sig_z'] = (beta * c * blength)/4.
-parameters['turns_max'] = int(2200)
+parameters['turns_max'] = int(20)
 
 tu1 = range(-1, turns_max, 200)
 tu2 = range(10, 100, 10) 
