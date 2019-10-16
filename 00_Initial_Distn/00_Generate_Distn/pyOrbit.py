@@ -186,7 +186,7 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 
 	# Dump and save as Matfile
 	#-----------------------------------------------------------------------
-	bunch_save_name = 'PyORBIT_'+DistType+'_Bunch_'+TwissType+'_Tiwss_Nmp_' + str(p['n_macroparticles']) + '_' + p['bunch_label']
+	bunch_save_name = 'Bunches/PyORBIT_'+DistType+'_Bunch_'+TwissType+'_Tiwss_Nmp_' + str(p['n_macroparticles']) + '_' + p['bunch_label']
 	print '\n\t\tSave bunch in ',bunch_save_name,'.mat on MPI process: ', rank
 	saveBunchAsMatfile(bunch, bunch_save_name)
 
@@ -208,7 +208,7 @@ for i in p:
 print '\n\t\tmkdir on MPI process: ', rank
 from lib.mpi_helpers import mpi_mkdir_p
 mpi_mkdir_p('Distributions')
-# ~ mpi_mkdir_p('input')
+mpi_mkdir_p('Bunches')
 # ~ mpi_mkdir_p('output')
 # ~ mpi_mkdir_p('lost')
 
