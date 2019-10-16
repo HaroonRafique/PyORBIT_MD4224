@@ -18,7 +18,7 @@ parameters['TwissType'] 				= 'Lattice'
 # ~ parameters['TwissType'] 			= 'Manual'
 
 parameters['tunex']						= '621'
-parameters['tunex']						= '624'
+parameters['tuney']						= '624'
 parameters['machine']					= 'PS'
 # ~ parameters['lattice_start'] 		= 'BWSH65'
 parameters['lattice_start'] 			= 'BWSV64'
