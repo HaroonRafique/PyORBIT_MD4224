@@ -765,7 +765,7 @@ def generate_initial_poincare_distributionV(n_sigma, parameters, Lattice, output
         return generate_initial_poincare_distribution(n_sigma, parameters, Lattice, 0, output_file, summary_file, outputFormat)
 
 def generate_initial_poincare_distribution(n_sigma, parameters, Lattice, horizontal = 1,  output_file = 'Input/ParticleDistribution.in', summary_file = 'Input/ParticleDistribution_summary.txt', outputFormat='Orbit'):
-        parameters['alphax0'] = Lattice.alphax0
+	parameters['alphax0'] = Lattice.alphax0
 	parameters['betax0']  = Lattice.betax0
 	parameters['alphay0'] = Lattice.alphay0
 	parameters['betay0']  = Lattice.betay0

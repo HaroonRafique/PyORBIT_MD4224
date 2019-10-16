@@ -122,8 +122,6 @@ def GetBunchMus(b, smooth=True):
 # Calculate moments of the bunch
 	return moment(x, 2), moment(y, 2)
 
-# We want to create multiple bunch types for multiple laattices with multiple numbers of particles.
-
 # Function to return a bunch from some input parameters
 def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussian', TwissType = 'Lattice', rank=0):
 
@@ -280,6 +278,39 @@ def Analyse_Bunch(bunch, p, rank=0):
 	print '\n\t\tAnalyse_Bunch:: Analysis Complete, saved to file :', output_file ,' on MPI process: ', rank
 
 	return output_file
+
+def Read_Bunch_Analysis_File(filename):
+	f = filename
+	p = dict()
+	sio.loadmat(f, mdict=p)
+	print '\n\tRead_Bunch_Analysis_File::Open output data from ', filename
+	return p
+
+def Compare_Parameter(b, p, n1, n2, tol):
+	if (b[n1][0][0] - p[n2])/b[n1][0][0] < tolerance: print '\n\t\tCompare_Parameter:: ', n1, '=', b[n1][0][0] ,'with ', n2 , '=' ,p[n2], ' exceeds tolerance of ', (tol*100), '\%'
+	return
+
+# Function to compare parameters and analysed parameters from Analyse_Bunch
+def Compare_Parameters(p, a, tolerance=0.05):
+
+
+	# Read analysis file
+	b = Read_Bunch_Analysis_File(a)
+
+	# Iterate over parameters/outputs and compare
+	Compare_Parameter(b, p, 'D_x', 'D_x', tolerance)
+	Compare_Parameter(b, p, 'D_y', 'D_y', tolerance)
+	Compare_Parameter(b, p, 'beta_x', 'betax0', tolerance)
+	Compare_Parameter(b, p, 'beta_y', 'betay0', tolerance)
+	Compare_Parameter(b, p, 'alpha_x', 'alphax0', tolerance)
+	Compare_Parameter(b, p, 'alpha_y', 'alphay0', tolerance)
+	Compare_Parameter(b, p, 'n_mp', 'n_macroparticles', 0.001)
+	Compare_Parameter(b, p, 'gamma', 'gamma', 0.01)
+	Compare_Parameter(b, p, 'bunchlength', 'bunch_length', 0.01)
+	Compare_Parameter(b, p, 'epsn_x', 'epsn_x', 0.01)
+	Compare_Parameter(b, p, 'epsn_y', 'epsn_y', 0.01)
+
+	return
 
 ########################################################################
 #################			SIMULATION START			################
@@ -453,11 +484,16 @@ TwissDict['gamma_transition']	= Lattice.gammaT
 TwissDict['circumference']		= Lattice.getLength()
 TwissDict['length'] 			= Lattice.getLength()/Lattice.nHarm
 
-########################################################################
-#################			CREATE DISTRIBUTIONS		################
-########################################################################
+#	First we create the bunch using the Create_Bunch function which 
+#	creates the _summary.txt, .in, and bunch .mat file.
+#	Next we analyse the bunch using the Analyse_Bunch function which
+#	creates the output _analysis.mat file.
+#	Finally we load output _analysis.mat file, and compare values to 
+#	the input parameters.
+
 gaussian_bunch = Create_Bunch(Lattice, p, TwissDict=None, label=p['bunch_label'], DistType = 'Gaussian', TwissType = 'Lattice', rank=rank)
 gaussian_analysis = Analyse_Bunch(gaussian_bunch, p)
+Compare_Parameters(p, gaussian_analysis)
 
 joho_bunch = Create_Bunch(Lattice, p, TwissDict=None, label=p['bunch_label'], DistType = 'Joho', TwissType = 'Lattice', rank=rank)
 joho_analysis = Analyse_Bunch(joho_bunch, p)
