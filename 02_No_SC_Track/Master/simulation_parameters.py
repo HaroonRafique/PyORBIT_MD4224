@@ -47,7 +47,7 @@ parameters['macrosize']			= parameters['intensity']/float(parameters['n_macropar
 
 # PS Injection 1.4 GeV
 parameters['gamma'] = 2.49253731343
-parameters['beta'] = np.sqrt(gamma**2-1)/gamma
+parameters['beta'] = np.sqrt(parameters['gamma']**2-1)/parameters['gamma']
 c = 299792458
 parameters['sig_z'] = (beta * c * blength)/4.
 parameters['turns_max'] = int(20)
