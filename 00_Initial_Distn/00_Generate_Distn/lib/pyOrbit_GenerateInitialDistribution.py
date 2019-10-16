@@ -295,7 +295,7 @@ def generate_initial_distribution_from_tomo_manual_Twiss(parameters, TwissDict, 
 			with open(summary_file, 'w') as fid:
 				map(lambda key: fid.write(key + ' = ' + str(parameters[key]) + '\n'), parameters)
 				
-		print '\nCreated particle distribution with ' + str(parameters['n_macroparticles']) + ' macroparticles into file: ', output_file
+		print '\n\t\tCreated particle distribution with ' + str(parameters['n_macroparticles']) + ' macroparticles into file: ', output_file
 
 	orbit_mpi.MPI_Barrier(comm)
 
@@ -396,7 +396,7 @@ def generate_initial_distribution_from_tomo(parameters, Lattice, matfile=0, outp
 			with open(summary_file, 'w') as fid:
 				map(lambda key: fid.write(key + ' = ' + str(parameters[key]) + '\n'), parameters)
 
-		print '\nCreated particle distribution with ' + str(parameters['n_macroparticles']) + ' macroparticles into file: ', output_file
+		print '\n\t\tCreated particle distribution with ' + str(parameters['n_macroparticles']) + ' macroparticles into file: ', output_file
 
 	orbit_mpi.MPI_Barrier(comm)
 
@@ -475,7 +475,7 @@ def generate_initial_distribution_manual_Twiss(parameters, TwissDict, output_fil
 		if summary_file:
 			with open(summary_file, 'w') as fid:
 				map(lambda key: fid.write(key + ' = ' + str(parameters[key]) + '\n'), parameters)
-		print '\nCreated particle distribution with ' + str(parameters['n_macroparticles']) + ' macroparticles into file: ', output_file
+		print '\n\t\tCreated particle distribution with ' + str(parameters['n_macroparticles']) + ' macroparticles into file: ', output_file
 
 	orbit_mpi.MPI_Barrier(comm)
 
@@ -551,7 +551,7 @@ def generate_initial_distribution(parameters, Lattice,output_file = 'Input/Parti
 		if summary_file:
 			with open(summary_file, 'w') as fid:
 				map(lambda key: fid.write(key + ' = ' + str(parameters[key]) + '\n'), parameters)
-		print '\nCreated particle distribution with ' + str(parameters['n_macroparticles']) + ' macroparticles into file: ', output_file
+		print '\n\t\tCreated particle distribution with ' + str(parameters['n_macroparticles']) + ' macroparticles into file: ', output_file
 
 	orbit_mpi.MPI_Barrier(comm)
 
@@ -654,7 +654,7 @@ def generate_initial_distribution_3DGaussian_manual_Twiss(parameters, TwissDict,
 			fid.write(key + ' = ' + str(parameters[key]) + '\n')
 		fid.close()
 
-		print '\nCreated particle distribution with ' + str(parameters['n_macroparticles']) + ' macroparticles into file: ', output_file
+		print '\n\t\tCreated particle distribution with ' + str(parameters['n_macroparticles']) + ' macroparticles into file: ', output_file
 
 	return output_file
 
@@ -754,7 +754,7 @@ def generate_initial_distribution_3DGaussian(parameters, Lattice, output_file = 
 			fid.write(key + ' = ' + str(parameters[key]) + '\n')
 		fid.close()
 
-		print '\nCreated particle distribution with ' + str(parameters['n_macroparticles']) + ' macroparticles into file: ', output_file
+		print '\n\t\tCreated particle distribution with ' + str(parameters['n_macroparticles']) + ' macroparticles into file: ', output_file
 
 	return output_file
 
@@ -839,7 +839,7 @@ def generate_initial_poincare_distribution(n_sigma, parameters, Lattice, horizon
 		if summary_file:
 			with open(summary_file, 'w') as fid:
 				map(lambda key: fid.write(key + ' = ' + str(parameters[key]) + '\n'), parameters)
-		print '\nCreated particle distribution with ' + str(parameters['n_macroparticles']) + ' macroparticles into file: ', output_file
+		print '\n\t\tCreated particle distribution with ' + str(parameters['n_macroparticles']) + ' macroparticles into file: ', output_file
 
 
 	orbit_mpi.MPI_Barrier(comm)
@@ -902,6 +902,6 @@ def generate_initial_distribution_FMA(parameters, output_file = 'Input/ParticleD
 			fid.write(key + ' = ' + str(parameters[key]) + '\n')
 		fid.close()
 
-		print '\nCreated particle distribution with ' + str(len(x)) + ' macroparticles into file: ', output_file
+		print '\n\t\tCreated particle distribution with ' + str(len(x)) + ' macroparticles into file: ', output_file
 	
 	return output_file

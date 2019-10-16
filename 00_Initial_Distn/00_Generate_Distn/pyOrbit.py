@@ -136,7 +136,7 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 	p['macrosize']			= p['intensity']/float(p['n_macroparticles'])
 
 	
-	print '\n\TCreate_Bunch: Output bunch parameters on MPI process: ', rank
+	print '\n\t\tCreate_Bunch: Output bunch parameters on MPI process: ', rank
 	for i in p:
 		print '\t', i, '\t = \t', p[i]
 
