@@ -164,11 +164,13 @@ def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussi
 	# Check
 	p['beta']				= bunch.getSyncParticle().beta()
 	beta_check 				= np.sqrt(p['gamma']**2-1)/p['gamma']
-	if beta_check is not p['beta'] :  print '\n\tCreate_Bunch:: bunch length check failed.\n\t\tp[\'beta\'] = ', p['beta'], ' beta_check = ', beta_check
+	if ((beta_check - p['beta'])/beta_check) < 0.05: print '\n\tCreate_Bunch:: bunch length check failed.\n\t\tp[\'beta\'] = ', p['beta'], ' beta_check = ', beta_check
+	# ~ if beta_check is not p['beta'] :  print '\n\tCreate_Bunch:: bunch length check failed.\n\t\tp[\'beta\'] = ', p['beta'], ' beta_check = ', beta_check
 
 	p['sig_z'] = (p['beta'] * c * p['bunch_length'])/4.
 	bunch_length_check	= p['sig_z'] / c / bunch.getSyncParticle().beta()*4
-	if bunch_length_check is not p['blength']: print '\n\tCreate_Bunch:: bunch length check failed.\n\t\tp[\'blength\'] = ', p['blength'], ' bunch_length_check = ', bunch_length_check
+	if ((bunch_length_check - p['blength'])/bunch_length_check) < 0.05: print '\n\tCreate_Bunch:: bunch length check failed.\n\t\tp[\'blength\'] = ', p['blength'], ' bunch_length_check = ', bunch_length_check
+	# ~ if bunch_length_check is not p['blength']: print '\n\tCreate_Bunch:: bunch length check failed.\n\t\tp[\'blength\'] = ', p['blength'], ' bunch_length_check = ', bunch_length_check
 	
 	p['macrosize']			= p['intensity']/float(p['n_macroparticles'])
 
@@ -290,7 +292,7 @@ def Compare_Parameter(b, p, n1, n2, tol):
 	# ~ print '\n\t\t Compare_Parameter:: b[n1][0][0] = ', b[n1][0][0]
 	# ~ print '\n\t\t Compare_Parameter:: p[n2] = ', p[str(n2)]
 
-	if (b[n1][0][0] - p[n2])/b[n1][0][0] < tolerance: 
+	if (b[n1][0][0] - p[n2])/b[n1][0][0] < tol: 
 		print '\n\t\tCompare_Parameter:: ', n1, '=', b[n1][0][0] ,'with ', n2 , '=' ,p[n2], ' exceeds tolerance of ', (tol*100), '\%'
 	return
 
