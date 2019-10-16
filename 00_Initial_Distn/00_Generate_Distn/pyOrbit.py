@@ -1,3 +1,13 @@
+########################################################################
+#	PTC-PyORBIT simulation script that creates initial distributions   #
+#	for CERN Proton Synchrotron Injection simulations of Machine       #
+#	Development study MD4224.                                          #
+#																	   #
+#	Script creates a Gaussian, Joho, and Tomo distribution for each set#
+#	of input parameters.											   #
+#	Created 16.10.19: Haroon Rafique CERN BE-ABP-HSI                   #
+########################################################################
+
 import math
 import sys
 import time
@@ -36,7 +46,6 @@ from orbit.aperture import TeapotApertureNode
 
 # transverse space charge
 from spacecharge import SpaceChargeCalcSliceBySlice2D
-	
 from orbit.space_charge.sc2p5d import scAccNodes, scLatticeModifications
 from spacecharge import SpaceChargeCalcAnalyticGaussian
 from spacecharge import InterpolatedLineDensityProfile
@@ -60,9 +69,6 @@ def is_non_zero_file(fpath):
 	print '\n\t\t\tis_non_zero_file:: File exists = ', os.path.isfile(fpath)
 	print '\n\t\t\tis_non_zero_file:: Size > 3 bytes = ', os.path.getsize(fpath)
 	return os.path.isfile(fpath) and os.path.getsize(fpath) > 3
-		# ~ return True
-	# ~ else:
-		# ~ return False
 
 # Function to check and read PTC file
 def CheckAndReadPTCFile(f):
@@ -85,59 +91,41 @@ def GetTunesFromPTC():
 # We want to create multiple bunch types for multiple laattices with multiple numbers of particles.
 
 # Function to return a bunch from some input parameters
-def Create_Bunch{Lattice, DistType = 'Gaussian', TwissType = 'Lattice', rank=0}:
+def Create_Bunch(Lattice, p=None, TwissDict=None, label=None, DistType = 'Gaussian', TwissType = 'Lattice', rank=0):
+
 	print '\n\t\tCreate_Bunch on MPI rank ', rank
 	bunch = Bunch()
-	setBunchParamsPTC(bunch)
-	
+	setBunchParamsPTC(bunch) # Need to check if this works here
+
 	c = 299792458
 
-	from simulation_parameters import parameters as p
-	
-	parameters = {
-	'intensity': intensity,
-	'gamma': gamma,
-	'bunch_length': blength,
-	'epsn_x': epsn_x,
-	'epsn_y': epsn_y,
-	'dpp_rms': dpp_rms,
-	'tomo_file': tomo_file,
-	'LongitudinalJohoParameter': m,
-	'LongitudinalCut': 2.4,
-	'n_macroparticles': n_macroparticles,
-	'TransverseCut': TransverseCut,
-	'macrosize': macrosize,
-	'turns_max': turns_max,
-	'turns_update': turns_update,
-	'turns_print': turns_print,
-	'rf_voltage': rf_voltage,
-	'circumference':circumference,
-	'input_distn_dir':input_distn_dir,
-	'harmonic_number':
-	}
-	
-	# If we make the parameters somewhere else they should look like this:
-	p = {}
-	p['n_macroparticles']	= int(0.5E6)
-	p['gamma']			= 2.49253731343
-	p['intensity']			= 72.5E+10
-	p['bunch_length']		= 140e-9
-	p['blength']			= 140e-9
-	p['epsn_x']				= 1E-6
-	p['epsn_y']				= 1.2E-6
-	p['dpp_rms']			= 8.7e-04
-	p['tomo_file']			= 'PyORBIT_Tomo_file_MD4224_HB.mat'
-	p['LongitudinalJohoParameter'] = 1.2
-	p['TransverseCut']		= 5
-	p['rf_voltage']			= 0.0212942055190595723
-	p['circumference']		= 2*np.pi*100
-	p['phi_s']				= 0
-	p['bunch_length']		= 140e-9
+	if label is None:
+		# Include machine (PS), tunes, lattice start position (BWS65H)
+		label = 'PS_Tune_607_624_BWS65H'
+
+	if p is None:
+		# If we make the parameters somewhere else they should look like this:
+		p = {}
+		p['n_macroparticles']	= int(0.5E6)
+		p['gamma']			= 2.49253731343
+		p['intensity']			= 72.5E+10
+		p['bunch_length']		= 140e-9
+		p['blength']			= 140e-9
+		p['epsn_x']				= 1E-6
+		p['epsn_y']				= 1.2E-6
+		p['dpp_rms']			= 8.7e-04
+		p['tomo_file']			= 'PyORBIT_Tomo_file_MD4224_HB.mat'
+		p['LongitudinalJohoParameter'] = 1.2
+		p['TransverseCut']		= 5
+		p['rf_voltage']			= 0.0212942055190595723
+		p['circumference']		= 2*np.pi*100
+		p['phi_s']				= 0
+		p['bunch_length']		= 140e-9
 	
 	# Have to be calculated in function
 	p['kin_Energy']			= bunch.getSyncParticle().kinEnergy()
 	p['harmonic_number']	= Lattice.nHarm 
-	p['gamma']				= bunch.getSyncParticle().gamma()	
+	p['gamma']				= bunch.getSyncParticle().gamma()
 	p['energy']				= 1e9 * bunch.mass() * bunch.getSyncParticle().gamma()
 
 	# Check
@@ -156,57 +144,40 @@ def Create_Bunch{Lattice, DistType = 'Gaussian', TwissType = 'Lattice', rank=0}:
 	for i in p:
 		print '\t', i, '\t = \t', p[i]
 
-	print '\n\tCreate_Bunch:: generate_initial_distribution on MPI process: ', rank
 	
 	if TwissType is 'Lattice':
 		
 		if DistType is 'Gaussian':
+			print '\n\tCreate_Bunch::generate_initial_distribution_3DGaussian on MPI process: ', rank
 			Particle_distribution_file = generate_initial_distribution_3DGaussian(p, Lattice, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
 		elif DistType is 'Joho':
+			print '\n\tCreate_Bunch::generate_initial_distribution on MPI process: ', rank
 			Particle_distribution_file = generate_initial_distribution(p, Lattice, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
 		elif DistType is 'Tomo':
+			print '\n\tCreate_Bunch::generate_initial_distribution_from_tomo on MPI process: ', rank
 			Particle_distribution_file = generate_initial_distribution_from_tomo(p, 1, Lattice, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
 		else:
-			print '\n\tCreate_Bunch::Error: Distribution Type not specified. Options are \'Gaussian\', \'Joho\', and \'Tomo\''
+			print '\n\tCreate_Bunch::Error: Distribution Type not specified. Options are \'Gaussian\', \'Joho\', and \'Tomo\'. Exiting.'
+			exit(0)
 			
 	elif TwissType is 'Manual':
 		
-		# Need to make a twissdict
-		Qy = [6.1, 6.11, 6.12, 6.13, 6.14, 6.15, 6.16, 6.17, 6.18, 6.19, 6.2, 6.21, 6.22, 6.23, 6.24]
-		beta_x = [11.49778505297269, 11.561142423712235, 11.621563324253549, 11.685935519233954, 11.751842101341309, 11.814969760172527, 11.881700649427966, 11.95004290783458, 12.019275059276143, 12.088030476076925, 12.155710632377403, 12.221621917895586, 12.286487536379424, 12.351762866387576, 12.417282383224189]
-		beta_y = [28.75775445834396, 27.90144543045776, 27.212978421993824, 26.553042781979897, 25.951033704906294, 25.466970667392626, 24.98572526966874, 24.5426713186873, 24.14864962809185, 23.812528441798015, 23.52879541212273, 23.279974969296187, 23.06731554922815, 22.898782875976057, 22.76466764380734]
-		alpha_x = [0.02014978739106865, 0.01884353267781308, 0.0176321165229806, 0.01632333418125009, 0.014992854402007878, 0.013722998740755193, 0.012370060599780954, 0.010974386278459366, 0.009550692532226783, 0.008136163625900179, 0.006746557075054912, 0.005404514030477649, 0.004084683524410341, 0.002744221041003115, 0.0014013797790392067]
-		alpha_y = [-0.07598190386654523, -0.06027204495860171, -0.04710560230957663, -0.0343755121739445, -0.022682599980032053, -0.012833165361499773, -0.003150414126168016, 0.0057881913916622545, 0.013799265862888191, 0.020722423649612087, 0.026638655754386516, 0.03178723390800505, 0.03618752176467799, 0.03980909595245627, 0.042823804527384185]
-		D_x = [2.7232670487812256, 2.7116367856049948, 2.699599403210768, 2.6866790770377817, 2.673327070935468, 2.6599658661567056, 2.6455621037343575, 2.6305947070915603, 2.6152952481238847, 2.5997619799223886, 2.5841333492637544, 2.568298718241905, 2.5524105212520656, 2.536511996336176, 2.5204240966552374]
-		D_y = [0.0003049303533906463, -0.00021647828752590061, 2.2236469376601038e-05, -0.00018742393285385114, 0.0009018831296542939, 0.0001287717460281074, -0.0002843418052139658, -5.639666617722505e-05, -5.102220215645195e-05, -8.77117650922447e-05, -6.350368017957502e-05, 1.1645739917172323e-05, -2.6525086555896508e-05, -1.0174844481937915e-05, -9.055730919930321e-06]
+		if TwissDict is None:
+			print '\n\tCreate_Bunch::Error: Selected Manual Twiss, but no TwissDict set. Exiting.'
+			exit(0)
 
-		index = Qy.index(s['Qy'])
-
-		twiss_dict = dict()
-		twiss_dict['alpha_x'] 			= alpha_x[index]
-		twiss_dict['alpha_y'] 			= alpha_y[index]
-		twiss_dict['beta_x'] 			= beta_x[index]
-		twiss_dict['beta_y'] 			= beta_y[index]
-		twiss_dict['D_x'] 				= D_x[index] #* s['MismatchFactor']
-		twiss_dict['D_y'] 				= D_y[index]
-		twiss_dict['D_xp'] 				= 0.
-		twiss_dict['D_yp'] 				= 0.
-		twiss_dict['x0'] 				= 0.
-		twiss_dict['xp0'] 				= 0.
-		twiss_dict['y0'] 				= 0.
-		twiss_dict['yp0'] 				= 0.
-		twiss_dict['gamma_transition'] 	= Lattice.gammaT
-		twiss_dict['circumference']    	= Lattice.getLength()
-		twiss_dict['length'] 			= Lattice.getLength()/Lattice.nHarm
-		
 		if DistType is 'Gaussian':
-			Particle_distribution_file = generate_initial_distribution_3DGaussian(p, Lattice, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
+			print '\n\tCreate_Bunch::generate_initial_distribution_3DGaussian_manual_Twiss on MPI process: ', rank
+			Particle_distribution_file = generate_initial_distribution_3DGaussian_manual_Twiss(p, twiss_dict, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
 		elif DistType is 'Joho':
-			Particle_distribution_file = generate_initial_distribution(p, Lattice, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
+			print '\n\tCreate_Bunch::generate_initial_distribution_manual_Twiss on MPI process: ', rank
+			Particle_distribution_file = generate_initial_distribution_manual_Twiss(p, twiss_dict, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
 		elif DistType is 'Tomo':
+			print '\n\tCreate_Bunch::generate_initial_distribution_from_tomo_manual_Twiss on MPI process: ', rank
 			Particle_distribution_file = generate_initial_distribution_from_tomo_manual_Twiss(p, twiss_dict, 1, Lattice, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
 		else:
 			print '\n\tCreate_Bunch::Error: Distribution Type not specified. Options are \'Gaussian\', \'Joho\', and \'Tomo\''
+			exit(0)
 
 	print '\n\t\tbunch_orbit_to_pyorbit on MPI process: ', rank
 	bunch_orbit_to_pyorbit((Lattice.getLength()/Lattice.nHarm), p['kin_Energy'], Particle_distribution_file, bunch, p['n_macroparticles'] + 1) #read in only first N_mp particles.
@@ -219,90 +190,25 @@ def Create_Bunch{Lattice, DistType = 'Gaussian', TwissType = 'Lattice', rank=0}:
 
 	# Dump and save as Matfile
 	#-----------------------------------------------------------------------
-	# ~ bunch.dumpBunch("input/mainbunch_start.dat")
-	print '\n\t\tSave bunch in bunch_output/mainbunch_-000001.mat on MPI process: ', rank
-	saveBunchAsMatfile(bunch, "bunch_output/mainbunch_-000001")
+	bunch_save_name = 'PyORBIT_'+DistType+'_Bunch_'+TwissType+'_Tiwss_Nmp_' + p['n_macroparticles'] + '_' + label
+	print '\n\t\tSave bunch in ',bunch_save_name,'.mat on MPI process: ', rank
+	saveBunchAsMatfile(bunch, bunch_save_name)
 
 	return bunch
-	
-	
 
-	# OR load bunch from file
-	#-----------------------------------------------------------------------
-		print '\n\t\tLoad distribution from ', p['input_distn_dir'] ,' on MPI process: ', rank
-		path_to_distn = p['input_distn_dir']
-		bunch = bunch_from_matfile(path_to_distn)
+########################################################################
+#################			SIMULATION START			################
+########################################################################
+print '\n\n\tStart simulation main on MPI process: ', rank, '\n'
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- #######################################################################
 # Create folder structure
 #-----------------------------------------------------------------------
-print '\n\t\tmkdir on MPI process: ', rank
-from lib.mpi_helpers import mpi_mkdir_p
-mpi_mkdir_p('input')
-mpi_mkdir_p('bunch_output')
-mpi_mkdir_p('output')
-mpi_mkdir_p('lost')
-
-# Dictionary for simulation status
-#-----------------------------------------------------------------------
-import pickle # HAVE TO CLEAN THIS FILE BEFORE RUNNING A NEW SIMULATION
-status_file = 'input/simulation_status.pkl'
-if not os.path.exists(status_file):
-	sts = {'turn': -1}
-else:
-	with open(status_file) as fid:
-		sts = pickle.load(fid)
-
-# Generate Lattice (MADX + PTC) - Use MPI to run on only one 'process'
-#-----------------------------------------------------------------------
-print '\n\t\tCheck or create flat file on MPI process: ', rank
-if not rank:
-	if os.path.exists('PTC-PyORBIT_flat_file.flt'):
-		pass
-	else:
-		os.system("/afs/cern.ch/eng/sl/MAD-X/pro/releases/5.02.00/madx-linux64 < Flat_file.madx")
-orbit_mpi.MPI_Barrier(comm)
-
-# Print Tunespread data
-#-----------------------------------------------------------------------
-from simulation_parameters import tunespread as ts
-if not rank:
-	if os.path.exists('madx_twiss.tfs'):
-		TunespreadCalculator(ts, 'madx_twiss.tfs')
+# ~ print '\n\t\tmkdir on MPI process: ', rank
+# ~ from lib.mpi_helpers import mpi_mkdir_p
+# ~ mpi_mkdir_p('input')
+# ~ mpi_mkdir_p('bunch_output')
+# ~ mpi_mkdir_p('output')
+# ~ mpi_mkdir_p('lost')
 
 # Generate PTC RF table
 #-----------------------------------------------------------------------
@@ -313,8 +219,8 @@ write_RFtable('input/RF_table.ptc', *[RF[k] for k in ['harmonic_factors','time',
 
 # Initialize a Teapot-Style PTC lattice
 #-----------------------------------------------------------------------
-print '\n\t\tRead PTC flat file on MPI process: ', rank
-PTC_File = "PTC-PyORBIT_flat_file.flt"
+print '\n\t\tRead PTC flat file: ',p['flat_file'],' on MPI process: ', rank
+PTC_File = p['flat_file']
 Lattice = PTC_Lattice("PS")
 Lattice.readPTC(PTC_File)
 
@@ -322,12 +228,6 @@ print '\n\t\tRead PTC files on MPI process: ', rank
 CheckAndReadPTCFile('PTC/fringe.ptc')
 CheckAndReadPTCFile('PTC/time.ptc')
 CheckAndReadPTCFile('PTC/ramp_cavities.ptc')
-
-# Create a dictionary of parameters
-#-----------------------------------------------------------------------
-print '\n\t\tMake paramsDict on MPI process: ', rank
-paramsDict = {}
-paramsDict["length"]=Lattice.getLength()/Lattice.nHarm
 
 # Add apertures
 #-----------------------------------------------------------------------
@@ -342,186 +242,177 @@ for node in Lattice.getNodes():
 
 # Make a bunch and import relevant parameters for it
 #-----------------------------------------------------------------------
-if sts['turn'] < 0:
-	print '\n\t\tCreate bunch on MPI process: ', rank
-	bunch = Bunch()
-	setBunchParamsPTC(bunch)
 
-	from simulation_parameters import parameters as p
-	p['harmonic_number'] = Lattice.nHarm 
-	p['phi_s']           = 0
-	p['gamma']           = bunch.getSyncParticle().gamma()
-	p['beta']            = bunch.getSyncParticle().beta()
-	p['energy']          = 1e9 * bunch.mass() * bunch.getSyncParticle().gamma()
-	# ~ p['bunch_length'] = p['sig_z']/speed_of_light/bunch.getSyncParticle().beta()*4
-	p['bunch_length'] = p['bunch_length']
-	kin_Energy = bunch.getSyncParticle().kinEnergy()
-
-	print '\n\t\tOutput simulation_parameters on MPI process: ', rank
-	for i in p:
-		print '\t', i, '\t = \t', p[i]
-
-	if s['CreateDistn']:
-# Create the initial distribution 
-#-----------------------------------------------------------------------
-
-		print '\n\t\tgenerate_initial_distribution on MPI process: ', rank
-		if s['ImportFromTomo']:
-			Particle_distribution_file = generate_initial_distribution_from_tomo(p, 1, Lattice, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
-		else:
-			Particle_distribution_file = generate_initial_distribution(p, Lattice, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
-
-		print '\n\t\tbunch_orbit_to_pyorbit on MPI process: ', rank
-		bunch_orbit_to_pyorbit(paramsDict["length"], kin_Energy, Particle_distribution_file, bunch, p['n_macroparticles'] + 1) #read in only first N_mp particles.
-
-	else:
-# OR load bunch from file
-#-----------------------------------------------------------------------
-		print '\n\t\tLoad distribution from ', p['input_distn_dir'] ,' on MPI process: ', rank
-		path_to_distn = p['input_distn_dir']
-		bunch = bunch_from_matfile(path_to_distn)
-
-# Add Macrosize to bunch
-#-----------------------------------------------------------------------
-	bunch.addPartAttr("macrosize")
-	map(lambda i: bunch.partAttrValue("macrosize", i, 0, p['macrosize']), range(bunch.getSize()))
-	ParticleIdNumber().addParticleIdNumbers(bunch) # Give them unique number IDs
-
-# Dump and save as Matfile
-#-----------------------------------------------------------------------
-	# ~ bunch.dumpBunch("input/mainbunch_start.dat")
-	print '\n\t\tSave bunch in bunch_output/mainbunch_-000001.mat on MPI process: ', rank
-	saveBunchAsMatfile(bunch, "bunch_output/mainbunch_-000001")
-	print '\n\t\tSave bunch in input/mainbunch.mat on MPI process: ', rank
-	saveBunchAsMatfile(bunch, "input/mainbunch")
-	sts['mainbunch_file'] = "input/mainbunch"
-
-# Create empty lost bunch
-#-----------------------------------------------------------------------
-	lostbunch = Bunch()
-	bunch.copyEmptyBunchTo(lostbunch)
-	lostbunch.addPartAttr('ParticlePhaseAttributes')
-	lostbunch.addPartAttr("LostParticleAttributes")	
-	saveBunchAsMatfile(lostbunch, "input/lostbunch")
-	sts['lostbunch_file'] = "input/lostbunch"
-
-# Add items to pickle parameters
-#-----------------------------------------------------------------------
-	sts['turns_max'] = p['turns_max']
-	sts['turns_update'] = p['turns_update']
-	sts['turns_print'] = p['turns_print']
-	sts['circumference'] = p['circumference']
-
-bunch = bunch_from_matfile(sts['mainbunch_file'])
-lostbunch = bunch_from_matfile(sts['lostbunch_file'])
-paramsDict["lostbunch"]=lostbunch
-paramsDict["bunch"]= bunch
-
-#############################-------------------########################
-#############################	SPACE CHARGE	########################
-#############################-------------------########################
-
-# Add space charge nodes
-#----------------------------------------------------
-if s['SliceBySlice']:
-	print '\n\t\tAdding slice-by-slice space charge nodes on MPI process: ', rank
-	# Make a SC solver
-	calcsbs = SpaceChargeCalcSliceBySlice2D(s['GridSizeX'], s['GridSizeY'], s['GridSizeZ'], useLongitudinalKick=s['LongitudinalKick'])
-	sc_path_length_min = 1E-8
-	# Add the space charge solver to the lattice as child nodes
-	sc_nodes = scLatticeModifications.setSC2p5DAccNodes(Lattice, sc_path_length_min, calcsbs)
-	print '\n\t\tInstalled', len(sc_nodes), 'space charge nodes ...'
+########################################################################
+#################			BUNCH PARAMETERS			################
+########################################################################
 
 
-# Add tune analysis child node
-#-----------------------------------------------------
-parentnode_number = 97
-parentnode = Lattice.getNodes()[parentnode_number]
-Twiss_at_parentnode_entrance = Lattice.getNodes()[parentnode_number-1].getParamsDict()
-tunes = TeapotTuneAnalysisNode("tune_analysis")
+from simulation_parameters import parameters as p
+p['gamma']			= 2.49253731343
+p['intensity']			= 72.5E+10
+p['bunch_length']		= 140e-9
+p['blength']			= 140e-9
+p['epsn_x']				= 1E-6
+p['epsn_y']				= 1.2E-6
+p['dpp_rms']			= 8.7e-04
+p['TransverseCut']		= 5
+p['rf_voltage']			= 0.0212942055190595723
+p['circumference']		= 2*np.pi*100
+p['phi_s']				= 0
+p['bunch_length']		= 140e-9
 
-tunes.assignTwiss(*[Twiss_at_parentnode_entrance[k] for k in ['betax','alphax','etax','etapx','betay','alphay','etay','etapy']])
-tunes.assignClosedOrbit(*[Twiss_at_parentnode_entrance[k] for k in ['orbitx','orbitpx','orbity','orbitpy']])
-addTeapotDiagnosticsNodeAsChild(Lattice, parentnode, tunes)
+# For Joho Distn
+p['LongitudinalJohoParameter'] = 1.2
+p['LongitudinalCut'] = 2.4
 
-# Define twiss analysis and output dictionary
-#-----------------------------------------------------------------------
-print '\n\t\tbunchtwissanalysis on MPI process: ', rank
-bunchtwissanalysis = BunchTwissAnalysis() #Prepare the analysis class that will look at emittances, etc.
-get_dpp = lambda b, bta: np.sqrt(bta.getCorrelation(5,5)) / (b.getSyncParticle().gamma()*b.mass()*b.getSyncParticle().beta()**2)
-get_bunch_length = lambda b, bta: 4 * np.sqrt(bta.getCorrelation(4,4)) / (speed_of_light*b.getSyncParticle().beta())
-get_eps_z = lambda b, bta: 1e9 * 4 * pi * bta.getEmittance(2) / (speed_of_light*b.getSyncParticle().beta())
+########################################################################
+#################			TWISS DICTIONARY			################
+########################################################################
 
-output_file = 'output/output.mat'
-output = Output_dictionary()
-output.addParameter('turn', lambda: turn)
-output.addParameter('intensity', lambda: bunchtwissanalysis.getGlobalMacrosize())
-output.addParameter('n_mp', lambda: bunchtwissanalysis.getGlobalCount())
-output.addParameter('gamma', lambda: bunch.getSyncParticle().gamma())
-output.addParameter('mean_x', lambda: bunchtwissanalysis.getAverage(0))
-output.addParameter('mean_xp', lambda: bunchtwissanalysis.getAverage(1))
-output.addParameter('mean_y', lambda: bunchtwissanalysis.getAverage(2))
-output.addParameter('mean_yp', lambda: bunchtwissanalysis.getAverage(3))
-output.addParameter('mean_z', lambda: bunchtwissanalysis.getAverage(4))
-output.addParameter('mean_dE', lambda: bunchtwissanalysis.getAverage(5))
-output.addParameter('epsn_x', lambda: bunchtwissanalysis.getEmittanceNormalized(0))
-output.addParameter('epsn_y', lambda: bunchtwissanalysis.getEmittanceNormalized(1))
-output.addParameter('eps_z', lambda: get_eps_z(bunch, bunchtwissanalysis))
-output.addParameter('bunchlength', lambda: get_bunch_length(bunch, bunchtwissanalysis))
-output.addParameter('dpp_rms', lambda: get_dpp(bunch, bunchtwissanalysis))
-output.addParameter('beta_x', lambda: bunchtwissanalysis.getBeta(0))
-output.addParameter('beta_y', lambda: bunchtwissanalysis.getBeta(1))
-output.addParameter('alpha_x', lambda: bunchtwissanalysis.getAlpha(0))
-output.addParameter('alpha_y', lambda: bunchtwissanalysis.getAlpha(1))
-output.addParameter('D_x', lambda: bunchtwissanalysis.getDispersion(0))
-output.addParameter('D_y', lambda: bunchtwissanalysis.getDispersion(1))
-output.addParameter('eff_beta_x', lambda: bunchtwissanalysis.getEffectiveBeta(0))
-output.addParameter('eff_beta_y', lambda: bunchtwissanalysis.getEffectiveBeta(1))
-output.addParameter('eff_epsn_x', lambda: bunchtwissanalysis.getEffectiveEmittance(0))
-output.addParameter('eff_epsn_y', lambda: bunchtwissanalysis.getEffectiveEmittance(1))
-output.addParameter('eff_alpha_x', lambda: bunchtwissanalysis.getEffectiveAlpha(0))
-output.addParameter('eff_alpha_y', lambda: bunchtwissanalysis.getEffectiveAlpha(1))
+TwissDict = dict()	# Dictionary used to set initial TWISS parameters
+twissdict = None	# switch used to select vertical or horizontal scan data
 
-if os.path.exists(output_file):
-	output.import_from_matfile(output_file)
+if float(p['tunex'])/100. not 6.21:
+	twissdict = 'H'
+elif float(p['tuney'])/100. not 6.24:
+	twissdict = 'V'
+else: print: '\n\t Tune set to nominal value of ', (float(p['tunex'])/100.), ',', (float(p['tunex'])/100.)
+	if p['lattice_start'][3] is 'H':
+		twissdict = 'H'
+	elif p['lattice_start'][3] is 'V':
+		twissdict = 'V'
+	else: print :'\n\t Error:: Start position not recognised, options are BWSH65 or BWSV64'
+		exit(0)
 
-# Track
-#-----------------------------------------------------------------------
-print '\n\t\tStart tracking on MPI process: ', rank
-start_time = time.time()
-last_time = time.time()
+if twissdict = 'H':
+	Qx = [6.07, 6.08, 6.09, 6.1, 6.11, 6.12, 6.13, 6.14, 6.15, 6.16, 6.17, 6.18, 6.19, 6.2, 6.21]
 
-turn = -1
-bunchtwissanalysis.analyzeBunch(bunch)
-output.addParameter('turn_time', lambda: time.strftime("%H:%M:%S"))
-output.addParameter('turn_duration', lambda: (time.time() - last_time))
-output.addParameter('cumulative_time', lambda: (time.time() - start_time))
-start_time = time.time()
-output.update()
-print '\n\t\tstart time = ', start_time
+	beta_x_PTC = [10.0407925, 10.42665652, 10.74232159, 11.00546113, 11.22835049, 11.41974585, 11.58604376, 11.73201709, 11.86129497, 11.97668378, 12.08038684, 12.17415812, 12.25941171, 12.33730138, 12.40877927]
+	beta_y_PTC = [22.97409451, 22.91670201, 22.85938091, 22.80228084, 22.74549605, 22.68908711, 22.63309333, 22.57754015, 22.52244367, 22.46781359, 22.41365514, 22.35997039, 22.30675909, 22.25401937, 22.20174814]
+	beta_x = [8.394003463991467, 8.708286729183827, 9.032784558742966, 9.400138802204964, 9.81505304121718, 10.259924073989835, 10.672865484475587, 11.046993746565482, 11.359511019253874, 11.618268536499134, 11.831317088827735, 12.011757599553201, 12.165142064083902, 12.298633658877456, 12.417464319120704]
+	beta_y = [24.25812972124533, 24.16839768942765, 24.073361910869952, 23.964643713301978, 23.85424051924806, 23.7272113160871, 23.606226646832162, 23.47912207724786, 23.3574957557102, 23.2453856341838, 23.138855945291812, 23.03831720890891, 22.94285747960047, 22.85183321206868, 22.763701472111915]
 
-for turn in range(sts['turn']+1, sts['turns_max']):
-	if not rank:	last_time = time.time()
+	D_x_PTC = [3.335109665, 3.249546421, 3.173842314, 3.106596461, 3.046447635, 2.992216686, 2.942923052, 2.897763213, 2.856081019, 2.817339676, 2.781098089, 2.74699172, 2.714717411, 2.68402141, 2.654689951]
+	D_x = [3.4105513098362543, 3.283853441633427, 3.1663951421572083, 3.064909264300527, 2.9802558144715183, 2.907693019575976, 2.8456978265552255, 2.790859909624802, 2.7415926975644336, 2.6965805277242407, 2.6556961455446224, 2.617993986744784, 2.5833867377832256, 2.550996227198573, 2.5202485644118187]
+	D_y = [3.894379185517653e-08, -1.6034580020930179e-06, -1.115807284249341e-06, -2.1091450414330707e-06, -4.772279146403814e-06, -7.177485201322374e-06, 7.1281520163150744e-06, -4.6800680492703475e-08, 8.644617839412422e-06, 8.666252155001297e-06, 4.960717057444899e-06, 2.4192006032738668e-05, -1.1739619500046247e-07, 7.808612298156221e-08, 2.1546832524519833e-06]
 
-	# ~ if turn == 0:
-		# ~ output.addParameter('turn_time', lambda: time.strftime("%H:%M:%S"))
-		# ~ output.addParameter('turn_duration', lambda: (time.time() - last_time))
-		# ~ output.addParameter('cumulative_time', lambda: (time.time() - start_time))
-		# ~ start_time = time.time()
-		# ~ print '\n\t\tstart time = ', start_time
+	alpha_x = [0.09494016969245705, 0.07946471956476579, 0.06621276615003152, 0.05453415926070188, 0.044041249911320454, 0.03444655377771064, 0.02646927739735752, 0.019831167246733963, 0.014717326140394312, 0.010812784493718515, 0.007887953301228174, 0.08087020614528506, 0.0038908272377804125, 0.0025206572457230746, 0.0013920706296361995]
+	alpha_x_eff = [-0.0903977145803502, -0.08582703877146283, -0.07626111163734424, -0.06464854602071507, -0.05258770122560416, -0.04177356319519536, -0.03275767440563894, -0.025545783701886052, -0.019676546552782857, -0.014827600526220296, -0.010709742897535353, -0.06409810003694091, -0.004319489877500304, -0.001824179752989762, 0.00031512852672848713]
+	alpha_y = [0.028911008609906703, 0.0298091467777196, 0.030729883940520928, 0.03176127978144148, 0.03279985972617165, 0.03398321534703865, 0.03512308463163282, 0.03630292440921215, 0.03743631684202831, 0.03848237473612636, 0.03945838121386767, -0.005633718017399714, 0.041238677981921885, 0.04205208697115897, 0.04283043541275512]
+	alpha_y_eff = [0.02891101864671029, 0.02980914993748392, 0.030729892309368283, 0.031761289242922874, 0.03279987034323106, 0.03398322381947462, 0.035123091193636595, 0.03630293244096726, 0.037436323423418065, 0.038482376128553625, 0.039458384594416154, -0.005633686693042419, 0.04123868178535598, 0.04205209046459274, 0.04283043864772137]
 
-	Lattice.trackBunch(bunch, paramsDict)
-	bunchtwissanalysis.analyzeBunch(bunch)  # analyze twiss and emittance
+	index = Qx.index(float(p['tunex'])/100)
 
-	if turn in sts['turns_update']:	sts['turn'] = turn
+	TwissDict['alpha_x'] 			= alpha_x[index]
+	TwissDict['alpha_y'] 			= alpha_y[index]
+	TwissDict['beta_x'] 			= beta_x[index]
+	TwissDict['beta_y'] 			= beta_y[index]
+	TwissDict['D_x'] 				= D_x[index]
+	TwissDict['D_y'] 				= D_y[index]
+	TwissDict['D_xp'] 				= 0.
+	TwissDict['D_yp'] 				= 0.
+	TwissDict['x0'] 				= 0.
+	TwissDict['xp0'] 				= 0.
+	TwissDict['y0'] 				= 0.
+	TwissDict['yp0'] 				= 0.
 
-	output.update()
+elif twissdict = 'V':
+	Qy = [6.1, 6.11, 6.12, 6.13, 6.14, 6.15, 6.16, 6.17, 6.18, 6.19, 6.2, 6.21, 6.22, 6.23, 6.24]
 
-	if turn in sts['turns_print']:
-		saveBunchAsMatfile(bunch, "input/mainbunch")
-		saveBunchAsMatfile(bunch, "bunch_output/mainbunch_%s"%(str(turn).zfill(6)))
-		saveBunchAsMatfile(lostbunch, "lost/lostbunch_%s"%(str(turn).zfill(6)))
-		output.save_to_matfile(output_file)
-		if not rank:
-			with open(status_file, 'w') as fid:
-				pickle.dump(sts, fid)
+	beta_x_ptc = [11.83456792, 11.87596148, 11.91741726, 11.95887931, 12.00030736, 12.04167193, 12.08295116, 12.12412865, 12.16519202, 12.20613183, 12.24694093, 12.28761386, 12.32814649, 12.36853572, 12.40877927]
+	beta_x = [11.497769168690875, 11.561219729086927, 11.621678373194436, 11.686151694872475, 11.752090514751318, 11.815069726257521, 11.881710579253923, 11.949973709644429, 12.019244092286321, 12.088000160376582, 12.155714548092652, 12.221668817192917, 12.286522995992001, 12.351792373251067, 12.41733027437319]
+	beta_x_eff = [15.70727832774324, 15.746782430840286, 15.786312009995264, 15.827611157406391, 15.865523318272942, 15.900303674092575, 15.934927000400245, 15.970255546048815, 16.00642316437317, 16.044394910006403, 16.08771768319707, 16.171233397798897, 16.287840619373497, 16.365446219985902, 16.388017386590324]
+	beta_y_ptc = [24.92373871, 24.42660692, 24.02924164, 23.70631133, 23.44016924, 23.21815984, 23.03097747, 22.87162883, 22.7347561, 22.61618278, 22.51260139, 22.42135386, 22.34027393, 22.26757179, 22.20174814]
+	beta_y = [28.75941629371245, 27.901539601878184, 27.213290322184257, 26.55273573875031, 25.951088509809498, 25.46986237056283, 24.988794222684113, 24.545888785547756, 24.150861736726874, 23.81407818999024, 23.529804455256162, 23.280644484660698, 23.067685323867895, 22.898961752454188, 22.764817219063925]
+	beta_y_eff = [28.75941363876187, 27.901537495704986, 27.21328851050792, 26.552734005497832, 25.951087908101496, 25.469861065350035, 24.988792628258622, 24.545887021172206, 24.150860438788662, 23.814077295064806, 23.529803570633504, 23.280643730316875, 23.067684825182425, 22.89896132742581, 22.764816922948334]
+
+	alpha_x_ptc = [0.011513, 0.01069, 0.009857, 0.009017, 0.00817, 0.007316, 0.006457, 0.005594, 0.004726, 0.003854, 0.002979, 0.002101, 0.001221, 0.000338, -0.000546]
+	alpha_x = [0.020149363762314573, 0.018841738892805736, 0.017628458124003044, 0.016317893976010907, 0.014987158717971134, 0.013721509703739742, 0.012370721644305303, 0.010976584559329877, 0.009552467712758283, 0.008137364733604945, 0.00674769784387647, 0.00540321374339072, 0.004084552073385008, 0.0027449656310449765, 0.001399858908938113]
+	alpha_x_eff = [0.01263857994342128, 0.011787402752768992, 0.010993119054166795, 0.010138160374765592, 0.009268803518251613, 0.008440528874409346, 0.007565913699962478, 0.00665668167725413, 0.005727886071697952, 0.0047986057589267895, 0.0038721576771630377, 0.0029754572927884995, 0.00209091394149012, 0.0011996244965600173, 0.00030772719575205697]
+	alpha_y_ptc = [-0.015862, -0.00566, 0.002752, 0.009781, 0.015724, 0.020797, 0.025166, 0.028959, 0.032276, 0.035195, 0.03778, 0.040084, 0.04215, 0.044012, 0.045702]
+	alpha_y = [-0.0759981299041554, -0.06026690948643802, -0.04710360569302436, -0.034364222714159766, -0.0226876810922163, -0.0128778777253371, -0.0031960530794603887, 0.00573900436130687, 0.013766673300182369, 0.020700217072685663, 0.026624706918980934, 0.031779608236245774, 0.03618275788076127, 0.03980850948662125, 0.04282193036546169]
+	alpha_y_eff = [-0.07599819813583442, -0.06026687716107299, -0.04710358259720198, -0.03436419121508966, -0.022687704211584163, -0.012877859092497113, -0.0031960257774123163, 0.005739023549823524, 0.013766695978317036, 0.02070022530014002, 0.026624716144330474, 0.03177961640012476, 0.036182764652471, 0.039808513074497745, 0.04282193193366175]
+
+	D_x_ptc = [2.858624854, 2.844314013, 2.829919074, 2.815459752, 2.800950597, 2.786402598, 2.771824228, 2.757222142, 2.742601663, 2.727967112, 2.71332205, 2.698669456, 2.684011849, 2.66935139, 2.654689951]
+	D_x = [2.7232597364718965, 2.711617531257042, 2.6995782883372725, 2.6866659088601867, 2.673333040270362, 2.660009904023271, 2.645587060435802, 2.6306159716576585, 2.6153104916827656, 2.5997777190545786, 2.584122745980839, 2.5682844312570325, 2.552395926698185, 2.5364870147593908, 2.5203979092578246]
+	D_y_ptc = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+	D_y = [0.00032016495885226815, -0.0002189058945793827, 2.7764495806106146e-05, -0.00024143037602403352, 0.0009865662335166862, 0.00015608160748784814, -0.0002853837009812899, -4.574488900503671e-06, -6.670454167668475e-05, -9.192803073975801e-05, -5.7217673705390416e-05, 3.9571270250276e-05, -1.7313614618598883e-05, -2.407762236190365e-06, -2.2386320787418418e-06]
+
+	index = Qy.index(float(p['tuney'])/100)
+
+	TwissDict['alpha_x'] 			= alpha_x[index]
+	TwissDict['alpha_y'] 			= alpha_y[index]
+	TwissDict['beta_x'] 			= beta_x[index]
+	TwissDict['beta_y'] 			= beta_y[index]
+	TwissDict['D_x'] 				= D_x[index]
+	TwissDict['D_y'] 				= D_y[index]
+	TwissDict['D_xp'] 				= 0.
+	TwissDict['D_yp'] 				= 0.
+	TwissDict['x0'] 				= 0.
+	TwissDict['xp0'] 				= 0.
+	TwissDict['y0'] 				= 0.
+	TwissDict['yp0'] 				= 0.
+
+
+TwissDict['gamma_transition']	= Lattice.gammaT
+TwissDict['circumference']		= Lattice.getLength()
+TwissDict['length'] 			= Lattice.getLength()/Lattice.nHarm
+
+########################################################################
+#################			CREATE DISTRIBUTIONS		################
+########################################################################
+gaussian_bunch = Create_Bunch(Lattice, p, TwissDict=None, label=p['bunch_label'], DistType = 'Gaussian', TwissType = 'Lattice', rank=rank)
+joho_bunch = Create_Bunch(Lattice, p, TwissDict=None, label=p['bunch_label'], DistType = 'Joho', TwissType = 'Lattice', rank=rank)
+tomo_bunch = Create_Bunch(Lattice, p, TwissDict=None, label=p['bunch_label'], DistType = 'Tomo', TwissType = 'Lattice', rank=rank)
+
+gaussian_mt_bunch = Create_Bunch(Lattice, p, TwissDict=TwissDict, label=p['bunch_label'], DistType = 'Gaussian', TwissType = 'Manual', rank=rank)
+joho_mt_bunch = Create_Bunch(Lattice, p, TwissDict=TwissDict, label=p['bunch_label'], DistType = 'Joho', TwissType = 'Manual', rank=rank)
+tomo_mt_bunch = Create_Bunch(Lattice, p, TwissDict=TwissDict, label=p['bunch_label'], DistType = 'Tomo', TwissType = 'Manual', rank=rank)
+
+
+########################################################################
+#################			LOAD AND CHECK DISTNS		################
+########################################################################
+
+
+
+# ~ # Define twiss analysis and output dictionary
+# ~ #-----------------------------------------------------------------------
+# ~ print '\n\t\tbunchtwissanalysis on MPI process: ', rank
+# ~ bunchtwissanalysis = BunchTwissAnalysis() #Prepare the analysis class that will look at emittances, etc.
+# ~ get_dpp = lambda b, bta: np.sqrt(bta.getCorrelation(5,5)) / (b.getSyncParticle().gamma()*b.mass()*b.getSyncParticle().beta()**2)
+# ~ get_bunch_length = lambda b, bta: 4 * np.sqrt(bta.getCorrelation(4,4)) / (speed_of_light*b.getSyncParticle().beta())
+# ~ get_eps_z = lambda b, bta: 1e9 * 4 * pi * bta.getEmittance(2) / (speed_of_light*b.getSyncParticle().beta())
+
+# ~ output_file = 'output/output.mat'
+# ~ output = Output_dictionary()
+# ~ output.addParameter('turn', lambda: turn)
+# ~ output.addParameter('intensity', lambda: bunchtwissanalysis.getGlobalMacrosize())
+# ~ output.addParameter('n_mp', lambda: bunchtwissanalysis.getGlobalCount())
+# ~ output.addParameter('gamma', lambda: bunch.getSyncParticle().gamma())
+# ~ output.addParameter('mean_x', lambda: bunchtwissanalysis.getAverage(0))
+# ~ output.addParameter('mean_xp', lambda: bunchtwissanalysis.getAverage(1))
+# ~ output.addParameter('mean_y', lambda: bunchtwissanalysis.getAverage(2))
+# ~ output.addParameter('mean_yp', lambda: bunchtwissanalysis.getAverage(3))
+# ~ output.addParameter('mean_z', lambda: bunchtwissanalysis.getAverage(4))
+# ~ output.addParameter('mean_dE', lambda: bunchtwissanalysis.getAverage(5))
+# ~ output.addParameter('epsn_x', lambda: bunchtwissanalysis.getEmittanceNormalized(0))
+# ~ output.addParameter('epsn_y', lambda: bunchtwissanalysis.getEmittanceNormalized(1))
+# ~ output.addParameter('eps_z', lambda: get_eps_z(bunch, bunchtwissanalysis))
+# ~ output.addParameter('bunchlength', lambda: get_bunch_length(bunch, bunchtwissanalysis))
+# ~ output.addParameter('dpp_rms', lambda: get_dpp(bunch, bunchtwissanalysis))
+# ~ output.addParameter('beta_x', lambda: bunchtwissanalysis.getBeta(0))
+# ~ output.addParameter('beta_y', lambda: bunchtwissanalysis.getBeta(1))
+# ~ output.addParameter('alpha_x', lambda: bunchtwissanalysis.getAlpha(0))
+# ~ output.addParameter('alpha_y', lambda: bunchtwissanalysis.getAlpha(1))
+# ~ output.addParameter('D_x', lambda: bunchtwissanalysis.getDispersion(0))
+# ~ output.addParameter('D_y', lambda: bunchtwissanalysis.getDispersion(1))
+# ~ output.addParameter('eff_beta_x', lambda: bunchtwissanalysis.getEffectiveBeta(0))
+# ~ output.addParameter('eff_beta_y', lambda: bunchtwissanalysis.getEffectiveBeta(1))
+# ~ output.addParameter('eff_epsn_x', lambda: bunchtwissanalysis.getEffectiveEmittance(0))
+# ~ output.addParameter('eff_epsn_y', lambda: bunchtwissanalysis.getEffectiveEmittance(1))
+# ~ output.addParameter('eff_alpha_x', lambda: bunchtwissanalysis.getEffectiveAlpha(0))
+# ~ output.addParameter('eff_alpha_y', lambda: bunchtwissanalysis.getEffectiveAlpha(1))
+
+print '\n\n\tFinish simulation main on MPI process: ', rank, '\n'
