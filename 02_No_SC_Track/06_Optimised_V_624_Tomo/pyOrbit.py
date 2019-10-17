@@ -131,7 +131,13 @@ Lattice.readPTC(PTC_File)
 print '\n\t\tRead PTC files on MPI process: ', rank
 CheckAndReadPTCFile('PTC/fringe.ptc')
 CheckAndReadPTCFile('PTC/time.ptc')
-CheckAndReadPTCFile('PTC/ramp_cavities.ptc')
+if p['lattice_version'] is 'Optimised':
+	CheckAndReadPTCFile('PTC/ramp_cavities_optimised.ptc')
+elif p['lattice_version'] is 'Original':
+	CheckAndReadPTCFile('PTC/ramp_cavities.ptc')
+else:
+	print '\n\tp[\'lattice_version\'] not recognised, options are \'Optimised\' or \'Original\'. Exiting.'
+	exit(0)
 
 # Create a dictionary of parameters
 #-----------------------------------------------------------------------
