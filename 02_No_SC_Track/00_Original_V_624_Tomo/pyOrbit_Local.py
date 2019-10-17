@@ -81,9 +81,56 @@ def GetTunesFromPTC():
 	os.system('rm TWISS_PTC_table.OUT')
 	return Qx, Qy
 
+
+# Function to return second moment (mu^2) of distribution
+# ~ def GetBunchMus(b, smooth=True):
+	# ~ print '\n\t\t\t\t GetBunchMus called'
+	# ~ print '\n\t\t\t\t GetBunchMus b.getSize() = ', b.getSize()
+
+	# ~ # MPI stuff to run on a single node
+	# ~ rank = 0
+	# ~ numprocs = 1
+
+	# ~ mpi_init = orbit_mpi.MPI_Initialized()
+	# ~ comm = orbit_mpi.mpi_comm.MPI_COMM_WORLD
+	# ~ orbit_mpi.MPI_Barrier(comm)
+
+	# ~ if(mpi_init):
+		# ~ rank = orbit_mpi.MPI_Comm_rank(comm)
+		# ~ print '\n\t\t\t\t GetBunchMus rank = ', rank 
+		# ~ numprocs = orbit_mpi.MPI_Comm_size(comm)
+		# ~ print '\n\t\t\t\t GetBunchMus numprocs = ', numprocs 
+
+	# ~ nparts_arr_local = []
+	# ~ for i in range(numprocs):
+		# ~ nparts_arr_local.append(0)
+	# ~ print '\n\t\t\t\t GetBunchMus nparts_arr_local before initialisation = ', nparts_arr_local 
+
+	# ~ nparts_arr_local[rank] = b.getSize()
+	# ~ print '\n\t\t\t\t GetBunchMus nparts_arr_local after initialisation  = ', nparts_arr_local 
+	# ~ data_type = mpi_datatype.MPI_INT
+	# ~ op = mpi_op.MPI_SUM
+
+	# ~ nparts_arr = orbit_mpi.MPI_Allreduce(nparts_arr_local,data_type,op,comm)
+	# ~ print '\n\t\t\t\t GetBunchMus nparts_arr  = ', nparts_arr
+
+# ~ # Arrays to hold x and y data
+	# ~ x = []
+	# ~ y = []
+
+	# ~ for i in range(b.getSize()):
+		# ~ x.append(b.x(i))
+		# ~ y.append(b.y(i))
+
+# ~ # Calculate moments of the bunch
+	# ~ return moment(x, 2), moment(y, 2)
+	
+
 # Function to return second moment (mu^2) of distribution
 def GetBunchMus(b, smooth=True):
 	window = 40
+	print '\n\t\t\t\t GetBunchMus called'
+	print '\n\t\t\t\t GetBunchMus b.getSize() = ', b.getSize()
 
 	# MPI stuff to run on a single node
 	rank = 0
@@ -92,30 +139,49 @@ def GetBunchMus(b, smooth=True):
 	mpi_init = orbit_mpi.MPI_Initialized()
 	comm = orbit_mpi.mpi_comm.MPI_COMM_WORLD
 	orbit_mpi.MPI_Barrier(comm)
-
+	
 	if(mpi_init):
 		rank = orbit_mpi.MPI_Comm_rank(comm)
+		print '\n\t\t\t\t GetBunchMus rank = ', rank 
 		numprocs = orbit_mpi.MPI_Comm_size(comm)
+		print '\n\t\t\t\t GetBunchMus numprocs = ', numprocs 
 
-	nparts_arr_local = []
-	for i in range(numprocs):
-		nparts_arr_local.append(0)
-
-	nparts_arr_local[rank] = b.getSize()
-	data_type = mpi_datatype.MPI_INT
-	op = mpi_op.MPI_SUM
-
-	nparts_arr = orbit_mpi.MPI_Allreduce(nparts_arr_local,data_type,op,comm)
-
-# Arrays to hold x and y data
 	x = []
 	y = []
-
 	for i in range(b.getSize()):
 		x.append(b.x(i))
 		y.append(b.y(i))
 
+	x_mom_local = []
+	y_mom_local = []
+	x_mom_mpi = []
+	y_mom_mpi = []
+
+	for i in range(numprocs):
+		x_mom_local.append(0)
+		y_mom_local.append(0)
+		x_mom_mpi.append(0)
+		y_mom_mpi.append(0)
+
+	x_mom_local[rank] = moment(x, 2)
+	y_mom_local[rank] = moment(y, 2)
+
+	print '\n\t\t\t\t GetBunchMus x_mom_local = ', x_mom_local
+	print '\n\t\t\t\t GetBunchMus y_mom_local = ', y_mom_local
+	print '\n\t\t\t\t GetBunchMus x_mom_mpi = ', x_mom_mpi
+	print '\n\t\t\t\t GetBunchMus y_mom_mpi = ', y_mom_mpi
+
+	test = orbit_mpi.MPI_Allreduce(x_mom_local, x_mom_mpi, numprocs, mpi_datatype.MPI_DOUBLE, mpi_op.MPI_SUM, comm)
+
+	print '\n\t\t\t\t GetBunchMus test = ', test
+
+	print '\n\t\t\t\t GetBunchMus x_mom_local = ', x_mom_local
+	print '\n\t\t\t\t GetBunchMus y_mom_local = ', y_mom_local
+	print '\n\t\t\t\t GetBunchMus x_mom_mpi = ', x_mom_mpi
+	print '\n\t\t\t\t GetBunchMus y_mom_mpi = ', y_mom_mpi
+
 # Calculate moments of the bunch
+	print '\n\t\t\t\t GetBunchMus::return moments on MPI rank: ', rank
 	return moment(x, 2), moment(y, 2)
 
 # Create folder structure
@@ -309,23 +375,35 @@ print '\n\t\tStart tracking on MPI process: ', rank
 start_time = time.time()
 last_time = time.time()
 
-turn = -1
-bunchtwissanalysis.analyzeBunch(bunch)
-output.addParameter('turn_time', lambda: time.strftime("%H:%M:%S"))
-output.addParameter('turn_duration', lambda: (time.time() - last_time))
-output.addParameter('cumulative_time', lambda: (time.time() - start_time))
-start_time = time.time()
-output.update()
+#turn = -1
+#bunchtwissanalysis.analyzeBunch(bunch)
+# ~ output.addParameter('turn_time', lambda: time.strftime("%H:%M:%S"))
+# ~ output.addParameter('turn_duration', lambda: (time.time() - last_time))
+# ~ output.addParameter('cumulative_time', lambda: (time.time() - start_time))
+# ~ start_time = time.time()
+#output.update()
 print '\n\t\tstart time = ', start_time
 
 for turn in range(sts['turn']+1, sts['turns_max']):
-	if not rank:	last_time = time.time()
+	if not rank:
+		print '\n\t\tTURN ', turn
+		last_time = time.time()
 
+	if turn == 0:
+		output.addParameter('turn_time', lambda: time.strftime("%H:%M:%S"))
+		output.addParameter('turn_duration', lambda: (time.time() - last_time))
+		output.addParameter('cumulative_time', lambda: (time.time() - start_time))
+		start_time = time.time()
+		print '\n\t\tstart time = ', start_time
+
+	if not rank: print '\n\t\tTURN ', turn, ' trackBunch'
 	Lattice.trackBunch(bunch, paramsDict)
+	if not rank: print '\n\t\tTURN ', turn, ' analyzeBunch'
 	bunchtwissanalysis.analyzeBunch(bunch)  # analyze twiss and emittance
 
 	if turn in sts['turns_update']:	sts['turn'] = turn
 
+	if not rank: print '\n\t\tTURN ', turn, ' output.update()'
 	output.update()
 
 	if turn in sts['turns_print']:
