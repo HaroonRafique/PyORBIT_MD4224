@@ -19,7 +19,7 @@ clean_all = True		# Clean simulation folder before running (False when resuming 
 # Must be chosen
 
 # ~ queue = 'inf-long', 'inf-short', 'batch-long', 'batch-short'
-queue = 'batch-short'
+queue = 'inf-short'
 
 n_nodes = 2
 
@@ -119,7 +119,7 @@ if clean_all:f.write('\n./clean_all.sh')
 f.write('\n. setup_environment.sh >> ${simulation_info_file}')
 f.write('\n')
 f.write('\n# Load correct MPI')
-f.write('\nmodule load mpi/mvapich2/2.2')
+f.write('\nmodule load mpi/mvapich2/2.3')
 f.write('\n')
 f.write('\ntstart=$(date +%s)')
 f.write('\n')
