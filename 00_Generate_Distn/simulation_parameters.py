@@ -2,16 +2,16 @@ import numpy as np
 
 parameters = {}
 
-parameters['n_macroparticles']	= int(0.5E6) #int(50E3) # int(0.5E6)
+parameters['n_macroparticles']		= int(50E3) # int(0.5E6)
 # ~ parameters['lattice_version']	='Original'
-parameters['lattice_version']	='Optimised'
+parameters['lattice_version']		='Optimised'
 
 # Include machine (PS), tunes, lattice start position (BWS65H) for bunch output file label
-parameters['tunex']				= '621'
-parameters['tuney']				= '624'
+parameters['tunex']			= '621'
+parameters['tuney']			= '624'
 parameters['machine']			= 'PS'
-parameters['lattice_start'] 		= 'BWSH65'
-# ~ parameters['lattice_start'] 	= 'BWSV64'
+# ~ parameters['lattice_start'] 	= 'BWSH65'
+parameters['lattice_start'] 		= 'BWSV64'
 parameters['bunch_label'] 		= parameters['machine'] + '_' + parameters['lattice_version'] + '_Lattice_Tune_' + parameters['tunex'] + '_' + parameters['tuney'] + '_' + parameters['lattice_start']
 
 parameters['flat_file']			= str('../00_Flat_Files/'+parameters['lattice_version']+'_Lattice/Flat_Files/'+parameters['lattice_start'][3]+'_'+parameters['tunex'][1:]+'_'+parameters['tuney'][1:]+'/PTC-PyORBIT_flat_file.flt')
