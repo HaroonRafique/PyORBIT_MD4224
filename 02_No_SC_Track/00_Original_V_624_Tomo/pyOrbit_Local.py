@@ -127,7 +127,75 @@ def GetTunesFromPTC():
 	
 
 # Function to return second moment (mu^2) of distribution
+def GetBunchMus3(b, smooth=True):
+
+	print '\n\t\t\t\t GetBunchMus called'
+	#take the MPI Communicator from bunch: it could be different from MPI_COMM_WORLD
+	comm = b.getMPIComm()
+	rank = orbit_mpi.MPI_Comm_rank(comm)
+	print '\n\t\t\t\t GetBunchMus rank = ', rank 
+	size = orbit_mpi.MPI_Comm_size(comm)
+	print '\n\t\t\t\t GetBunchMus rank = ', size 
+	main_rank = 0
+
+	print '\n\t\t\t\t GetBunchMus b.getPartAttrNames() = ', b.getPartAttrNames()
+
+	# n_parts_arr - array of size of the number of CPUs, 
+	# and have the number of macroparticles on each CPU
+	n_parts_arr = [0]*size
+	print '\n\t\t\t\t GetBunchMus n_parts_arr = ', n_parts_arr
+	n_parts_arr[rank] = b.getSize()
+	print '\n\t\t\t\t GetBunchMus n_parts_arr after rank setting = ', n_parts_arr
+	n_parts_arr = orbit_mpi.MPI_Allreduce(n_parts_arr,mpi_datatype.MPI_INT,mpi_op.MPI_SUM,comm)
+	print '\n\t\t\t\t GetBunchMus n_parts_arr after MPI Sum = ', n_parts_arr
+
+	# ~ mp_array = range(n_parts_arr[rank])	#indexes of all particles
+	mp_array = range(25000)	#indexes of all particles
+	particles = {}
+	print '\n\t\t\t\t GetBunchMus particles  = ', particles
+	particles['x'] = map(b.x, mp_array)
+	print '\n\t\t\t\t GetBunchMus particles[\'x\'] = ', particles['x']
+	particles['y'] = map(b.y, mp_array)
+	print '\n\t\t\t\t GetBunchMus particles[\'y\'] = ', particles['y']
+
+	print '\n\t\t\t\t GetBunchMus particles.keys() = ', particles.keys()
+	return 0, 0
+
+# Function to return second moment (mu^2) of distribution
 def GetBunchMus(b, smooth=True):
+
+	print '\n\t\t\t\t GetBunchMus called'
+	#take the MPI Communicator from bunch: it could be different from MPI_COMM_WORLD
+	comm = b.getMPIComm()
+	rank = orbit_mpi.MPI_Comm_rank(comm)
+	print '\n\t\t\t\t GetBunchMus rank = ', rank 
+	size = orbit_mpi.MPI_Comm_size(comm)
+	print '\n\t\t\t\t GetBunchMus size = ', size 
+	main_rank = 0
+
+	# mu_x - 2nd moment in x
+	# and have the number of macroparticles on each CPU
+	mu_x = [0]*size
+	mu_x_mpi = 0.
+	print '\n\t\t\t\t GetBunchMus mu_x = ', mu_x
+
+	x = []
+	y = []
+	for i in range(b.getSize()):
+		x.append(b.x(i))
+		y.append(b.y(i))
+
+	mu_x[rank] = moment(x, 2)
+	print '\n\t\t\t\t GetBunchMus mu_x after rank setting = ', mu_x
+
+	orbit_mpi.MPI_Barrier(comm)
+	# ~ mu_x = orbit_mpi.MPI_Allreduce(mu_x, mpi_datatype.MPI_DOUBLE, mpi_op.MPI_SUM, comm)
+	orbit_mpi.MPI_Allreduce(mu_x, mu_x_mpi, 1, mpi_datatype.MPI_DOUBLE, mpi_op.MPI_SUM, comm)
+	print '\n\t\t\t\t GetBunchMus mu_x after MPI Sum = ', mu_x
+
+	return 0, 0
+
+def GetBunchMus2(b, smooth=True):
 	window = 40
 	print '\n\t\t\t\t GetBunchMus called'
 	print '\n\t\t\t\t GetBunchMus b.getSize() = ', b.getSize()
@@ -152,28 +220,36 @@ def GetBunchMus(b, smooth=True):
 		x.append(b.x(i))
 		y.append(b.y(i))
 
-	x_mom_local = []
-	y_mom_local = []
-	x_mom_mpi = []
-	y_mom_mpi = []
+	x_mom_local = 0.
+	y_mom_local = 0.
+	x_mom_mpi = 0.
+	y_mom_mpi = 0.
+	
+	# ~ x_mom_local = []
+	# ~ y_mom_local = []
+	# ~ x_mom_mpi = []
+	# ~ y_mom_mpi = []
 
-	for i in range(numprocs):
-		x_mom_local.append(0)
-		y_mom_local.append(0)
-		x_mom_mpi.append(0)
-		y_mom_mpi.append(0)
+	# ~ for i in range(numprocs):
+		# ~ x_mom_local.append(0)
+		# ~ y_mom_local.append(0)
+		# ~ x_mom_mpi.append(0)
+		# ~ y_mom_mpi.append(0)
 
-	x_mom_local[rank] = moment(x, 2)
-	y_mom_local[rank] = moment(y, 2)
+	x_mom_local = moment(x, 2)
+	y_mom_local= moment(y, 2)
 
 	print '\n\t\t\t\t GetBunchMus x_mom_local = ', x_mom_local
 	print '\n\t\t\t\t GetBunchMus y_mom_local = ', y_mom_local
 	print '\n\t\t\t\t GetBunchMus x_mom_mpi = ', x_mom_mpi
 	print '\n\t\t\t\t GetBunchMus y_mom_mpi = ', y_mom_mpi
 
-	test = orbit_mpi.MPI_Allreduce(x_mom_local, x_mom_mpi, numprocs, mpi_datatype.MPI_DOUBLE, mpi_op.MPI_SUM, comm)
+	# ~ test = orbit_mpi.MPI_Allreduce(x_mom_local, x_mom_mpi, numprocs, mpi_datatype.MPI_DOUBLE, mpi_op.MPI_SUM, comm)
+	# ~ x_mom_mpi = orbit_mpi.MPI_Allreduce(x_mom_local, mpi_datatype.MPI_DOUBLE, mpi_op.MPI_SUM, comm)
+	x_mom_mpi = orbit_mpi.MPI_Allreduce(x_mom_local, mpi_datatype.MPI_DOUBLE, mpi_op.MPI_SUM, comm)
+	y_mom_mpi = orbit_mpi.MPI_Allreduce(y_mom_local, mpi_datatype.MPI_DOUBLE, mpi_op.MPI_SUM, comm)
 
-	print '\n\t\t\t\t GetBunchMus test = ', test
+	# ~ print '\n\t\t\t\t GetBunchMus test = ', test
 
 	print '\n\t\t\t\t GetBunchMus x_mom_local = ', x_mom_local
 	print '\n\t\t\t\t GetBunchMus y_mom_local = ', y_mom_local
