@@ -82,31 +82,8 @@ def GetTunesFromPTC():
 	return Qx, Qy
 
 # Function to return second moment (mu^2) of distribution
+# NOT MPI compatible - uses only bunch from rank 0
 def GetBunchMus(b, smooth=True):
-	window = 40
-
-	# MPI stuff to run on a single node
-	rank = 0
-	numprocs = 1
-
-	mpi_init = orbit_mpi.MPI_Initialized()
-	comm = orbit_mpi.mpi_comm.MPI_COMM_WORLD
-	orbit_mpi.MPI_Barrier(comm)
-
-	if(mpi_init):
-		rank = orbit_mpi.MPI_Comm_rank(comm)
-		numprocs = orbit_mpi.MPI_Comm_size(comm)
-
-	nparts_arr_local = []
-	for i in range(numprocs):
-		nparts_arr_local.append(0)
-
-	nparts_arr_local[rank] = b.getSize()
-	data_type = mpi_datatype.MPI_INT
-	op = mpi_op.MPI_SUM
-
-	nparts_arr = orbit_mpi.MPI_Allreduce(nparts_arr_local,data_type,op,comm)
-
 # Arrays to hold x and y data
 	x = []
 	y = []

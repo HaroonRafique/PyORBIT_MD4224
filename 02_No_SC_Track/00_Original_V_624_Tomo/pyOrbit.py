@@ -82,65 +82,17 @@ def GetTunesFromPTC():
 	return Qx, Qy
 
 # Function to return second moment (mu^2) of distribution
+# NOT MPI compatible - uses only bunch from rank 0
 def GetBunchMus(b, smooth=True):
-	window = 40
-	print '\n\t\t\t\t GetBunchMus called'
-	print '\n\t\t\t\t GetBunchMus b.getSize() = ', b.getSize()
-
-	# MPI stuff to run on a single node
-	rank = 0
-	numprocs = 1
-
-	mpi_init = orbit_mpi.MPI_Initialized()
-	comm = orbit_mpi.mpi_comm.MPI_COMM_WORLD
-
-	if(mpi_init):
-		rank = orbit_mpi.MPI_Comm_rank(comm)
-		print '\n\t\t\t\t GetBunchMus rank = ', rank 
-		numprocs = orbit_mpi.MPI_Comm_size(comm)
-		print '\n\t\t\t\t GetBunchMus numprocs = ', numprocs 
-
-	nparts_arr_local = []
-	nparts_arr_mpi = []
-	for i in range(numprocs):
-		nparts_arr_local.append(0)
-		
-	print '\n\t\t\t\t GetBunchMus nparts_arr_local before initialisation = ', nparts_arr_local 
-	
-	nparts_arr_local[rank] = b.getSize()
-	print '\n\t\t\t\t GetBunchMus nparts_arr_local after fudge  = ', nparts_arr_local 
-	
-	data_type = mpi_datatype.MPI_INT
-	op = mpi_op.MPI_SUM
-	
-	test = orbit_mpi.MPI_Allreduce(nparts_arr_mpi, nparts_arr_local, numprocs, data_type, op, comm)
-	
-	print '\n\t\t\t\t GetBunchMus test  = ',test
-	
-	# This is clearly not working on HPC-Batch, lets try a fudge
-
-	# ~ for i in range(numprocs):
-		# ~ nparts_arr_local[i] = b.getSize()
-	
-
-	# ~ print '\n\t\t\t\t GetBunchMus::MPI_Barrier on MPI rank: ', rank
-	# ~ orbit_mpi.MPI_Barrier(comm)
-	print '\n\t\t\t\t GetBunchMus::nparts_arr on MPI rank: ', rank
-	# ~ nparts_arr = orbit_mpi.MPI_Allreduce(nparts_arr_local, nparts_arr_mpi, numprocs, data_type, op, comm)
-	# ~ nparts_arr = orbit_mpi.MPI_Allreduce(nparts_arr_local, data_type, op, comm)
-	# ~ orbit_mpi.MPI_Allreduce(nparts_arr, nparts_arr_local, numprocs, data_type, op, comm)
- 
 # Arrays to hold x and y data
 	x = []
 	y = []
 
-	print '\n\t\t\t\t GetBunchMus::loop over bunch on MPI rank: ', rank
 	for i in range(b.getSize()):
 		x.append(b.x(i))
 		y.append(b.y(i))
 
 # Calculate moments of the bunch
-	print '\n\t\t\t\t GetBunchMus::return moments on MPI rank: ', rank
 	return moment(x, 2), moment(y, 2)
 
 # Create folder structure
