@@ -3,8 +3,8 @@ import numpy as np
 parameters = {}
 
 parameters['n_macroparticles']	= int(50E3) # int(0.5E6)
-parameters['lattice_version']	='Original'
-# ~ parameters['lattice_version']	='Optimised'
+# ~ parameters['lattice_version']	='Original'
+parameters['lattice_version']	='Optimised'
 
 # Include machine (PS), tunes, lattice start position (BWS65H) for bunch output file label
 parameters['tunex']				= '621'
