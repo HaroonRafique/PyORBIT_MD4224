@@ -8,5 +8,4 @@ SET ORBIT RESTORE
 initialize cavity
 1         ! number of cavities
 PR.C10.91,  "RF_table.ptc"
-!PR.C10.91,  "RF_table.ptc"
 return
