@@ -3,9 +3,7 @@ import numpy as np
 parameters = {}
 
 parameters['n_macroparticles']			= int(5E4)
-nmp = 50000
 # ~ parameters['n_macroparticles']		= int(5E5)
-# ~ nmp = 500000
 
 parameters['lattice_version']			='Original'
 # ~ parameters['lattice_version']		='Optimised'
@@ -52,7 +50,7 @@ c = 299792458
 parameters['sig_z'] = (parameters['beta'] * c * parameters['blength'])/4.
 parameters['turns_max'] = int(2200)
 
-tu1 = range(-1, parameters['turns_max'], 2200)
+tu1 = range(-1, parameters['turns_max'], 200)
 tu2 = range(10, 100, 10) 
 tu3 = range(1, 9)
 tu = tu2 + tu1 + tu3 
@@ -65,9 +63,9 @@ parameters['turns_update'] = sorted(tu)
 switches = {
 	'SliceBySlice': True,
 	'LongitudinalKick': True,
-	'GridSizeX': 128,
-	'GridSizeY': 128,
-	'GridSizeZ': 64
+	'GridSizeX': 64,
+	'GridSizeY': 64,
+	'GridSizeZ': 32
 }
 
 # PTC RF Table Parameters
