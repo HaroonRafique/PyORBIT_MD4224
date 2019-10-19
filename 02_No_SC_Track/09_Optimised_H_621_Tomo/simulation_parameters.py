@@ -7,27 +7,24 @@ nmp = 50000
 # ~ parameters['n_macroparticles']		= int(5E5)
 # ~ nmp = 500000
 
-parameters['lattice_version']			='Original'
-# ~ parameters['lattice_version']		='Optimised'
+# ~ parameters['lattice_version']		='Original'
+parameters['lattice_version']			='Optimised'
 
-parameters['DistType'] 					= 'Tomo'
-# ~ parameters['DistType'] 				= 'Gaussian'
-# ~ parameters['DistType'] 				= 'Joho'
+parameters['DistType'] 				= 'Tomo'
+# ~ parameters['DistType'] 			= 'Gaussian'
+# ~ parameters['DistType'] 			= 'Joho'
 
-parameters['TwissType'] 				= 'Lattice'
+parameters['TwissType'] 			= 'Lattice'
 # ~ parameters['TwissType'] 			= 'Manual'
 
-parameters['tunex']						= '621'
-parameters['tuney']						= '624'
-parameters['machine']					= 'PS'
+parameters['tunex']				= '621'
+parameters['tuney']				= '624'
+parameters['machine']				= 'PS'
 parameters['lattice_start'] 			= 'BWSH65'
 # ~ parameters['lattice_start'] 		= 'BWSV64'
 parameters['bunch_label'] = parameters['machine'] + '_' + parameters['lattice_version'] + '_Lattice_Tune_' + parameters['tunex'] + '_' + parameters['tuney'] + '_' + parameters['lattice_start']
-
 parameters['flat_file'] = str('../../00_Flat_Files/'+parameters['lattice_version']+'_Lattice/Flat_Files/'+parameters['lattice_start'][3]+'_'+parameters['tunex'][1:]+'_'+parameters['tuney'][1:]+'/PTC-PyORBIT_flat_file.flt')
-
 parameters['tomo_file'] = 'PyORBIT_Tomo_file_MD4224_HB.mat'
-
 parameters['input_distn'] = str('../../01_Input_Distns/' +parameters['lattice_start'][3]+'/'+parameters['DistType']+'/' + str(parameters['n_macroparticles']) + '/PyORBIT_' + parameters['DistType'] + '_Bunch_' + parameters['TwissType'] + '_Twiss_Nmp_' + str(parameters['n_macroparticles']) + '_' + parameters['machine'] + '_' + parameters['lattice_version'] + '_Lattice_Tune_' + parameters['tunex'] + '_'	+ parameters['tuney'] + '_' + parameters['lattice_start'] + '.mat')
 
 parameters['gamma']				= 2.49253731343
