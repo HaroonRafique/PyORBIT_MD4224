@@ -15,7 +15,7 @@ sbs_locations.append('/05_Original_H_621_Joho')
 sbs_locations.append('/06_Optimised_V_624_Tomo')
 sbs_locations.append('/07_Optimised_V_624_Gaussian')
 sbs_locations.append('/08_Optimised_V_624_Joho')
-sbs_locations.append('/09_Optimisd_H_621_Tomo')
+sbs_locations.append('/09_Optimised_H_621_Tomo')
 sbs_locations.append('/10_Optimised_H_621_Gaussian')
 sbs_locations.append('/11_Optimised_H_621_Joho')
 
