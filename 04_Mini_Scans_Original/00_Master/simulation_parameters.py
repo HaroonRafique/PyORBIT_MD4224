@@ -2,21 +2,21 @@ import numpy as np
 
 parameters = {}
 
-parameters['tunex']						= '621'
+parameters['tunex']						= '607'
 parameters['tuney']						= '624'
 
-parameters['lattice_start'] 			= 'BWSV64'
+parameters['lattice_start'] 			= 'BWSH65'
 parameters['DistType'] 					= 'Tomo'
 parameters['n_macroparticles']			= int(5E4)
-parameters['lattice_version']			='Original'
+parameters['lattice_version']			= 'Original'
 parameters['TwissType'] 				= 'Lattice'
 parameters['machine']					= 'PS'
 
-# ~ parameters['lattice_start'] 		= 'BWSH65'
+# ~ parameters['lattice_start'] 		= 'BWSV64'
 # ~ parameters['DistType'] 				= 'Gaussian'
 # ~ parameters['DistType'] 				= 'Joho'
 # ~ parameters['n_macroparticles']		= int(5E5)
-# ~ parameters['lattice_version']		='Optimised'
+# ~ parameters['lattice_version']		= 'Optimised'
 # ~ parameters['TwissType'] 			= 'Manual'
 
 parameters['bunch_label'] = parameters['machine'] + '_' + parameters['lattice_version'] + '_Lattice_Tune_' + parameters['tunex'] + '_' + parameters['tuney'] + '_' + parameters['lattice_start']
