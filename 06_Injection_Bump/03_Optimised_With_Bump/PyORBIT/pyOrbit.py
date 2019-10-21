@@ -136,8 +136,10 @@ if sts['turn'] >= 0:
 	CheckAndReadPTCFile('../PTC/read_FINAL_SETTINGS.ptc')
 if p['lattice_version'] is 'Optimised':
 	CheckAndReadPTCFile('../PTC/ramp_cavities_optimised.ptc')
+	CheckAndReadPTCFile('../PTC/ramp_magnets_optimised.ptc')
 elif p['lattice_version'] is 'Original':
 	CheckAndReadPTCFile('../PTC/ramp_cavities.ptc')
+	CheckAndReadPTCFile('../PTC/ramp_magnets.ptc')
 else:
 	print '\n\tp[\'lattice_version\'] not recognised, options are \'Optimised\' or \'Original\'. Exiting.'
 	exit(0)
@@ -311,7 +313,10 @@ for turn in range(sts['turn']+1, sts['turns_max']):
 	if not rank:	last_time = time.time()
 
 	Lattice.trackBunch(bunch, paramsDict)
-	bunchtwissanalysis.analyzeBunch(bunch)  # analyze twiss and emittance
+	bunchtwissanalysis.analyzeBunch(bunch)  # analyze twiss and emittance	
+	readScriptPTC_noSTDOUT("../PTC/update-twiss.ptc") # this is needed to correclty update the twiss functions in all lattice nodes in updateParamsPTC
+	updateParamsPTC(Lattice,bunch) # to update bunch energy and twiss functions
+	
 
 	if turn in sts['turns_update']:	sts['turn'] = turn
 
