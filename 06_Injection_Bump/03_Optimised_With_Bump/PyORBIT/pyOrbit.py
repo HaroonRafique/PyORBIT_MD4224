@@ -136,10 +136,10 @@ if sts['turn'] >= 0:
 	CheckAndReadPTCFile('../PTC/read_FINAL_SETTINGS.ptc')
 if p['lattice_version'] is 'Optimised':
 	CheckAndReadPTCFile('../PTC/ramp_cavities_optimised.ptc')
-	CheckAndReadPTCFile('../PTC/ramp_magnets_optimised.ptc')
+	CheckAndReadPTCFile('../PTC/ramp_magnet_optimised.ptc')
 elif p['lattice_version'] is 'Original':
 	CheckAndReadPTCFile('../PTC/ramp_cavities.ptc')
-	CheckAndReadPTCFile('../PTC/ramp_magnets.ptc')
+	CheckAndReadPTCFile('../PTC/ramp_magnet.ptc')
 else:
 	print '\n\tp[\'lattice_version\'] not recognised, options are \'Optimised\' or \'Original\'. Exiting.'
 	exit(0)
