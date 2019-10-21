@@ -130,7 +130,6 @@ Lattice = PTC_Lattice("PS")
 Lattice.readPTC(PTC_File)
 
 print '\n\t\tRead PTC files on MPI process: ', rank
-CheckAndReadPTCFile('../PTC/energize_lattice.ptc')
 CheckAndReadPTCFile('../PTC/fringe.ptc')
 CheckAndReadPTCFile('../PTC/time.ptc')
 if sts['turn'] >= 0:
@@ -142,6 +141,7 @@ elif p['lattice_version'] is 'Original':
 else:
 	print '\n\tp[\'lattice_version\'] not recognised, options are \'Optimised\' or \'Original\'. Exiting.'
 	exit(0)
+CheckAndReadPTCFile('../PTC/energize_lattice.ptc')
 
 # Create a dictionary of parameters
 #-----------------------------------------------------------------------
