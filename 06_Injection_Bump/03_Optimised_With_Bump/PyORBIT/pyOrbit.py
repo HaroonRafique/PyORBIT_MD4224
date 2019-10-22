@@ -115,6 +115,15 @@ else:
 	with open(status_file) as fid:
 		sts = pickle.load(fid)
 
+# Lattice function dictionary to print closed orbit
+#-----------------------------------------------------------------------
+ptc_dictionary_file = 'input/ptc_dictionary.pkl'
+if not os.path.exists(ptc_dictionary_file):        
+	PTC_Twiss = PTCLatticeFunctionsDictionary()
+else:
+	with open(ptc_dictionary_file) as sid:
+		PTC_Twiss = pickle.load(sid)
+
 # Generate PTC RF table
 #-----------------------------------------------------------------------
 print '\n\t\tCreate RF file on MPI process: ', rank
@@ -271,6 +280,10 @@ output.addParameter('D_x', lambda: bunchtwissanalysis.getDispersion(0))
 output.addParameter('D_y', lambda: bunchtwissanalysis.getDispersion(1))
 output.addParameter('mu_x', lambda: GetBunchMus(bunch)[0])
 output.addParameter('mu_y', lambda: GetBunchMus(bunch)[1])
+output.addParameter('orbit_x_min', lambda: PTC_Twiss.GetMinParameter('orbit_x', turn))
+output.addParameter('orbit_x_max', lambda: PTC_Twiss.GetMaxParameter('orbit_x', turn))
+output.addParameter('orbit_y_min', lambda: PTC_Twiss.GetMinParameter('orbit_y', turn))
+output.addParameter('orbit_y_max', lambda: PTC_Twiss.GetMaxParameter('orbit_y', turn))
 output.addParameter('bunchlength', lambda: get_bunch_length(bunch, bunchtwissanalysis))
 output.addParameter('dpp_rms', lambda: get_dpp(bunch, bunchtwissanalysis))
 output.addParameter('beta_x', lambda: bunchtwissanalysis.getBeta(0))
@@ -289,7 +302,7 @@ output.addParameter('eff_epsn_x', lambda: bunchtwissanalysis.getEffectiveEmittan
 output.addParameter('eff_epsn_y', lambda: bunchtwissanalysis.getEffectiveEmittance(1))
 output.addParameter('eff_alpha_x', lambda: bunchtwissanalysis.getEffectiveAlpha(0))
 output.addParameter('eff_alpha_y', lambda: bunchtwissanalysis.getEffectiveAlpha(1))
-output.addParameter('gamma', lambda: bunch.getSyncParticle().gamma())
+output.addParameter('gamma', lambda: bunch.getSyncParticle().gamma()
 
 if os.path.exists(output_file):
 	output.import_from_matfile(output_file)
@@ -310,13 +323,14 @@ output.update()
 print '\n\t\tstart time = ', start_time
 
 for turn in range(sts['turn']+1, sts['turns_max']):
-	if not rank:	last_time = time.time()
+	if not rank:
+		last_time = time.time()
+		PTC_Twiss.UpdatePTCTwiss(Lattice, turn)
 
 	Lattice.trackBunch(bunch, paramsDict)
 	bunchtwissanalysis.analyzeBunch(bunch)  # analyze twiss and emittance	
 	readScriptPTC_noSTDOUT("../PTC/update-twiss.ptc") # this is needed to correclty update the twiss functions in all lattice nodes in updateParamsPTC
 	updateParamsPTC(Lattice,bunch) # to update bunch energy and twiss functions
-	
 
 	if turn in sts['turns_update']:	sts['turn'] = turn
 
@@ -330,3 +344,17 @@ for turn in range(sts['turn']+1, sts['turns_max']):
 		if not rank:
 			with open(status_file, 'w') as fid:
 				pickle.dump(sts, fid)
+			with open(ptc_dictionary_file, 'w') as sid:
+				pickle.dump(PTC_Twiss, sid)
+
+
+# make sure simulation terminates properly
+orbit_mpi.MPI_Barrier(comm)
+
+# Plotting
+#-----------------------------------------------------------------------
+if not rank:
+	PTC_Twiss.PrintOrbitExtrema('.')
+	PTC_Twiss.PrintAllPTCTwiss('All_Twiss')
+	TwissDict = PTC_Twiss.ReturnTwissDict()
+	TurnList = PTC_Twiss.ReturnTurnList()
