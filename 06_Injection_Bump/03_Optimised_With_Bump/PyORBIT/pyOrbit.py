@@ -304,8 +304,7 @@ output.addParameter('eff_alpha_x', lambda: bunchtwissanalysis.getEffectiveAlpha(
 output.addParameter('eff_alpha_y', lambda: bunchtwissanalysis.getEffectiveAlpha(1))
 output.addParameter('gamma', lambda: bunch.getSyncParticle().gamma()
 
-if os.path.exists(output_file):
-	output.import_from_matfile(output_file)
+if os.path.exists(output_file): output.import_from_matfile(output_file)
 
 # Track
 #-----------------------------------------------------------------------
