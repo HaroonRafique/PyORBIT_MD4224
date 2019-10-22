@@ -20,7 +20,8 @@ parameters['machine']					= 'PS'
 # ~ parameters['TwissType'] 			= 'Manual'
 
 parameters['bunch_label'] = parameters['machine'] + '_' + parameters['lattice_version'] + '_Lattice_Tune_' + parameters['tunex'] + '_' + parameters['tuney'] + '_' + parameters['lattice_start']
-parameters['flat_file'] = str('../../../00_Flat_Files/'+parameters['lattice_version']+'_Lattice/Flat_Files/'+parameters['lattice_start'][3]+'_'+parameters['tunex'][1:]+'_'+parameters['tuney'][1:]+'/PTC-PyORBIT_flat_file.flt')
+#parameters['flat_file'] = str('../../../00_Flat_Files/'+parameters['lattice_version']+'_Lattice/Flat_Files/'+parameters['lattice_start'][3]+'_'+parameters['tunex'][1:]+'_'+parameters['tuney'][1:]+'/PTC-PyORBIT_flat_file.flt')
+parameters['flat_file'] = str('PTC-PyORBIT_flat_file.flt')
 parameters['tomo_file'] = 'PyORBIT_Tomo_file_MD4224_HB.mat'
 # Full path for creating distns
 # ~ parameters['input_distn'] = str('../../../01_Input_Distns/' +parameters['lattice_start'][3]+'/'+parameters['DistType']+'/' + str(parameters['n_macroparticles']) + '/PyORBIT_' + parameters['DistType'] + '_Bunch_' + parameters['TwissType'] + '_Twiss_Nmp_' + str(parameters['n_macroparticles']) + '_' + parameters['machine'] + '_' + parameters['lattice_version'] + '_Lattice_Tune_' + parameters['tunex'] + '_'	+ parameters['tuney'] + '_' + parameters['lattice_start'] + '.mat')
