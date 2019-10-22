@@ -314,6 +314,8 @@ start_time = time.time()
 last_time = time.time()
 
 turn = -1
+readScriptPTC_noSTDOUT("../PTC/update-twiss.ptc") # this is needed to correclty update the twiss functions in all lattice nodes in updateParamsPTC
+updateParamsPTC(Lattice,bunch) # to update bunch energy and twiss functions
 bunchtwissanalysis.analyzeBunch(bunch)
 output.addParameter('turn_time', lambda: time.strftime("%H:%M:%S"))
 output.addParameter('turn_duration', lambda: (time.time() - last_time))
