@@ -314,6 +314,7 @@ start_time = time.time()
 last_time = time.time()
 
 turn = -1
+PTC_Twiss.UpdatePTCTwiss(Lattice, turn)
 readScriptPTC_noSTDOUT("../PTC/update-twiss.ptc") # this is needed to correclty update the twiss functions in all lattice nodes in updateParamsPTC
 updateParamsPTC(Lattice,bunch) # to update bunch energy and twiss functions
 bunchtwissanalysis.analyzeBunch(bunch)
