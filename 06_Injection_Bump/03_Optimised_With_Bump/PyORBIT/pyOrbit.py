@@ -44,6 +44,7 @@ from spacecharge import SpaceChargeCalcAnalyticGaussian
 from spacecharge import InterpolatedLineDensityProfile
 
 from lib.output_dictionary import *
+from lib.pyOrbit_PTCLatticeFunctionsDictionary import *
 from lib.pyOrbit_GenerateInitialDistribution import *
 from lib.save_bunch_as_matfile import *
 from lib.pyOrbit_Tunespread_Calculator import *
