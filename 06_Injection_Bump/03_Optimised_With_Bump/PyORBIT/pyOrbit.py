@@ -302,7 +302,7 @@ output.addParameter('eff_epsn_x', lambda: bunchtwissanalysis.getEffectiveEmittan
 output.addParameter('eff_epsn_y', lambda: bunchtwissanalysis.getEffectiveEmittance(1))
 output.addParameter('eff_alpha_x', lambda: bunchtwissanalysis.getEffectiveAlpha(0))
 output.addParameter('eff_alpha_y', lambda: bunchtwissanalysis.getEffectiveAlpha(1))
-output.addParameter('gamma', lambda: bunch.getSyncParticle().gamma()
+output.addParameter('gamma', lambda: bunch.getSyncParticle().gamma())
 
 if os.path.exists(output_file): output.import_from_matfile(output_file)
 
