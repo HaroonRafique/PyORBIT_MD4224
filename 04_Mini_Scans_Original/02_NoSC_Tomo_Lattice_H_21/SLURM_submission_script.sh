@@ -3,15 +3,15 @@
 #SBATCH --output=slurm.%N.%j.out
 #SBATCH --error=slurm.%N.%j.err
 #SBATCH --nodes=2
-#SBATCH --ntasks-per-node=16
-#SBATCH --partition=batch-short
-#SBATCH --time=48:00:00
+#SBATCH --ntasks-per-node=20
+#SBATCH --partition=inf-short
+#SBATCH --time=120:00:00
 #SBATCH --mem-per-cpu=3200M
 #SBATCH --exclusive
 #SBATCH --hint=nomultithread
 
 BATCH_ROOT_DIR=/hpcscratch/user/harafiqu
-RUN_DIR=/home/HR/Documents/PyORBIT_MD4224/04_Mini_Scans_Original/02_NoSC_Tomo_Lattice_H_21
+RUN_DIR=/hpcscratch/user/harafiqu/PyORBIT_MD4224/04_Mini_Scans_Original/02_NoSC_Tomo_Lattice_H_21
 OrigIwd=$(pwd)
 
 # Make an output folder in the root directory to hold SLURM info file

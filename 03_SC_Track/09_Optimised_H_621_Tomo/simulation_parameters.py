@@ -5,19 +5,19 @@ parameters = {}
 parameters['n_macroparticles']			= int(5E4)
 # ~ parameters['n_macroparticles']		= int(5E5)
 
-parameters['lattice_version']			='Original'
-# ~ parameters['lattice_version']		='Optimised'
+# ~ parameters['lattice_version']		='Original'
+parameters['lattice_version']			='Optimised'
 
-parameters['DistType'] 					= 'Tomo'
-# ~ parameters['DistType'] 				= 'Gaussian'
-# ~ parameters['DistType'] 				= 'Joho'
+parameters['DistType'] 				= 'Tomo'
+# ~ parameters['DistType'] 			= 'Gaussian'
+# ~ parameters['DistType'] 			= 'Joho'
 
-parameters['TwissType'] 				= 'Lattice'
+parameters['TwissType'] 			= 'Lattice'
 # ~ parameters['TwissType'] 			= 'Manual'
 
-parameters['tunex']						= '621'
-parameters['tuney']						= '624'
-parameters['machine']					= 'PS'
+parameters['tunex']				= '621'
+parameters['tuney']				= '624'
+parameters['machine']				= 'PS'
 parameters['lattice_start'] 			= 'BWSH65'
 # ~ parameters['lattice_start'] 		= 'BWSV64'
 parameters['bunch_label'] = parameters['machine'] + '_' + parameters['lattice_version'] + '_Lattice_Tune_' + parameters['tunex'] + '_' + parameters['tuney'] + '_' + parameters['lattice_start']
@@ -28,7 +28,7 @@ parameters['tomo_file'] = 'PyORBIT_Tomo_file_MD4224_HB.mat'
 
 parameters['input_distn'] = str('../../01_Input_Distns/' +parameters['lattice_start'][3]+'/'+parameters['DistType']+'/' + str(parameters['n_macroparticles']) + '/PyORBIT_' + parameters['DistType'] + '_Bunch_' + parameters['TwissType'] + '_Twiss_Nmp_' + str(parameters['n_macroparticles']) + '_' + parameters['machine'] + '_' + parameters['lattice_version'] + '_Lattice_Tune_' + parameters['tunex'] + '_'	+ parameters['tuney'] + '_' + parameters['lattice_start'] + '.mat')
 
-parameters['gamma']				= 2.49253731343
+parameters['gamma']			= 2.49253731343
 parameters['intensity']			= 72.5E+10
 parameters['bunch_length']		= 140e-9
 parameters['blength']			= 140e-9
@@ -40,7 +40,7 @@ parameters['LongitudinalCut'] 	= 2.4
 parameters['TransverseCut']		= 5
 parameters['rf_voltage']		= 0.0212942055190595723
 parameters['circumference']		= 2*np.pi*100
-parameters['phi_s']				= 0
+parameters['phi_s']			= 0
 parameters['macrosize']			= parameters['intensity']/float(parameters['n_macroparticles'])
 
 # PS Injection 1.4 GeV
