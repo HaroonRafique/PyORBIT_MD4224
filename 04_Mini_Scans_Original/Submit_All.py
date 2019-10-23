@@ -1,7 +1,7 @@
 import os
 
-Horizontal_Scan_NoSC = True
-Horizontal_Scan = False
+Horizontal_Scan_NoSC = False
+Horizontal_Scan = True
 Vertical_Scan_NoSC = False
 Vertical_Scan = False
 
