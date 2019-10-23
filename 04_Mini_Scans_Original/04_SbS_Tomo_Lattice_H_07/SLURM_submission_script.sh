@@ -1,17 +1,17 @@
 #!/bin/bash
-#SBATCH --job-name=04_02_07
+#SBATCH --job-name=04_04_07
 #SBATCH --output=slurm.%N.%j.out
 #SBATCH --error=slurm.%N.%j.err
 #SBATCH --nodes=2
 #SBATCH --ntasks-per-node=16
-#SBATCH --partition=batch-short
-#SBATCH --time=48:00:00
+#SBATCH --partition=batch-long
+#SBATCH --time=504:00:00
 #SBATCH --mem-per-cpu=3200M
 #SBATCH --exclusive
 #SBATCH --hint=nomultithread
 
 BATCH_ROOT_DIR=/hpcscratch/user/harafiqu
-RUN_DIR=/home/HR/Documents/PyORBIT_MD4224/04_Mini_Scans_Original/04_SbS_Tomo_Lattice_H_07
+RUN_DIR=/hpcscratch/user/harafiqu/PyORBIT_MD4224/04_Mini_Scans_Original/04_SbS_Tomo_Lattice_H_07
 OrigIwd=$(pwd)
 
 # Make an output folder in the root directory to hold SLURM info file
