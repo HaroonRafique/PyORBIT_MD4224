@@ -105,6 +105,7 @@ mpi_mkdir_p('input')
 mpi_mkdir_p('bunch_output')
 mpi_mkdir_p('output')
 mpi_mkdir_p('lost')
+mpi_mkdir_p('All_Twiss')
 
 # Dictionary for simulation status
 #-----------------------------------------------------------------------
