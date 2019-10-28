@@ -49,10 +49,9 @@ V_locations.append('/03_SbS_Tomo_Lattice_V_24')
 
 for loc in V_locations:
 	case = 'V_Mini_Optimised'
-	case_short = 'Optimised'
-	
+
 	print '\nStarted loop for folder', loc
-	
+
 	# Create a full path to output folder
 	out_dir = master_dir + loc + '/output'
 	print '\n\tcd ', out_dir
@@ -72,29 +71,31 @@ for loc in V_locations:
 	bunch_dir = master_dir + loc + '/bunch_output'
 	print '\n\tcd ', bunch_dir
 	os.chdir(bunch_dir)
-	
+
 	# copy output files with correct naming convention
 	comm_172, comm_175= make_bunch_copy_commands(lab, case)
 	print '\n\t' + str(comm_172)
 	os.system(comm_172)
 	# ~ print '\n\t' + str(comm_175)
 	# ~ os.system(comm_175)
-	
-	print '\nFinished loop for folder\n', loc
 
+	print '\nFinished loop for folder\n', loc
 
 for loc in H_locations:
 	case = 'H_Mini_Optimised'
-	case_short = 'HM'
-	
+
 	print '\nStarted loop for folder', loc
-	
+
 	# Create a full path to output folder
 	out_dir = master_dir + loc + '/output'
 	print '\n\tcd ', out_dir
 
 	# change directory to output folder
 	os.chdir(out_dir)
+
+	# To get correct name we need to do some string gymnastics
+	tune = loc[-2:]
+	lab = '6' + tune + '_SbS'
 
 	# copy output file with correct naming convention
 	print '\n\t' + str(make_output_copy_command(lab, case))
@@ -104,84 +105,15 @@ for loc in H_locations:
 	bunch_dir = master_dir + loc + '/bunch_output'
 	print '\n\tcd ', bunch_dir
 	os.chdir(bunch_dir)
-	
+
 	# copy output files with correct naming convention
 	comm_172, comm_175= make_bunch_copy_commands(lab, case)
 	print '\n\t' + str(comm_172)
 	os.system(comm_172)
 	# ~ print '\n\t' + str(comm_175)
 	# ~ os.system(comm_175)
-	
+
 	print '\nFinished loop for folder\n', loc
 
-
-print '\nFINISHED copy_outputs_to_EOS.py'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import os
-
-# Present directory
-master_dir = os.getcwd()
-
-sbs_locations = []
-
-
-
-#sbs_locations.append('/610_SbS')
-#sbs_locations.append('/611_SbS')
-sbs_locations.append('/612_SbS')
-sbs_locations.append('/613_SbS')
-sbs_locations.append('/614_SbS')
-sbs_locations.append('/615_SbS')
-sbs_locations.append('/616_SbS')
-sbs_locations.append('/617_SbS')
-sbs_locations.append('/618_SbS')
-sbs_locations.append('/619_SbS')
-sbs_locations.append('/620_SbS')
-sbs_locations.append('/621_SbS')
-sbs_locations.append('/622_SbS')
-sbs_locations.append('/623_SbS')
-sbs_locations.append('/624_SbS')
-
-for loc in sbs_locations:
-	print '\nStarted loop for folder', loc
-	
-	# Create a full path to output folder
-	out_dir = master_dir + loc + '/PyORBIT/output'
-	print '\n\tcd ', out_dir
-
-	# change directory to output folder
-	os.chdir(out_dir)
-
-	# copy output file with correct naming convention
-	print '\n\t' + str(make_output_copy_command(loc, case))
-	os.system(make_output_copy_command(loc, case, case_short))
-	
-	# change directory to bunch output folder
-	bunch_dir = master_dir + loc + '/PyORBIT/bunch_output'
-	print '\n\tcd ', bunch_dir
-	os.chdir(bunch_dir)
-	
-	# copy output files with correct naming convention
-	comm_172, comm_175= make_bunch_copy_commands(loc, case)
-	print '\n\t' + str(comm_172)
-	os.system(comm_172)
-	print '\n\t' + str(comm_175)
-	os.system(comm_175)
-	
-	print '\nFinished loop for folder\n', loc
 
 print '\nFINISHED copy_outputs_to_EOS.py'
