@@ -4,21 +4,13 @@ import os
 
 print '\nSTARTED copy_outputs_to_EOS.py'
 
-Horizontal_Scan_NoSC = True
-Horizontal_Scan = True
-Vertical_Scan_NoSC = False
-Vertical_Scan = False
-
 master_dir = os.getcwd()
-
-
 
 def make_output_copy_command(loc, case):
 	return 'cp output.mat /afs/cern.ch/user/h/harafiqu/EOS/SWAN_projects/PS/From_Scratch/MD4224_Repo_Outputs/'+ str(case) + '/Simulation_Outputs/' + str(loc) + '_output.mat'
 
 def make_bunch_copy_commands(loc, case):
 	return ['cp mainbunch_000874.mat /afs/cern.ch/user/h/harafiqu/EOS/SWAN_projects/PS/From_Scratch/MD4224_Repo_Outputs/'+ str(case) + '/Simulation_Profiles/' + str(loc) + '_c172.mat', 'cp mainbunch_002185.mat /afs/cern.ch/user/h/harafiqu/EOS/SWAN_projects/PS/From_Scratch/MD4224_Repo_Outputs/'+ str(case) + '/Simulation_Profiles' + str(loc) + '_c175.mat']
-
 
 H_locations = []
 H_locations.append('/04_SbS_Tomo_Lattice_H_07')
@@ -62,7 +54,7 @@ for loc in V_locations:
 	print '\nStarted loop for folder', loc
 	
 	# Create a full path to output folder
-	out_dir = master_dir + loc + '/PyORBIT/output'
+	out_dir = master_dir + loc + '/output'
 	print '\n\tcd ', out_dir
 
 	# change directory to output folder
@@ -77,7 +69,7 @@ for loc in V_locations:
 	os.system(make_output_copy_command(lab, case))
 	
 	# change directory to bunch output folder
-	bunch_dir = master_dir + loc + '/PyORBIT/bunch_output'
+	bunch_dir = master_dir + loc + '/bunch_output'
 	print '\n\tcd ', bunch_dir
 	os.chdir(bunch_dir)
 	
@@ -98,7 +90,7 @@ for loc in H_locations:
 	print '\nStarted loop for folder', loc
 	
 	# Create a full path to output folder
-	out_dir = master_dir + loc + '/PyORBIT/output'
+	out_dir = master_dir + loc + '/output'
 	print '\n\tcd ', out_dir
 
 	# change directory to output folder
@@ -109,7 +101,7 @@ for loc in H_locations:
 	os.system(make_output_copy_command(lab, case))
 	
 	# change directory to bunch output folder
-	bunch_dir = master_dir + loc + '/PyORBIT/bunch_output'
+	bunch_dir = master_dir + loc + '/bunch_output'
 	print '\n\tcd ', bunch_dir
 	os.chdir(bunch_dir)
 	
