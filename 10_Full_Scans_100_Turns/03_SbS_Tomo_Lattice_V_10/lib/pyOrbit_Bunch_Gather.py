@@ -182,9 +182,9 @@ def BunchGather(bunch, turn, p, plot_footprint=False):
 ########################################################################
 
 	if rank is main_rank:
-		print 'Rank: ', rank
+		# ~ print 'Rank: ', rank
 		if turn >=0:
-			print 'Turn: ', turn
+			# ~ print 'Turn: ', turn
 			if plot_footprint:
 				if verbose: print 'BunchGather:: Plot tune footprint on rank', rank
 			
