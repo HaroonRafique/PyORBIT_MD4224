@@ -25,7 +25,7 @@ parameters['tomo_file'] = 'PyORBIT_Tomo_file_MD4224_HB.mat'
 # Full path for creating distns
 # ~ parameters['input_distn'] = str('../../01_Input_Distns/' +parameters['lattice_start'][3]+'/'+parameters['DistType']+'/' + str(parameters['n_macroparticles']) + '/PyORBIT_' + parameters['DistType'] + '_Bunch_' + parameters['TwissType'] + '_Twiss_Nmp_' + str(parameters['n_macroparticles']) + '_' + parameters['machine'] + '_' + parameters['lattice_version'] + '_Lattice_Tune_' + parameters['tunex'] + '_'	+ parameters['tuney'] + '_' + parameters['lattice_start'] + '.mat')
 # Fix tune to nominal for tune scans
-parameters['input_distn'] = str('../../12_PFW_Test/Generate_Distns/Bunches/PyORBIT_Tomo_Bunch_Manual_Twiss_Nmp_'+str(parameters['n_macroparticles'])+'_PS_Optimised_Lattice_Tune_'+parameters['tunex']+'_'+parameters['tuney']+'_'+parameters['lattice_start']+'.mat')
+parameters['input_distn'] = str('../../12_PFW_Test/Generate_Distns/Bunches/PyORBIT_Tomo_Bunch_Manual_Twiss_Nmp_'+str(parameters['n_macroparticles'])+'_PS_Optimised_Lattice_Tune_621_624_'+parameters['lattice_start']+'.mat')
 
 parameters['gamma']				= 2.49253731343
 parameters['intensity']			= 72.5E+10
