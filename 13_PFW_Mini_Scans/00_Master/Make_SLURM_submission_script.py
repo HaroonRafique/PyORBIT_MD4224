@@ -23,7 +23,7 @@ queue = 'inf-long'
 
 n_nodes = 2 
 
-jobname = '05_00'
+jobname = '13_00'
 
 path_to_simulation = os.path.dirname(os.path.realpath(__file__)) # This directory
 

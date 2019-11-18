@@ -20,7 +20,7 @@ BRHO      := BEAM->PC * 3.3356;
 RFV := 0.021;
 
 tune_x = 0.21;
-tune_y = 0.24;
+tune_y = 0.10;
  
 /*******************************************************************************
 **         SBEND K1 and multipoles in MUs from ps_inj_lhc.str                 **

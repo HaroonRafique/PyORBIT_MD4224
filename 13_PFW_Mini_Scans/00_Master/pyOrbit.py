@@ -44,10 +44,13 @@ from spacecharge import SpaceChargeCalcAnalyticGaussian
 from spacecharge import InterpolatedLineDensityProfile
 
 from lib.output_dictionary import *
-from lib.pyOrbit_GenerateInitialDistribution import *
 from lib.save_bunch_as_matfile import *
-from lib.pyOrbit_Tunespread_Calculator import *
 from lib.suppress_stdout import suppress_STDOUT
+from lib.pyOrbit_Bunch_Gather import *
+from lib.pyOrbit_Tunespread_Calculator import *
+from lib.pyOrbit_GenerateInitialDistribution import *
+from lib.pyOrbit_PrintLatticeFunctionsFromPTC import *
+from lib.pyOrbit_PTCLatticeFunctionsDictionary import *
 readScriptPTC_noSTDOUT = suppress_STDOUT(readScriptPTC)
 
 # MPI stuff
@@ -81,21 +84,6 @@ def GetTunesFromPTC():
 	os.system('rm TWISS_PTC_table.OUT')
 	return Qx, Qy
 
-# Function to return second moment (mu^2) of distribution
-# NOT MPI compatible - uses only bunch from rank 0
-def GetBunchMus(b, smooth=True):
-
-# Arrays to hold x and y data
-	x = []
-	y = []
-
-	for i in range(b.getSize()):
-		x.append(b.x(i))
-		y.append(b.y(i))
-
-# Calculate moments of the bunch
-	return moment(x, 2), moment(y, 2)
-
 # Create folder structure
 #-----------------------------------------------------------------------
 print '\n\t\tmkdir on MPI process: ', rank
@@ -104,6 +92,16 @@ mpi_mkdir_p('input')
 mpi_mkdir_p('bunch_output')
 mpi_mkdir_p('output')
 mpi_mkdir_p('lost')
+
+# Lattice function dictionary to print closed orbit
+#-----------------------------------------------------------------------
+if s['Update_Twiss']:
+	ptc_dictionary_file = 'input/ptc_dictionary.pkl'
+	if not os.path.exists(ptc_dictionary_file):        
+		PTC_Twiss = PTCLatticeFunctionsDictionary()
+	else:
+		with open(ptc_dictionary_file) as sid:
+			PTC_Twiss = pickle.load(sid)
 
 # Dictionary for simulation status
 #-----------------------------------------------------------------------
@@ -223,7 +221,7 @@ paramsDict["bunch"]= bunch
 
 # Add space charge nodes
 #----------------------------------------------------
-if s['SliceBySlice']:
+if s['Space_Charge']:
 	print '\n\t\tAdding slice-by-slice space charge nodes on MPI process: ', rank
 	# Make a SC solver
 	calcsbs = SpaceChargeCalcSliceBySlice2D(s['GridSizeX'], s['GridSizeY'], s['GridSizeZ'], useLongitudinalKick=s['LongitudinalKick'])
@@ -262,8 +260,6 @@ output.addParameter('intensity', lambda: bunchtwissanalysis.getGlobalMacrosize()
 output.addParameter('n_mp', lambda: bunchtwissanalysis.getGlobalCount())
 output.addParameter('D_x', lambda: bunchtwissanalysis.getDispersion(0))
 output.addParameter('D_y', lambda: bunchtwissanalysis.getDispersion(1))
-output.addParameter('mu_x', lambda: GetBunchMus(bunch)[0])
-output.addParameter('mu_y', lambda: GetBunchMus(bunch)[1])
 output.addParameter('bunchlength', lambda: get_bunch_length(bunch, bunchtwissanalysis))
 output.addParameter('dpp_rms', lambda: get_dpp(bunch, bunchtwissanalysis))
 output.addParameter('beta_x', lambda: bunchtwissanalysis.getBeta(0))
@@ -284,6 +280,73 @@ output.addParameter('eff_alpha_x', lambda: bunchtwissanalysis.getEffectiveAlpha(
 output.addParameter('eff_alpha_y', lambda: bunchtwissanalysis.getEffectiveAlpha(1))
 output.addParameter('gamma', lambda: bunch.getSyncParticle().gamma())
 
+
+# Pre Track Bunch Twiss Analysis & Add BunchGather outputs
+#-----------------------------------------------------------------------
+print '\n\t\tStart tracking on MPI process: ', rank
+turn = -1
+bunchtwissanalysis.analyzeBunch(bunch)
+moments = BunchGather(bunch, turn, p) # Calculate bunch moments and kurtosis
+
+# Add moments and kurtosis
+output.addParameter('sig_x', lambda: moments['Sig_x'])
+output.addParameter('sig_xp', lambda: moments['Sig_xp'])
+output.addParameter('sig_y', lambda: moments['Sig_y'])
+output.addParameter('sig_yp', lambda: moments['Sig_yp'])
+output.addParameter('sig_z', lambda: moments['Sig_z'])
+output.addParameter('sig_dE', lambda: moments['Sig_dE'])
+
+output.addParameter('mu_x', lambda: moments['Mu_x'])
+output.addParameter('mu_xp', lambda: moments['Mu_xp'])
+output.addParameter('mu_y', lambda: moments['Mu_y'])
+output.addParameter('mu_yp', lambda: moments['Mu_yp'])
+output.addParameter('mu_z', lambda: moments['Mu_z'])
+output.addParameter('mu_dE', lambda: moments['Mu_dE'])
+
+output.addParameter('min_x', lambda: moments['Min_x'])
+output.addParameter('min_xp', lambda: moments['Min_xp'])
+output.addParameter('min_y', lambda: moments['Min_y'])
+output.addParameter('min_yp', lambda: moments['Min_yp'])
+output.addParameter('min_z', lambda: moments['Min_z'])
+output.addParameter('min_dE', lambda: moments['Min_dE'])
+
+output.addParameter('max_x', lambda: moments['Max_x'])
+output.addParameter('max_xp', lambda: moments['Max_xp'])
+output.addParameter('max_y', lambda: moments['Max_y'])
+output.addParameter('max_yp', lambda: moments['Max_yp'])
+output.addParameter('max_z', lambda: moments['Max_z'])
+output.addParameter('max_dE', lambda: moments['Max_dE'])
+
+output.addParameter('kurtosis_x', lambda: moments['Kurtosis_x'])
+output.addParameter('kurtosis_xp', lambda: moments['Kurtosis_xp'])
+output.addParameter('kurtosis_y', lambda: moments['Kurtosis_y'])
+output.addParameter('kurtosis_yp', lambda: moments['Kurtosis_yp'])
+output.addParameter('kurtosis_z', lambda: moments['Kurtosis_z'])
+output.addParameter('kurtosis_dE', lambda: moments['Kurtosis_dE'])
+
+output.addParameter('kurtosis_x_6sig', lambda: moments['Kurtosis_x_6sig'])
+output.addParameter('kurtosis_xp_6sig', lambda: moments['Kurtosis_xp_6sig'])
+output.addParameter('kurtosis_y_6sig', lambda: moments['Kurtosis_y_6sig'])
+output.addParameter('kurtosis_yp_6sig', lambda: moments['Kurtosis_yp_6sig'])
+output.addParameter('kurtosis_z_6sig', lambda: moments['Kurtosis_z_6sig'])
+output.addParameter('kurtosis_dE_6sig', lambda: moments['Kurtosis_dE_6sig'])
+
+start_time = time.time()
+last_time = time.time()
+output.addParameter('turn_time', lambda: time.strftime("%H:%M:%S"))
+output.addParameter('turn_duration', lambda: (time.time() - last_time))
+output.addParameter('cumulative_time', lambda: (time.time() - start_time))
+
+# PTC_Twiss must be updated before updating output
+if s['Update_Twiss']:
+	PTC_Twiss.UpdatePTCTwiss(Lattice, turn)
+	output.addParameter('orbit_x_min', lambda: PTC_Twiss.GetMinParameter('orbit_x', turn))
+	output.addParameter('orbit_x_max', lambda: PTC_Twiss.GetMaxParameter('orbit_x', turn))
+	output.addParameter('orbit_y_min', lambda: PTC_Twiss.GetMinParameter('orbit_y', turn))
+	output.addParameter('orbit_y_max', lambda: PTC_Twiss.GetMaxParameter('orbit_y', turn))
+
+output.update()
+
 if os.path.exists(output_file):
 	output.import_from_matfile(output_file)
 
@@ -293,13 +356,6 @@ print '\n\t\tStart tracking on MPI process: ', rank
 start_time = time.time()
 last_time = time.time()
 
-turn = -1
-bunchtwissanalysis.analyzeBunch(bunch)
-output.addParameter('turn_time', lambda: time.strftime("%H:%M:%S"))
-output.addParameter('turn_duration', lambda: (time.time() - last_time))
-output.addParameter('cumulative_time', lambda: (time.time() - start_time))
-start_time = time.time()
-output.update()
 print '\n\t\tstart time = ', start_time
 
 for turn in range(sts['turn']+1, sts['turns_max']):
@@ -307,6 +363,10 @@ for turn in range(sts['turn']+1, sts['turns_max']):
 
 	Lattice.trackBunch(bunch, paramsDict)
 	bunchtwissanalysis.analyzeBunch(bunch)  # analyze twiss and emittance
+	moments = BunchGather(bunch, turn, p)	# Calculate bunch moments and kurtosis
+	if s['Update_Twiss']: 
+		readScriptPTC_noSTDOUT("PTC/update-twiss.ptc") # this is needed to correclty update the twiss functions in all lattice nodes in updateParamsPTC
+		updateParamsPTC(Lattice,bunch) 			# to update bunch energy and twiss functions
 
 	if turn in sts['turns_update']:	sts['turn'] = turn
 
