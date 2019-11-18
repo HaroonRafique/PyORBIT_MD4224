@@ -3,7 +3,7 @@ import numpy as np
 parameters = {}
 
 parameters['tunex']						= '621'
-parameters['tuney']						= '624'
+parameters['tuney']						= '620'
 
 parameters['lattice_start'] 			= 'BWSV64'
 parameters['DistType'] 					= 'Tomo'
