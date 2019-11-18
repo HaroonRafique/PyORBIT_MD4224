@@ -53,6 +53,8 @@ from lib.suppress_stdout import suppress_STDOUT
 from lib.pyOrbit_Bunch_Gather import *
 from lib.pyOrbit_Tunespread_Calculator import *
 from lib.pyOrbit_GenerateInitialDistribution import *
+from lib.pyOrbit_PrintLatticeFunctionsFromPTC import *
+from lib.pyOrbit_PTCLatticeFunctionsDictionary import *
 readScriptPTC_noSTDOUT = suppress_STDOUT(readScriptPTC)
 
 # MPI stuff
@@ -60,6 +62,15 @@ readScriptPTC_noSTDOUT = suppress_STDOUT(readScriptPTC)
 comm = orbit_mpi.mpi_comm.MPI_COMM_WORLD
 rank = orbit_mpi.MPI_Comm_rank(comm)
 print '\n\tStart PyORBIT simulation on MPI process: ', rank
+
+# Lattice function dictionary to print closed orbit
+#-----------------------------------------------------------------------
+ptc_dictionary_file = 'input/ptc_dictionary.pkl'
+if not os.path.exists(ptc_dictionary_file):        
+	PTC_Twiss = PTCLatticeFunctionsDictionary()
+else:
+	with open(ptc_dictionary_file) as sid:
+		PTC_Twiss = pickle.load(sid)
 
 # Function to check that a file isn't empty (common PTC file bug)
 def is_non_zero_file(fpath):  
@@ -378,10 +389,11 @@ Lattice.readPTC(PTC_File)
 print '\n\t\tRead PTC files on MPI process: ', rank
 CheckAndReadPTCFile('PTC/fringe.ptc')
 CheckAndReadPTCFile('PTC/time.ptc')
+CheckAndReadPTCFile('PTC/ramp_cavities_optimised.ptc')
 
-if p['lattice_version'] is 'Original':		CheckAndReadPTCFile('PTC/ramp_cavities.ptc')
-elif p['lattice_version'] is 'Optimised':	CheckAndReadPTCFile('PTC/ramp_cavities_optimised.ptc')
-else: print '\n\tERROR: p[\'lattice_version\'] = ', p['lattice_version'] ,' not recognised, options are \'Original\' and \'Optimised\''
+# ~ if p['lattice_version'] is 'Original':		CheckAndReadPTCFile('PTC/ramp_cavities.ptc')
+# ~ elif p['lattice_version'] is 'Optimised':	CheckAndReadPTCFile('PTC/ramp_cavities_optimised.ptc')
+# ~ else: print '\n\tERROR: p[\'lattice_version\'] = ', p['lattice_version'] ,' not recognised, options are \'Original\' and \'Optimised\''
 
 # Add apertures
 #-----------------------------------------------------------------------
