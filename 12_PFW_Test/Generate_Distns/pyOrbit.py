@@ -227,8 +227,6 @@ def Analyse_Bunch(bunch, p, rank=0):
 	output.addParameter('D_y', lambda: bunchtwissanalysis.getDispersion(1))
 	output.addParameter('bunchlength', lambda: get_bunch_length(bunch, bunchtwissanalysis))
 	output.addParameter('dpp_rms', lambda: get_dpp(bunch, bunchtwissanalysis))
-	output.addParameter('mu_x', lambda: GetBunchMus(bunch)[0])
-	output.addParameter('mu_y', lambda: GetBunchMus(bunch)[1])
 	output.addParameter('eff_beta_x', lambda: bunchtwissanalysis.getEffectiveBeta(0))
 	output.addParameter('eff_beta_y', lambda: bunchtwissanalysis.getEffectiveBeta(1))
 	output.addParameter('eff_epsn_x', lambda: bunchtwissanalysis.getEffectiveEmittance(0))
