@@ -1,0 +1,108 @@
+/**********************************************************************************
+*
+* MAD-X input script for the flat bottom optics of the LHC cycle with low-chromaticity
+* setup.
+*
+* 22/07/2019 - Alexander Huschauer
+************************************************************************************/
+ 
+/******************************************************************
+ * Energy and particle type definition
+ ******************************************************************/
+
+BEAM, PARTICLE=PROTON, PC = 2.14;
+BRHO      := BEAM->PC * 3.3356;
+
+/******************************************************************
+ * Call lattice files
+ ******************************************************************/
+
+call, file="New_Lattice/ps_mu.seq";
+call, file="New_Lattice/ps_ss.seq";
+call, file="New_Lattice/ps.str";
+call, file="New_Lattice/ps_fb_lhc.str";
+call, file="New_Lattice/macros.ptc";
+
+/******************************************************************
+ * Configuration 1:
+ ******************************************************************/
+
+!KQFN89= -0.0681172535243;
+!KQDN90= -0.0628955655243;
+!KQFN95= 0.094982831884;
+!KQDN96= 0.075953543199;
+!KQFN99= 0.0313663626557;
+!KQFN05= -0.0672773852644;
+!KQDW06= -0.0546827792559;
+!KQFN09= -0.105407643798;
+!KQDN10= 0.0500132847576;
+!KQFW17= 0.0770376522923;
+
+/******************************************************************
+ * Configuration 2:
+ ******************************************************************/
+
+KQDW28= 0.0757297180705;
+KQFW31= 0.0775756834198;
+KQDW32= 0.0775756834198;
+KQFN35= -0.0594659200772;
+KQDN36= -0.0789023831646;
+KQFN39= -0.0982846394342;
+KQDN40= -0.105573371396;
+KQFN45= 0.0305545585327;
+KQDN46= 0.105573371396;
+KQFN49= 0.0353049579112;
+
+seqedit, sequence=PS;
+	flatten;
+	cycle , start=PI.BSG48;
+	flatten;
+endedit;
+
+/***********************************************************************
+ * PTC TWISS
+ **********************************************************************/
+! PTC integration parameters
+
+propagation_method = 2; 
+order_of_integrator = 6;
+
+! propagation_method 1: Drift-Kick-Drift
+! 2 = 2nd order, one kick per integration step, naive.
+! 4 = Ruth-Neri-Yoshida 4th order method, 3 kicks per integration step.
+! 6 = Yoshida 6th order method, 7 kicks per integration step.
+
+! propagation_method 2: Matrix-Kick-Matrix
+! 2 = Euler-like Matrix-Kick-Matrix
+! 4 = Simpson-like (1/6)K-M-(2/3)K-M-(1/6)K
+! 6 = Bode-like (7/90)K-M-(32/90)K-M-(12/90)K-M-(32/90)K-M-(7/90)K
+
+! exact = true ensures SBENDs orbit is correct
+! avoids quadrupole feed-down effects leading to closed orbit distortions
+exact_flag = true;
+
+! time=true: every derivative wrt dp/p needs to be multiplied by the relativistic beta DQ1, DISP1,...) required for flat file generation!
+! time=false: forget about beta and take the value as it is - use for PTC_Twiss 
+time_flag = false;
+
+integration_steps_per_element = 5; ! 3;
+map_order = 5;
+
+use, sequence=PS;
+ptc_create_universe;
+ptc_create_layout, time=false, model=propagation_method, method=order_of_integrator, nst=integration_steps_per_element, exact=true;
+select, flag=ptc_twiss, clear; 
+select, flag=ptc_twiss, column=name, s, betx, bety, disp1, disp3, x, px, y, py;
+ptc_twiss, icase=5, no=map_order, closed_orbit, file=config2_flat_bottom.tfs, table=ptc_twiss;
+ptc_end;
+
+ptc_create_universe;
+ptc_create_layout,time=true, model=propagation_method, exact=true, method=order_of_integrator, nst=integration_steps_per_element;
+ptc_script, file="./resplit.ptc";
+ptc_script, file="./print_flat_file.ptc";
+select, flag=ptc_twiss, clear; 
+select, flag=ptc_twiss, column=name, s, betx, bety, disp1, disp3, x, px, y, py;
+ptc_twiss, icase=5, no=4, deltap_dependency, closed_orbit, file=config2_flat_bottom_flat_file.tfs, table=ptc_twiss;
+ptc_end;
+
+stop;
