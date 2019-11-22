@@ -117,7 +117,7 @@ else:
 #-----------------------------------------------------------------------
 print '\nStart MADX on MPI process: ', rank
 if not rank:
-	os.system("/afs/cern.ch/eng/sl/MAD-X/pro/releases/5.02.00/madx-linux64 < MAD-X/Flat_file.madx")
+	os.system("/afs/cern.ch/eng/sl/MAD-X/pro/releases/5.02.00/madx-linux64 < Flat_file.madx")
 orbit_mpi.MPI_Barrier(comm)
 
 # Generate PTC RF table
@@ -130,7 +130,7 @@ write_RFtable('input/RF_table.ptc', *[RF[k] for k in ['harmonic_factors','time',
 # Initialize a Teapot-Style PTC lattice
 #-----------------------------------------------------------------------
 print '\n\t\tRead PTC flat file: on MPI process: ', rank
-PTC_File = 'MAD-X/PTC-PyORBIT_flat_file.flt'
+PTC_File = 'PTC-PyORBIT_flat_file.flt'
 Lattice = PTC_Lattice("PS")
 Lattice.readPTC(PTC_File)
 
