@@ -2,17 +2,17 @@ import numpy as np
 
 parameters = {}
 
-parameters['n_macroparticles']		= int(50E3) #int(50E3) # int(0.5E6)
+parameters['n_macroparticles']		= int(5E4) #int(50E3) # int(0.5E6)
 parameters['lattice_version']	='Optimised'
 
 # Include machine (PS), tunes, lattice start position (BWS65H) for bunch output file label
 parameters['tunex']					= '621'
-parameters['tuney']					= '626'
+parameters['tuney']					= '625'
 parameters['machine']				= 'PS'
 parameters['lattice_start'] 		= 'BSG48'
 parameters['bunch_label'] 		= parameters['machine'] + '_' + parameters['lattice_version'] + '_Lattice_Tune_' + parameters['tunex'] + '_' + parameters['tuney'] + '_' + parameters['lattice_start']
-parameters['flat_file']			= '../Optimised_Lattice/Flat_Files/config1_21_26/PTC-PyORBIT_flat_file.flt'
-#parameters['flat_file']			= '../Optimised_Lattice/Flat_Files/config2_21_25/PTC-PyORBIT_flat_file.flt'
+#parameters['flat_file']			= '../Optimised_Lattice/Flat_Files/config1_21_26/PTC-PyORBIT_flat_file.flt'
+parameters['flat_file']			= '../Optimised_Lattice/Flat_Files/config2_21_25/PTC-PyORBIT_flat_file.flt'
 parameters['tomo_file']			= 'PyORBIT_Tomo_file_MD4224_HB.mat'
 
 # PTC RF Table Parameters
