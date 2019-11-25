@@ -24,34 +24,47 @@ call, file="New_Lattice/ps_fb_lhc.str";
 call, file="New_Lattice/macros.ptc";
 
 /******************************************************************
- * Configuration 1:
+ * Zero Dispersion Macro
  ******************************************************************/
+ 
+Zero_Dispersion(config): macro={
+	IF(config == 1){
+	print, text = "/*************************************************************";
+	print, text = "  Using Low Energy Quads to create zero dispersion at PI.BSG48";
+	print, text = "  Configuration 1: Qx = 6.21, Qy = 6.26";
+	print, text = "/*************************************************************";
+	use, sequence=PS;
+	KQFN89= -0.0681172535243;
+	KQDN90= -0.0628955655243;
+	KQFN95= 0.094982831884;
+	KQDN96= 0.075953543199;
+	KQFN99= 0.0313663626557;
+	KQFN05= -0.0672773852644;
+	KQDW06= -0.0546827792559;
+	KQFN09= -0.105407643798;
+	KQDN10= 0.0500132847576;
+	KQFW17= 0.0770376522923;
+	}
+	ELSEIF(config == 2){
+	print, text = "/*************************************************************";
+	print, text = "  Using Low Energy Quads to create zero dispersion at PI.BSG48";
+	print, text = "  Configuration 2: Qx = 6.21, Qy = 6.25";
+	print, text = "/*************************************************************";
+	use, sequence=PS;
+	KQDW28= 0.0757297180705;
+	KQFW31= 0.0775756834198;
+	KQDW32= 0.0775756834198;
+	KQFN35= -0.0594659200772;
+	KQDN36= -0.0789023831646;
+	KQFN39= -0.0982846394342;
+	KQDN40= -0.105573371396;
+	KQFN45= 0.0305545585327;
+	KQDN46= 0.105573371396;
+	KQFN49= 0.0353049579112;
+	}
+};
 
-!KQFN89= -0.0681172535243;
-!KQDN90= -0.0628955655243;
-!KQFN95= 0.094982831884;
-!KQDN96= 0.075953543199;
-!KQFN99= 0.0313663626557;
-!KQFN05= -0.0672773852644;
-!KQDW06= -0.0546827792559;
-!KQFN09= -0.105407643798;
-!KQDN10= 0.0500132847576;
-!KQFW17= 0.0770376522923;
-
-/******************************************************************
- * Configuration 2:
- ******************************************************************/
-
-KQDW28= 0.0757297180705;
-KQFW31= 0.0775756834198;
-KQDW32= 0.0775756834198;
-KQFN35= -0.0594659200772;
-KQDN36= -0.0789023831646;
-KQFN39= -0.0982846394342;
-KQDN40= -0.105573371396;
-KQFN45= 0.0305545585327;
-KQDN46= 0.105573371396;
-KQFN49= 0.0353049579112;
+EXEC, Zero_Dispersion(2);
 
 seqedit, sequence=PS;
 	flatten;
@@ -101,8 +114,19 @@ ptc_create_layout,time=true, model=propagation_method, exact=true, method=order_
 ptc_script, file="./resplit.ptc";
 ptc_script, file="./print_flat_file.ptc";
 select, flag=ptc_twiss, clear; 
-select, flag=ptc_twiss, column=name, s, betx, bety, disp1, disp3, x, px, y, py;
+select, flag=ptc_twiss, column=name, s, betx, bety, disp1, disp2, disp3, disp4, x, px, y, py;
 ptc_twiss, icase=5, no=4, deltap_dependency, closed_orbit, file=config2_flat_bottom_flat_file.tfs, table=ptc_twiss;
 ptc_end;
+
+plot, table=ptc_twiss, haxis=s, vaxis=betx;
+plot, table=ptc_twiss, haxis=s, vaxis=bety;
+plot, table=ptc_twiss, haxis=s, vaxis=x;
+plot, table=ptc_twiss, haxis=s, vaxis=y;
+plot, table=ptc_twiss, haxis=s, vaxis=px;
+plot, table=ptc_twiss, haxis=s, vaxis=py;
+plot, table=ptc_twiss, haxis=s, vaxis=disp1;
+plot, table=ptc_twiss, haxis=s, vaxis=disp2;
+plot, table=ptc_twiss, haxis=s, vaxis=disp3;
+plot, table=ptc_twiss, haxis=s, vaxis=disp4;
 
 stop;
