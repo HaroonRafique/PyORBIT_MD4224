@@ -3,7 +3,7 @@ import numpy as np
 parameters = {}
 
 parameters['tunex']						= '621'
-parameters['tuney']						= '626'
+parameters['tuney']						= '625'
 
 parameters['lattice_start'] 			= 'BSG48'
 parameters['DistType'] 					= 'Tomo'
@@ -51,7 +51,7 @@ parameters['turns_print'] = sorted(tu)
 parameters['turns_update'] = sorted(tu)
 
 switches = {
-	'SpaceCharge': 	True,
+	'SpaceCharge': 	False,
 	'GridSizeX': 128,
 	'GridSizeY': 128,
 	'GridSizeZ': 64
