@@ -22,7 +22,7 @@ BRHO      := BEAM->PC * 3.3356;
  **********************************************************************/
 RFV := 0.021;
 
-tune_x = 0.23;
+tune_x = 0.07;
 tune_y = 0.24;
 
 use_pfw = 1;
@@ -151,7 +151,6 @@ match_Tunes(PFW_flag, QQx, QQy): macro={
 	print, text = "/***************************************************";
 	print, text = "  Matching Tune using Pole Face Windings";
 	print, text = "/***************************************************";
-	value, Qx, Qy, Qxp, Qyp; 
 	use, sequence=PS;
 	match, use_macro;
 		vary, name = pfwk1_f;
@@ -169,27 +168,25 @@ match_Chroma_PFW(QQxp, QQyp, QQxp2, QQyp2): macro={
 	print, text = "/***************************************************";
 	print, text = "  Matching Chromaticity using Pole Face Windings";
 	print, text = "/***************************************************";
-	value, Qx, Qy, Qxp, Qyp; 
 	use, sequence=PS;
 	match, use_macro;
 		vary, name = pfwk2_f;
 		vary, name = pfwk2_d;
 		vary, name = pfwk3_f;
 		vary, name = pfwk3_d;
-		use_macro, name = ptc_twiss_macro(2);
+        use_macro, name = ptc_twiss_macro(3);
 		constraint, expr = table(ptc_twiss_summary,dq1) = QQxp;
 		constraint, expr = table(ptc_twiss_summary,dq2) = QQyp;
-		constraint, expr = table(ptc_twiss_summary,dq3) = QQxp2;
-		constraint, expr = table(ptc_twiss_summary,dq4) = QQyp2;
+        constraint, expr = table(nonlin,value,5)  = QQxp2;
+        constraint, expr = table(nonlin,value,10) = QQyp2;
 	jacobian,calls=50000,bisec=3;
 	ENDMATCH;
-	}
 	value, pfwk2_f, pfwk2_d, pfwk3_f, pfwk3_d;
 };
 
 use, sequence=PS;
 EXEC, match_Tunes(use_pfw, tune_x, tune_y);
-EXEC, match_Chroma_PFW(Qxp, Qyp, Qxp2, Qyp2);
+!EXEC, match_Chroma_PFW(Qxp, Qyp, Qxp2, Qyp2);
 
 value, tune_x, tune_y, Qxp, Qyp; 
 
@@ -221,5 +218,5 @@ plot, table=ptc_twiss, haxis=s, vaxis=disp2;
 plot, table=ptc_twiss, haxis=s, vaxis=disp3;
 plot, table=ptc_twiss, haxis=s, vaxis=disp4;
 
-value, kf, kd, pfwk1_f, pfwk1_d, pfwk2_f, pfwk2_d;
-value, Qx, Qy, Qxp, Qyp; 
+value, kf, kd, pfwk1_f, pfwk1_d, pfwk2_f, pfwk2_d, pfwk3_f, pfwk3_d;
+value, tune_x, tune_y, Qxp, Qyp; 
