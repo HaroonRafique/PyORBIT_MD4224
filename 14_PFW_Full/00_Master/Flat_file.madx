@@ -132,10 +132,10 @@ ptc_twiss_macro(order): macro = {
   ptc_end;
 };
 
-match_Tunes(PFW_flag, QQx, QQy, QQxp, QQyp): macro={
+match_Tunes(PFW_flag, QQx, QQy): macro={
 	IF(PFW_flag == 0){
 	print, text = "/***************************************************";
-	print, text = "  Matching using Low Energy Quads";
+	print, text = "  Matching Tune using Low Energy Quads";
 	print, text = "/***************************************************";
 	use, sequence=PS;
 	match, use_macro;
@@ -149,20 +149,38 @@ match_Tunes(PFW_flag, QQx, QQy, QQxp, QQyp): macro={
 	}
 	ELSEIF(PFW_flag == 1){
 	print, text = "/***************************************************";
-	print, text = "  Matching using Pole Face Windings";
+	print, text = "  Matching Tune using Pole Face Windings";
 	print, text = "/***************************************************";
 	value, Qx, Qy, Qxp, Qyp; 
 	use, sequence=PS;
 	match, use_macro;
 		vary, name = pfwk1_f;
 		vary, name = pfwk1_d;
-		vary, name = pfwk2_f;
-		vary, name = pfwk2_d;
 		use_macro, name = ptc_twiss_macro(2);
 		constraint, expr = table(ptc_twiss_summary,q1)  = QQx;
 		constraint, expr = table(ptc_twiss_summary,q2)  = QQy;
+	jacobian,calls=50000,bisec=3;
+	ENDMATCH;
+	}
+	value, kf, kd, pfwk1_f, pfwk1_d, pfwk2_f, pfwk2_d;
+};
+
+match_Chroma_PFW(QQxp, QQyp, QQxp2, QQyp2): macro={
+	print, text = "/***************************************************";
+	print, text = "  Matching Chromaticity using Pole Face Windings";
+	print, text = "/***************************************************";
+	value, Qx, Qy, Qxp, Qyp; 
+	use, sequence=PS;
+	match, use_macro;
+		vary, name = pfwk2_f;
+		vary, name = pfwk2_d;
+		vary, name = pfwk3_f;
+		vary, name = pfwk3_d;
+		use_macro, name = ptc_twiss_macro(2);
 		constraint, expr = table(ptc_twiss_summary,dq1) = QQxp;
 		constraint, expr = table(ptc_twiss_summary,dq2) = QQyp;
+		constraint, expr = table(ptc_twiss_summary,dq3) = QQxp2;
+		constraint, expr = table(ptc_twiss_summary,dq4) = QQyp2;
 	jacobian,calls=50000,bisec=3;
 	ENDMATCH;
 	}
@@ -170,7 +188,9 @@ match_Tunes(PFW_flag, QQx, QQy, QQxp, QQyp): macro={
 };
 
 use, sequence=PS;
-EXEC, match_Tunes(use_pfw, tune_x, tune_y, Qxp, Qyp);
+EXEC, match_Tunes(use_pfw, tune_x, tune_y);
+EXEC, match_Chroma_PFW(Qxp, Qyp, Qxp2, Qyp2);
+
 value, tune_x, tune_y, Qxp, Qyp; 
 
 /***********************************************************************
