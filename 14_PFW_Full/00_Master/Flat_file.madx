@@ -162,7 +162,7 @@ match_Tunes(PFW_flag, QQx, QQy): macro={
 	jacobian,calls=50000,bisec=3;
 	ENDMATCH;
 	}
-	value, kf, kd, pfwk1_f, pfwk1_d, pfwk2_f, pfwk2_d;
+	value, kf, kd, pfwk1_f, pfwk1_d;
 };
 
 match_Chroma_PFW(QQxp, QQyp, QQxp2, QQyp2): macro={
@@ -184,7 +184,7 @@ match_Chroma_PFW(QQxp, QQyp, QQxp2, QQyp2): macro={
 	jacobian,calls=50000,bisec=3;
 	ENDMATCH;
 	}
-	value, kf, kd, pfwk1_f, pfwk1_d, pfwk2_f, pfwk2_d;
+	value, pfwk2_f, pfwk2_d, pfwk3_f, pfwk3_d;
 };
 
 use, sequence=PS;
