@@ -10,6 +10,7 @@ call, file="PS_Lattice/ps_ss.seq";
 call, file="PS_Lattice/ps.str";
 call, file="PS_Lattice/ps_pro_bare_machine.str";
 call, file="PS_Lattice/macros.ptc";
+call, file="tunes.str";
 
 /***********************************************************************
  * Create a MAD-X beam and tell MAD-X which accelerator lattice to use.
@@ -21,9 +22,6 @@ BRHO      := BEAM->PC * 3.3356;
  *                            USER SETTINGS
  **********************************************************************/
 RFV := 0.021;
-
-tune_x = 0.07;
-tune_y = 0.24;
 
 use_pfw = 1;
 
@@ -174,11 +172,12 @@ match_Chroma_PFW(QQxp, QQyp, QQxp2, QQyp2): macro={
 		vary, name = pfwk2_d;
 		vary, name = pfwk3_f;
 		vary, name = pfwk3_d;
-        use_macro, name = ptc_twiss_macro(3);
+        use_macro, name = ptc_twiss_macro(2);
 		constraint, expr = table(ptc_twiss_summary,dq1) = QQxp;
 		constraint, expr = table(ptc_twiss_summary,dq2) = QQyp;
-        constraint, expr = table(nonlin,value,5)  = QQxp2;
-        constraint, expr = table(nonlin,value,10) = QQyp2;
+		! These require the `normal' ptc_twiss flag which doesn't seem to work with MAD-X 5.02
+        !constraint, expr = table(nonlin,value,5)  = QQxp2;
+        !constraint, expr = table(nonlin,value,10) = QQyp2;
 	jacobian,calls=50000,bisec=3;
 	ENDMATCH;
 	value, pfwk2_f, pfwk2_d, pfwk3_f, pfwk3_d;
