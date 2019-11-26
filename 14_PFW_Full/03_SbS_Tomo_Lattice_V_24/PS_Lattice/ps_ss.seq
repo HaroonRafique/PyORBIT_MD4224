@@ -75,7 +75,8 @@ MQNCHAWP  : QUADRUPOLE  , L := .30;       ! Quadrupole magnet, type 414
 MQSAAIAP  : QUADRUPOLE  , L := 0.16;      ! Quadrupole magnet, skew, type 404
 //---------------------- RFCAVITY       ---------------------------------------------
 AARFB     : RFCAVITY    , L := 1;         ! RF CAVITY 40/80 MHZ
-ACC10     : RFCAVITY    , L := 2.45;      ! 10 MHz radio frequency cavity
+!ACC10     : RFCAVITY    , L := 2.45;      ! 10 MHz radio frequency cavity
+ACC10     : RFCAVITY    , L := 1.0, LAG=0, HARMON=9, no_cavity_totalpath; ! Fix for PTC PyORBIT SC sims
 ACC20     : RFCAVITY    , L := 1.0;       ! 20 MHz radio frequency cavity
 ACC200    : RFCAVITY    , L := .40;       ! RF Cavity 200 MHz
 ACC40     : RFCAVITY    , L := 1.0;       ! 40 MHz radio frequency cavity
