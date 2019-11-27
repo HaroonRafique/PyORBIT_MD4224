@@ -49,6 +49,8 @@ from lib.suppress_stdout import suppress_STDOUT
 from lib.pyOrbit_Bunch_Gather import *
 from lib.pyOrbit_Tunespread_Calculator import *
 from lib.pyOrbit_GenerateInitialDistribution import *
+from lib.pyOrbit_PrintLatticeFunctionsFromPTC import *
+from lib.pyOrbit_PTCLatticeFunctionsDictionary import *
 readScriptPTC_noSTDOUT = suppress_STDOUT(readScriptPTC)
 
 # MPI stuff
@@ -91,6 +93,16 @@ mpi_mkdir_p('bunch_output')
 mpi_mkdir_p('output')
 mpi_mkdir_p('lost')
 
+# Lattice function dictionary to print closed orbit
+#-----------------------------------------------------------------------
+if s['Update_Twiss']:
+	ptc_dictionary_file = 'input/ptc_dictionary.pkl'
+	if not os.path.exists(ptc_dictionary_file):        
+		PTC_Twiss = PTCLatticeFunctionsDictionary()
+	else:
+		with open(ptc_dictionary_file) as sid:
+			PTC_Twiss = pickle.load(sid)
+
 # Dictionary for simulation status
 #-----------------------------------------------------------------------
 import pickle # HAVE TO CLEAN THIS FILE BEFORE RUNNING A NEW SIMULATION
@@ -101,6 +113,13 @@ else:
 	with open(status_file) as fid:
 		sts = pickle.load(fid)
 
+# Generate Lattice (MADX + PTC) - Use MPI to run on only one 'process'
+#-----------------------------------------------------------------------
+print '\nStart MADX on MPI process: ', rank
+if not rank:
+	os.system("/afs/cern.ch/eng/sl/MAD-X/pro/releases/5.02.00/madx-linux64 < Flat_file.madx")
+orbit_mpi.MPI_Barrier(comm)
+
 # Generate PTC RF table
 #-----------------------------------------------------------------------
 print '\n\t\tCreate RF file on MPI process: ', rank
@@ -110,8 +129,8 @@ write_RFtable('input/RF_table.ptc', *[RF[k] for k in ['harmonic_factors','time',
 
 # Initialize a Teapot-Style PTC lattice
 #-----------------------------------------------------------------------
-print '\n\t\tRead PTC flat file: ',p['flat_file'],' on MPI process: ', rank
-PTC_File = p['flat_file']
+print '\n\t\tRead PTC flat file: on MPI process: ', rank
+PTC_File = 'PTC-PyORBIT_flat_file.flt'
 Lattice = PTC_Lattice("PS")
 Lattice.readPTC(PTC_File)
 
@@ -157,9 +176,21 @@ if sts['turn'] < 0:
 	for i in p:
 		print '\t', i, '\t = \t', p[i]
 
-	print '\n\t\tLoad distribution from ', p['input_distn'] ,' on MPI process: ', rank
-	path_to_distn = p['input_distn']
-	bunch = bunch_from_matfile(path_to_distn)
+	if s['CreateDistn']:
+# Create the initial distribution 
+#-----------------------------------------------------------------------
+		print '\n\t\tgenerate_initial_distribution on MPI process: ', rank
+		Particle_distribution_file = generate_initial_distribution_from_tomo(p, 1, Lattice, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
+
+		print '\n\t\tbunch_orbit_to_pyorbit on MPI process: ', rank
+		bunch_orbit_to_pyorbit(paramsDict["length"], kin_Energy, Particle_distribution_file, bunch, p['n_macroparticles'] + 1) #read in only first N_mp particles.
+
+	else:
+# OR load bunch from file
+#-----------------------------------------------------------------------
+		print '\n\t\tLoad distribution from ', p['input_distn'] ,' on MPI process: ', rank
+		path_to_distn = p['input_distn']
+		bunch = bunch_from_matfile(path_to_distn)
 
 # Add Macrosize to bunch
 #-----------------------------------------------------------------------
@@ -203,10 +234,10 @@ paramsDict["bunch"]= bunch
 
 # Add space charge nodes
 #----------------------------------------------------
-if s['SpaceCharge']:
+if s['Space_Charge']:
 	print '\n\t\tAdding slice-by-slice space charge nodes on MPI process: ', rank
 	# Make a SC solver
-	calcsbs = SpaceChargeCalcSliceBySlice2D(s['GridSizeX'], s['GridSizeY'], s['GridSizeZ'], useLongitudinalKick=True)
+	calcsbs = SpaceChargeCalcSliceBySlice2D(s['GridSizeX'], s['GridSizeY'], s['GridSizeZ'], useLongitudinalKick=s['LongitudinalKick'])
 	sc_path_length_min = 1E-8
 	# Add the space charge solver to the lattice as child nodes
 	sc_nodes = scLatticeModifications.setSC2p5DAccNodes(Lattice, sc_path_length_min, calcsbs)
@@ -262,7 +293,6 @@ output.addParameter('eff_alpha_x', lambda: bunchtwissanalysis.getEffectiveAlpha(
 output.addParameter('eff_alpha_y', lambda: bunchtwissanalysis.getEffectiveAlpha(1))
 output.addParameter('gamma', lambda: bunch.getSyncParticle().gamma())
 
-if os.path.exists(output_file): output.import_from_matfile(output_file)
 
 # Pre Track Bunch Twiss Analysis & Add BunchGather outputs
 #-----------------------------------------------------------------------
@@ -320,18 +350,36 @@ output.addParameter('turn_time', lambda: time.strftime("%H:%M:%S"))
 output.addParameter('turn_duration', lambda: (time.time() - last_time))
 output.addParameter('cumulative_time', lambda: (time.time() - start_time))
 
+# PTC_Twiss must be updated before updating output
+if s['Update_Twiss']:
+	PTC_Twiss.UpdatePTCTwiss(Lattice, turn)
+	output.addParameter('orbit_x_min', lambda: PTC_Twiss.GetMinParameter('orbit_x', turn))
+	output.addParameter('orbit_x_max', lambda: PTC_Twiss.GetMaxParameter('orbit_x', turn))
+	output.addParameter('orbit_y_min', lambda: PTC_Twiss.GetMinParameter('orbit_y', turn))
+	output.addParameter('orbit_y_max', lambda: PTC_Twiss.GetMaxParameter('orbit_y', turn))
+
 output.update()
+
+if os.path.exists(output_file):
+	output.import_from_matfile(output_file)
+
+# Track
+#-----------------------------------------------------------------------
+print '\n\t\tStart tracking on MPI process: ', rank
+start_time = time.time()
+last_time = time.time()
 
 print '\n\t\tstart time = ', start_time
 
-# Start Tracking
-#-----------------------------------------------------------------------
 for turn in range(sts['turn']+1, sts['turns_max']):
 	if not rank:	last_time = time.time()
 
 	Lattice.trackBunch(bunch, paramsDict)
-	bunchtwissanalysis.analyzeBunch(bunch)	# analyze twiss and emittance
+	bunchtwissanalysis.analyzeBunch(bunch)  # analyze twiss and emittance
 	moments = BunchGather(bunch, turn, p)	# Calculate bunch moments and kurtosis
+	if s['Update_Twiss']: 
+		readScriptPTC_noSTDOUT("PTC/update-twiss.ptc") # this is needed to correclty update the twiss functions in all lattice nodes in updateParamsPTC
+		updateParamsPTC(Lattice,bunch) 			# to update bunch energy and twiss functions
 
 	if turn in sts['turns_update']:	sts['turn'] = turn
 

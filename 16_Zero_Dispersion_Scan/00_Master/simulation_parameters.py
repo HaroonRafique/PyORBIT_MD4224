@@ -3,19 +3,13 @@ import numpy as np
 parameters = {}
 
 parameters['tunex']						= '621'
-parameters['tuney']						= '626'
-
+parameters['tuney']						= '625'
 parameters['lattice_start'] 			= 'BSG48'
-parameters['DistType'] 					= 'Tomo'
 parameters['n_macroparticles']			= int(5E5)
-parameters['lattice_version']			= 'Optimised'
-parameters['TwissType'] 				= 'Lattice'
-parameters['machine']					= 'PS'
 
-parameters['bunch_label'] = parameters['machine'] + '_' + parameters['lattice_version'] + '_Lattice_Tune_' + parameters['tunex'] + '_' + parameters['tuney'] + '_' + parameters['lattice_start']
-parameters['flat_file'] = str('../../15_Zero_Dispersion_Lattice/Optimised_Lattice/Flat_Files/21_'+parameters['tuney'][1:]+'/PTC-PyORBIT_flat_file.flt')
+# Fix tune to nominal for tune scans
+parameters['input_distn'] = str('../../12_PFW_Test/Generate_Distns/Bunches/PyORBIT_Tomo_Bunch_Manual_Twiss_Nmp_'+str(parameters['n_macroparticles'])+'_PS_Optimised_Lattice_Tune_621_624_'+parameters['lattice_start']+'.mat')
 parameters['tomo_file'] = 'PyORBIT_Tomo_file_MD4224_HB.mat'
-parameters['input_distn'] = str('../../15_Zero_Dispersion_Lattice/Generate_Distns/Bunches/PyORBIT_Tomo_Bunch_Lattice_Twiss_Nmp_' + str(parameters['n_macroparticles']) + '_PS_Optimised_Lattice_Tune_621_'+parameters['tuney']+'_BSG48.mat')
 
 parameters['gamma']				= 2.49253731343
 parameters['intensity']			= 72.5E+10
@@ -51,7 +45,9 @@ parameters['turns_print'] = sorted(tu)
 parameters['turns_update'] = sorted(tu)
 
 switches = {
-	'SpaceCharge': 	True,
+	'CreateDistn': 		True,
+	'Update_Twiss':		False,
+	'Space_Charge': 	True,
 	'GridSizeX': 128,
 	'GridSizeY': 128,
 	'GridSizeZ': 64
