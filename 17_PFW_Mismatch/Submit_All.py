@@ -3,16 +3,16 @@ import os
 master_dir = os.getcwd()
 
 sbs_locations = []
-sbs_locations.append('./01_SbS_Tomo_V10_dBeta_25/')
-sbs_locations.append('./01_SbS_Tomo_V10_dBeta_20/')
-sbs_locations.append('./01_SbS_Tomo_V10_dBeta_15/')
-sbs_locations.append('./01_SbS_Tomo_V10_dBeta_10/')
-sbs_locations.append('./01_SbS_Tomo_V10_dBeta_05/')
-sbs_locations.append('./01_SbS_Tomo_V10_dBeta_04/')
-sbs_locations.append('./01_SbS_Tomo_V10_dBeta_03/')
-sbs_locations.append('./01_SbS_Tomo_V10_dBeta_02/')
-sbs_locations.append('./01_SbS_Tomo_V10_dBeta_01/')
-sbs_locations.append('./01_SbS_Tomo_V10_dBeta_00/')
+sbs_locations.append('/01_SbS_Tomo_V10_dBeta_25/')
+sbs_locations.append('/01_SbS_Tomo_V10_dBeta_20/')
+sbs_locations.append('/01_SbS_Tomo_V10_dBeta_15/')
+sbs_locations.append('/01_SbS_Tomo_V10_dBeta_10/')
+sbs_locations.append('/01_SbS_Tomo_V10_dBeta_05/')
+sbs_locations.append('/01_SbS_Tomo_V10_dBeta_04/')
+sbs_locations.append('/01_SbS_Tomo_V10_dBeta_03/')
+sbs_locations.append('/01_SbS_Tomo_V10_dBeta_02/')
+sbs_locations.append('/01_SbS_Tomo_V10_dBeta_01/')
+sbs_locations.append('/01_SbS_Tomo_V10_dBeta_00/')
 
 for loc in sbs_locations:
 	print '------------------------------------------------------------------------------------------------'
