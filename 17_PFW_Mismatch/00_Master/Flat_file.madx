@@ -8,10 +8,8 @@ TITLE, "Flat file generation for PTC-PyORBIT";
 use_pfw = 1;	!Match tunes with PFW or LEQ
 match_chroma = 0;
 
-BCMS = 0;		!Harmonic 9 for BCMS, 7 for Standard LHC beams
+BCMS = 1;		!Harmonic 9 for BCMS, 7 for Standard LHC beams
 LIU = 0;		!LIU KE = 2GeV, pre-LIU KE = 1.4GeV
-
-Delta_k := 0.01;
 
 /***********************************************************************
  * INITIALIZATION
@@ -103,7 +101,7 @@ ptc_twiss, icase=5, no=map_order, closed_orbit, file=optimised_bare_simplified.t
 ptc_end;
 
 /***********************************************************************
- * Add quadrupole error
+ * Add quadrupole error - define Delta_k in tunes.str
  **********************************************************************/
 
 EOPTION, ADD=false;

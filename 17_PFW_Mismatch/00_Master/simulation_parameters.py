@@ -3,7 +3,7 @@ import numpy as np
 parameters = {}
 
 parameters['tunex']						= '621'
-parameters['tuney']						= '624'
+parameters['tuney']						= '610'
 
 parameters['lattice_start'] 			= 'BWSH65'
 parameters['n_macroparticles']			= int(5E5)
@@ -49,7 +49,6 @@ parameters['turns_update'] = sorted(tu)
 switches = {
 	'Update_Twiss':		False,
 	'Space_Charge': 	True,
-	'LongitudinalKick': True,
 	'GridSizeX': 128,
 	'GridSizeY': 128,
 	'GridSizeZ': 64
