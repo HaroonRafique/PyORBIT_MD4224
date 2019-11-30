@@ -101,8 +101,12 @@ ptc_twiss, icase=5, no=map_order, closed_orbit, file=optimised_bare_simplified.t
 ptc_end;
 
 /***********************************************************************
- * Add quadrupole error - define Delta_k in tunes.str
+ * Add quadrupole error - define Beta_beating in percentage in tunes.str
+ * Calculate quadrupole error using equation found on slide 76 of 
+ * Hannes Bartosik's JUAS 19' lecture on Linear Imperfections and
+ * Correction: https://indico.cern.ch/event/779575/contributions/3244531/attachments/1782159/2905799/linearimperfections_2019.pdf
  **********************************************************************/
+Delta_k := Beta_beating * 0.000510425;
 
 EOPTION, ADD=false;
 SELECT,FLAG=ERROR,CLEAR;
