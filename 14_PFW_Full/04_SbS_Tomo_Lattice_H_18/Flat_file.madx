@@ -39,8 +39,8 @@ endedit;
 
 seqedit, sequence=PS;
 	flatten;
-	cycle , start=PR.BWSV64;
-	!cycle , start=PR.BWSH65;
+	!cycle , start=PR.BWSV64;
+	cycle , start=PR.BWSH65;
 	flatten;
 endedit;
 
