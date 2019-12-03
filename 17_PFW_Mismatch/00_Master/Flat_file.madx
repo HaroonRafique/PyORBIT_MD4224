@@ -5,7 +5,7 @@ TITLE, "Flat file generation for PTC-PyORBIT";
  **********************************************************************/
 !RFV := 0.021;
 
-use_pfw = 0;	!Match tunes with PFW or LEQ
+use_pfw = 1;	!Match tunes with PFW or LEQ
 match_chroma = 0;
 
 BCMS = 1;		!Harmonic 9 for BCMS, 7 for Standard LHC beams
@@ -45,8 +45,8 @@ endedit;
 
 seqedit, sequence=PS;
 	flatten;
-	!cycle , start=PR.BWSV64;
-	cycle , start=PR.BWSH65;
+	cycle , start=PR.BWSV64;
+	!cycle , start=PR.BWSH65;
 	flatten;
 endedit;
 
