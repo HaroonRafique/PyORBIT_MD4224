@@ -5,11 +5,16 @@ TITLE, "Flat file generation for PTC-PyORBIT";
  **********************************************************************/
 !RFV := 0.021;
 
+quad_error = 1;	! Add quadrupolar error on QDN72
+
+match_tunes = 1;
 use_pfw = 1;	!Match tunes with PFW or LEQ
 match_chroma = 0;
 
 BCMS = 1;		!Harmonic 9 for BCMS, 7 for Standard LHC beams
 LIU = 0;		!LIU KE = 2GeV, pre-LIU KE = 1.4GeV
+
+start_lattice_marker = 0;
 
 /***********************************************************************
  * INITIALIZATION
@@ -51,15 +56,16 @@ seqedit, sequence=PS;
 endedit;
 
 ! Use this if PTC doesn't find a closed solution - replace MONITOR with MARKER
+IF(start_lattice_marker==1){
+	START_LATTICE: MARKER;
 
-!START_LATTICE: MARKER;
-
-!seqedit,sequence = PS;
-!        flatten;
-!        !REPLACE, ELEMENT=PR.BWSH65, BY=START_LATTICE;
-!        REPLACE, ELEMENT=PR.BWSV64, BY=START_LATTICE;
-!        cycle , start = START_LATTICE;
-!endedit;
+	seqedit,sequence = PS;
+		flatten;
+		!REPLACE, ELEMENT=PR.BWSH65, BY=START_LATTICE;
+		REPLACE, ELEMENT=PR.BWSV64, BY=START_LATTICE;
+		cycle , start = START_LATTICE;
+	endedit;
+}
 
 /***********************************************************************
  * PTC TWISS
@@ -106,12 +112,14 @@ ptc_end;
  * Hannes Bartosik's JUAS 19' lecture on Linear Imperfections and
  * Correction: https://indico.cern.ch/event/779575/contributions/3244531/attachments/1782159/2905799/linearimperfections_2019.pdf
  **********************************************************************/
-Delta_k := Beta_beating * 0.000510425;
+IF(quad_error==1){
+	Delta_k := Beta_beating * 0.000510425;
 
-EOPTION, ADD=false;
-SELECT,FLAG=ERROR,CLEAR;
-SELECT,FLAG=ERROR,PATTERN=PR.QDN72;
-EFCOMP, DKN:={0,Delta_k,0}; 
+	EOPTION, ADD=false;
+	SELECT,FLAG=ERROR,CLEAR;
+	SELECT,FLAG=ERROR,PATTERN=PR.QDN72;
+	EFCOMP, DKN:={0,Delta_k,0}; 
+}
 
 /**********************************************************************************
  *                        Matching using the PFW
@@ -144,11 +152,11 @@ Qyp2 := 4.99208;
 
 ! Override existing macro in macros file due to bug when using MAD-X 5.02
 ptc_twiss_macro(order): macro = {
-  select, flag=ptc_twiss, column=name,keyword,s,x,px,y,py,t,pt,beta11,alfa11,beta22,alfa22,disp1,disp2,disp3,disp4,gamma11,gamma22,mu1,mu2,energy,l,angle,K0L,K0SL,K1L,K1SL,K2L,K2SL,K3L,K3SL,K4L,K4SL,K5L,K5SL,VKICK,HKICK,SLOT_ID;
-  ptc_create_universe;
-  ptc_create_layout, time=false, model=2, exact=true, method=6, nst=3;
-  ptc_twiss, closed_orbit, icase=56, no=order, table=ptc_twiss, summary_table=ptc_twiss_summary;  
-  ptc_end;
+	select, flag=ptc_twiss, column=name,keyword,s,x,px,y,py,t,pt,beta11,alfa11,beta22,alfa22,disp1,disp2,disp3,disp4,gamma11,gamma22,mu1,mu2,energy,l,angle,K0L,K0SL,K1L,K1SL,K2L,K2SL,K3L,K3SL,K4L,K4SL,K5L,K5SL,VKICK,HKICK,SLOT_ID;
+	ptc_create_universe;
+	ptc_create_layout, time=false, model=2, exact=true, method=6, nst=3;
+	ptc_twiss, closed_orbit, icase=56, no=order, table=ptc_twiss, summary_table=ptc_twiss_summary;  
+	ptc_end;
 };
 
 match_Tunes(PFW_flag, QQx, QQy): macro={
@@ -190,18 +198,18 @@ match_Chroma_PFW(QQxp, QQyp, QQxp2, QQyp2): macro={
 		vary, name = pfwk2_d;
 		vary, name = pfwk3_f;
 		vary, name = pfwk3_d;
-        use_macro, name = ptc_twiss_macro(2);
+		use_macro, name = ptc_twiss_macro(2);
 		constraint, expr = table(ptc_twiss_summary,dq1) = QQxp;
 		constraint, expr = table(ptc_twiss_summary,dq2) = QQyp;
 		! These require the `normal' ptc_twiss flag which doesn't seem to work with MAD-X 5.02
-        !constraint, expr = table(nonlin,value,5)  = QQxp2;
-        !constraint, expr = table(nonlin,value,10) = QQyp2;
+		!constraint, expr = table(nonlin,value,5)  = QQxp2;
+		!constraint, expr = table(nonlin,value,10) = QQyp2;
 	jacobian,calls=50000,bisec=3;
 	ENDMATCH;
 	value, pfwk2_f, pfwk2_d, pfwk3_f, pfwk3_d;
 };
 
-EXEC, match_Tunes(use_pfw, tune_x, tune_y);
+IF(match_tunes==1){EXEC, match_Tunes(use_pfw, tune_x, tune_y);}
 IF(match_chroma==1){EXEC, match_Chroma_PFW(Qxp, Qyp, Qxp2, Qyp2);}
 
 value, tune_x, tune_y, Qxp, Qyp; 
@@ -225,10 +233,13 @@ ptc_end;
 
 setplot, font=4, xsize=34, ysize=25;
 
-plot, table=ptc_twiss, haxis=s, vaxis=betx, hmin=0, hmax=630, title='Horizontal Beta', colour=2, NOLINE=False, NOVERSION=False;
-plot, table=ptc_twiss, haxis=s, vaxis=bety, hmin=0, hmax=630, title='Vertical Beta', colour=4, NOLINE=False, NOVERSION=False;
-plot, table=ptc_twiss, haxis=s, vaxis=disp1, hmin=0, hmax=630, title='Horizontal Dispersion', colour=2, NOLINE=False, NOVERSION=False;
-plot, table=ptc_twiss, haxis=s, vaxis=disp2, hmin=0, hmax=630, title='Vertical Dispersion', colour=4, NOLINE=False, NOVERSION=False;
+plot, table=ptc_twiss, haxis=s, vaxis=betx, hmin=0, hmax=630, vmin=10, vmax=30, title='Horizontal Beta', colour=2, NOLINE=False, NOVERSION=False;
+plot, table=ptc_twiss, haxis=s, vaxis=bety, hmin=0, hmax=630, vmin=10, vmax=30, title='Vertical Beta', colour=4, NOLINE=False, NOVERSION=False;
+! Vertical Scan
+plot, table=ptc_twiss, haxis=s, vaxis=disp1, hmin=0, hmax=630, vmin=2.2, vmax=3.8, title='Horizontal Dispersion', colour=2, NOLINE=False, NOVERSION=False;
+! Horizontal Scan
+!plot, table=ptc_twiss, haxis=s, vaxis=disp1, hmin=0, hmax=630, vmin=1.0, vmax=5.5, title='Horizontal Dispersion', colour=2, NOLINE=False, NOVERSION=False;
+plot, table=ptc_twiss, haxis=s, vaxis=disp2, hmin=0, hmax=630, vmin=-0.6, vmax=-0.6,  title='Vertical Dispersion', colour=4, NOLINE=False, NOVERSION=False;
 plot, table=ptc_twiss, haxis=s, vaxis=x, hmin=0, hmax=630, title='x', colour=2, NOLINE=False, NOVERSION=False;
 plot, table=ptc_twiss, haxis=s, vaxis=y, hmin=0, hmax=630, title='y', colour=4, NOLINE=False, NOVERSION=False;
 plot, table=ptc_twiss, haxis=s, vaxis=px, hmin=0, hmax=630, title='px', colour=2, NOLINE=False, NOVERSION=False;
