@@ -5,7 +5,7 @@ mismatches = [1.152, 1.221, 1.277, 1.326, 1.371, 1.559, 1.718, 1.864, 2.]
 
 parameters = {}
 
-parameters['beta_mismatch']				= mismatches[0]
+parameters['beta_mismatch']				= mismatches[8]
 
 parameters['tunex']						= '621'
 parameters['tuney']						= '610'
@@ -15,8 +15,7 @@ parameters['n_macroparticles']			= int(5E5)
 
 # Fix tune to nominal for tune scans
 parameters['input_distn'] = str('../../12_PFW_Test/Generate_Distns/Bunches/PyORBIT_Tomo_Bunch_Manual_Twiss_Nmp_'+str(parameters['n_macroparticles'])+'_PS_Optimised_Lattice_Tune_621_624_'+parameters['lattice_start']+'.mat')
-#parameters['tomo_file']			='PyORBIT_Tomo_file_BCMS.mat'
-parameters['tomo_file']			='PyORBIT_Tomo_file_MD4224_HB.mat'
+parameters['tomo_file']			='PyORBIT_Tomo_file_BCMS_PreLIU.mat.mat'
 
 parameters['gamma']				= 2.49253731343
 parameters['intensity']			= 72.5E+10
@@ -53,7 +52,7 @@ parameters['turns_update'] = sorted(tu)
 switches = {
 	'CreateDistn':		True,
 	'Update_Twiss':		False,
-	'Space_Charge': 	False,
+	'Space_Charge': 	True,
 	'GridSizeX': 128,
 	'GridSizeY': 128,
 	'GridSizeZ': 64
