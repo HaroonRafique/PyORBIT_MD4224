@@ -1,6 +1,11 @@
 import numpy as np
 
+analytic_e = [1, 2, 3, 4, 5, 10, 15, 20, 25] # percentage emittance growth for below factors
+mismatches = [1.152, 1.221, 1.277, 1.326, 1.371, 1.559, 1.718, 1.864, 2.]
+
 parameters = {}
+
+parameters['beta_mismatch']				= mismatches[0]
 
 parameters['tunex']						= '621'
 parameters['tuney']						= '610'
@@ -8,11 +13,10 @@ parameters['tuney']						= '610'
 parameters['lattice_start'] 			= 'BWSH65'
 parameters['n_macroparticles']			= int(5E5)
 
-# ~ parameters['lattice_start'] 		= 'BWSV64'
-# ~ parameters['n_macroparticles']		= int(5E5)
-
 # Fix tune to nominal for tune scans
 parameters['input_distn'] = str('../../12_PFW_Test/Generate_Distns/Bunches/PyORBIT_Tomo_Bunch_Manual_Twiss_Nmp_'+str(parameters['n_macroparticles'])+'_PS_Optimised_Lattice_Tune_621_624_'+parameters['lattice_start']+'.mat')
+#parameters['tomo_file']			='PyORBIT_Tomo_file_BCMS.mat'
+parameters['tomo_file']			='PyORBIT_Tomo_file_MD4224_HB.mat'
 
 parameters['gamma']				= 2.49253731343
 parameters['intensity']			= 72.5E+10
@@ -47,8 +51,9 @@ parameters['turns_print'] = sorted(tu)
 parameters['turns_update'] = sorted(tu)
 
 switches = {
+	'CreateDistn':		True,
 	'Update_Twiss':		False,
-	'Space_Charge': 	True,
+	'Space_Charge': 	False,
 	'GridSizeX': 128,
 	'GridSizeY': 128,
 	'GridSizeZ': 64
