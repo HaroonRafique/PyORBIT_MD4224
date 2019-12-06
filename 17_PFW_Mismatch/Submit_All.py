@@ -3,7 +3,7 @@ import os
 master_dir = os.getcwd()
 
 Sims_01 = False
-Sims_02 = True
+Sims_02 = False
 Sims_03 = True
 
 sbs_locations = []
@@ -21,7 +21,7 @@ sbs_locations.append('/01_SbS_Tomo_V10_dBeta_00/')
 if Sims_01:
 	for loc in sbs_locations:
 		print '------------------------------------------------------------------------------------------------'
-		print '\t Submitting HPC-Batch simulation: PFW scan, tunes (6.21, 6.10), Beta-beating ', loc[24:26] ,' %'
+		print '\t Submitting HPC-Batch simulation: PFW scan, tunes (6.21, 6.10), Beta-beating ', loc[21:22] ,' %'
 		print '------------------------------------------------------------------------------------------------'
 		dir_ = master_dir + loc
 		make_command = 'python Make_SLURM_submission_script.py'
@@ -44,7 +44,7 @@ sims02_locations.append('/02_NoSC_Tomo_V10_betatron_25/')
 if Sims_02:
 	for loc in sims02_locations:
 		print '------------------------------------------------------------------------------------------------'
-		print '\t Submitting HPC-Batch sim: PFW scan, tunes (6.21, 6.10), Beta mismatch, expected emittance growth ', loc[24:26] ,' %'
+		print '\t Submitting HPC-Batch sim: PFW scan, tunes (6.21, 6.10), Beta mismatch, expected emittance growth ', loc[27:28] ,' %'
 		print '------------------------------------------------------------------------------------------------'
 		dir_ = master_dir + loc
 		make_command = 'python Make_SLURM_submission_script.py'
