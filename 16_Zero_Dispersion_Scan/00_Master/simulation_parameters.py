@@ -1,15 +1,21 @@
 import numpy as np
 
+analytic_e = [1, 2, 3, 4, 5, 10, 15, 20, 25] # percentage emittance growth for below factors
+mismatches = [1.152, 1.221, 1.277, 1.326, 1.371, 1.559, 1.718, 1.864, 2.]
+
 parameters = {}
+
+parameters['beta_mismatch']				= mismatches[8]
 
 parameters['tunex']						= '621'
 parameters['tuney']						= '625'
-parameters['lattice_start'] 			= 'BSG48'
+
+parameters['lattice_start'] 			= 'BWSH65'
 parameters['n_macroparticles']			= int(5E5)
 
 # Fix tune to nominal for tune scans
-parameters['input_distn'] = str('../../12_PFW_Test/Generate_Distns/Bunches/PyORBIT_Tomo_Bunch_Manual_Twiss_Nmp_'+str(parameters['n_macroparticles'])+'_PS_Optimised_Lattice_Tune_621_624_'+parameters['lattice_start']+'.mat')
-parameters['tomo_file'] = 'PyORBIT_Tomo_file_MD4224_HB.mat'
+# parameters['input_distn'] = str('../../12_PFW_Test/Generate_Distns/Bunches/PyORBIT_Tomo_Bunch_Manual_Twiss_Nmp_'+str(parameters['n_macroparticles'])+'_PS_Optimised_Lattice_Tune_621_624_'+parameters['lattice_start']+'.mat')
+parameters['tomo_file']			='PyORBIT_Tomo_file_BCMS_PreLIU.mat'
 
 parameters['gamma']				= 2.49253731343
 parameters['intensity']			= 72.5E+10
@@ -32,20 +38,19 @@ parameters['beta'] 		= np.sqrt(parameters['gamma']**2-1)/parameters['gamma']
 c 						= 299792458
 parameters['sig_z'] 	= (parameters['beta'] * c * parameters['blength'])/4.
 
-parameters['turns_max'] = int(6600)
+parameters['turns_max'] = int(2200)
 tu1 = range(-1, parameters['turns_max'], 200)
-tu2 = range(50, 300, 10) 
-tu3 = range(1, 50)
+tu2 = range(50, 100, 10) 
+tu3 = range(0, 50)
 tu = tu2 + tu1 + tu3 
 tu.append(874) # WS 172s
 tu.append(2185)# WS 175s
-tu.append(6558)# WS 185s
 
 parameters['turns_print'] = sorted(tu)
 parameters['turns_update'] = sorted(tu)
 
 switches = {
-	'CreateDistn': 		True,
+	'CreateDistn':		True,
 	'Update_Twiss':		False,
 	'Space_Charge': 	True,
 	'GridSizeX': 128,

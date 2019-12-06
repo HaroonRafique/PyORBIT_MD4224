@@ -200,7 +200,7 @@ class LongitudinalJohoDistributionSingleHarmonic():
 				# ~ print '\n### Generate Initial Dsitribution 2: Returned LongitudinalJohoDistributionSingleHarmonic::is_inside_limiting_contour'
 				break
 		return phi, dE
-	
+
 def generate_initial_distribution_from_tomo_manual_Twiss(parameters, TwissDict, matfile=0, output_file='ParticleDistribution.in', outputFormat='pyOrbit', summary_file='ParticleDistribution_summary.txt', summary_mat_file=None):
 
 	# Get parameters from the TwissDict dictionary
