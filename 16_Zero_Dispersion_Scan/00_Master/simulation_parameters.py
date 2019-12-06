@@ -8,13 +8,13 @@ parameters = {}
 parameters['beta_mismatch']				= mismatches[8]
 
 parameters['tunex']						= '621'
-parameters['tuney']						= '610'
+parameters['tuney']						= '625'
 
 parameters['lattice_start'] 			= 'BWSH65'
 parameters['n_macroparticles']			= int(5E5)
 
 # Fix tune to nominal for tune scans
-parameters['input_distn'] = str('../../12_PFW_Test/Generate_Distns/Bunches/PyORBIT_Tomo_Bunch_Manual_Twiss_Nmp_'+str(parameters['n_macroparticles'])+'_PS_Optimised_Lattice_Tune_621_624_'+parameters['lattice_start']+'.mat')
+# parameters['input_distn'] = str('../../12_PFW_Test/Generate_Distns/Bunches/PyORBIT_Tomo_Bunch_Manual_Twiss_Nmp_'+str(parameters['n_macroparticles'])+'_PS_Optimised_Lattice_Tune_621_624_'+parameters['lattice_start']+'.mat')
 parameters['tomo_file']			='PyORBIT_Tomo_file_BCMS_PreLIU.mat'
 
 parameters['gamma']				= 2.49253731343

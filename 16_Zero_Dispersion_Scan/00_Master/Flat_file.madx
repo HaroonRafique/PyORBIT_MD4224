@@ -26,7 +26,7 @@ call, file="PS_Lattice/ps_mu.seq";
 IF(BCMS==1){call, file="PS_Lattice/ps_ss_h9.seq";}
 ELSE{call, file="PS_Lattice/ps_ss_h7.seq";}
 call, file="PS_Lattice/ps.str";
-call, file="PS_Lattice/ps_pro_bare_machine.str";
+call, file="PS_Lattice/ps_fb_lhc.str";
 call, file="PS_Lattice/macros.ptc";
 call, file="tunes.str";
 
@@ -276,10 +276,10 @@ ptc_end;
 
 setplot, font=4, xsize=34, ysize=25;
 
-plot, table=ptc_twiss, haxis=s, vaxis=betx, hmin=0, hmax=630, vmin=10, vmax=30, title='Horizontal Beta', colour=2, NOLINE=False, NOVERSION=False;
-plot, table=ptc_twiss, haxis=s, vaxis=bety, hmin=0, hmax=630, vmin=10, vmax=30, title='Vertical Beta', colour=4, NOLINE=False, NOVERSION=False;
+plot, table=ptc_twiss, haxis=s, vaxis=betx, hmin=0, hmax=630, vmin=5, vmax=35, title='Horizontal Beta', colour=2, NOLINE=False, NOVERSION=False;
+plot, table=ptc_twiss, haxis=s, vaxis=bety, hmin=0, hmax=630, vmin=5, vmax=30, title='Vertical Beta', colour=4, NOLINE=False, NOVERSION=False;
 ! Vertical Scan
-plot, table=ptc_twiss, haxis=s, vaxis=disp1, hmin=0, hmax=630, vmin=2.2, vmax=3.8, title='Horizontal Dispersion', colour=2, NOLINE=False, NOVERSION=False;
+plot, table=ptc_twiss, haxis=s, vaxis=disp1, hmin=0, hmax=630, title='Horizontal Dispersion', colour=2, NOLINE=False, NOVERSION=False;
 ! Horizontal Scan
 !plot, table=ptc_twiss, haxis=s, vaxis=disp1, hmin=0, hmax=630, vmin=1.0, vmax=5.5, title='Horizontal Dispersion', colour=2, NOLINE=False, NOVERSION=False;
 plot, table=ptc_twiss, haxis=s, vaxis=disp2, hmin=0, hmax=630, vmin=-0.6, vmax=-0.6,  title='Vertical Dispersion', colour=4, NOLINE=False, NOVERSION=False;
