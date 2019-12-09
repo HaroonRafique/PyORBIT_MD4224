@@ -8,7 +8,7 @@ TITLE, "Flat file generation for PTC-PyORBIT";
 quad_error = 0;	! Add quadrupolar error on QDN72
 
 match_tunes = 1;
-use_pfw = 1;	!Match tunes with PFW or LEQ
+use_pfw = 0;	!Match tunes with PFW or LEQ
 match_chroma = 0;
 
 BCMS = 1;		!Harmonic 9 for BCMS, 7 for Standard LHC beams
@@ -239,7 +239,7 @@ plot, table=ptc_twiss, haxis=s, vaxis=bety, hmin=0, hmax=630, vmin=10, vmax=30, 
 plot, table=ptc_twiss, haxis=s, vaxis=disp1, hmin=0, hmax=630, vmin=2.2, vmax=3.8, title='Horizontal Dispersion', colour=2, NOLINE=False, NOVERSION=False;
 ! Horizontal Scan
 !plot, table=ptc_twiss, haxis=s, vaxis=disp1, hmin=0, hmax=630, vmin=1.0, vmax=5.5, title='Horizontal Dispersion', colour=2, NOLINE=False, NOVERSION=False;
-plot, table=ptc_twiss, haxis=s, vaxis=disp2, hmin=0, hmax=630, vmin=-0.6, vmax=-0.6,  title='Vertical Dispersion', colour=4, NOLINE=False, NOVERSION=False;
+plot, table=ptc_twiss, haxis=s, vaxis=disp2, hmin=0, hmax=630, vmin=-0.4, vmax=0.4,  title='Vertical Dispersion', colour=4, NOLINE=False, NOVERSION=False;
 plot, table=ptc_twiss, haxis=s, vaxis=x, hmin=0, hmax=630, title='x', colour=2, NOLINE=False, NOVERSION=False;
 plot, table=ptc_twiss, haxis=s, vaxis=y, hmin=0, hmax=630, title='y', colour=4, NOLINE=False, NOVERSION=False;
 plot, table=ptc_twiss, haxis=s, vaxis=px, hmin=0, hmax=630, title='px', colour=2, NOLINE=False, NOVERSION=False;
