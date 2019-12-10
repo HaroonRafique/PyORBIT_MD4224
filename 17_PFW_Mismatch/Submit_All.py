@@ -3,8 +3,8 @@ import os
 master_dir = os.getcwd()
 
 Sims_01 = False
-Sims_02 = True
-Sims_03 = False
+Sims_02 = False
+Sims_03 = True
 
 sbs_locations = []
 sbs_locations.append('/01_SbS_Tomo_V10_dBeta_25/')
