@@ -1,11 +1,6 @@
 import numpy as np
 
-analytic_e = [1, 2, 3, 4, 5, 10, 15, 20, 25] # percentage emittance growth for below factors
-mismatches = [1.152, 1.221, 1.277, 1.326, 1.371, 1.559, 1.718, 1.864, 2.]
-
 parameters = {}
-
-parameters['beta_mismatch']				= mismatches[8]
 
 parameters['tunex']						= '621'
 parameters['tuney']						= '625'
