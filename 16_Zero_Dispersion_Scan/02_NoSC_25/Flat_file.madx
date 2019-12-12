@@ -93,7 +93,7 @@ endedit;
 
 seqedit, sequence=PS;
 	flatten;
-	cycle , start=PR.BWSV64;
+	cycle , start=PI.BSG48;
 	!cycle , start=PR.BWSH65;
 	flatten;
 endedit;
