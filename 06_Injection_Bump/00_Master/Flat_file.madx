@@ -7,7 +7,7 @@ TITLE, "Flat file generation for PTC-PyORBIT";
 
 quad_error = 0;	! Add quadrupolar error on QDN72
 
-match_tunes = 1;
+match_tunes = 0;
 use_pfw = 0;	!Match tunes with PFW or LEQ
 match_chroma = 0;
 
@@ -27,8 +27,8 @@ call, file="PS_Lattice/ps_mu.seq";
 IF(BCMS==1){call, file="PS_Lattice/ps_ss_h9.seq";}
 ELSE{call, file="PS_Lattice/ps_ss_h7.seq";}
 call, file="PS_Lattice/ps.str";
-call, file="PS_Lattice/ps_pro_bare_machine.str";
-!call, file="PS_Lattice/ps_inj_lhc.str";
+!call, file="PS_Lattice/ps_pro_bare_machine.str";
+call, file="PS_Lattice/ps_inj_lhc.str";
 call, file="PS_Lattice/macros.ptc";
 call, file="tunes.str";
 
@@ -99,7 +99,7 @@ time_flag = false;
 integration_steps_per_element = 5; ! 3;
 map_order = 5;
 
-! Only call this once or ther errors are erased
+! Only call this once or the errors are erased
 use, sequence=PS;
 
 ptc_create_universe;
@@ -261,13 +261,11 @@ Apply_Injection_Bump(): macro={
         Qx := table(summ, Q1);
         Qy := table(summ, Q2);
         
-        L_BSW = 0.19;
-
         BSW40 := BSW40_K0;
         BSW42 := BSW42_K0;
         BSW43 := BSW43_K0;
         BSW44 := BSW44_K0;
-        BSStren : = BSS/L_BSW;
+        BSStren : = BSS;
 
         !BUMP_40 := 28.E-6/(BRHO); != 3.919331935e-06
 
