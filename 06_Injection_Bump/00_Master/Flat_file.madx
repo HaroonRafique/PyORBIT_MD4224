@@ -184,6 +184,7 @@ ptc_twiss_tune_macro_false_split_n(nnn): macro={
         qx0=table(ptc_twiss_summary,q1);
         qy0=table(ptc_twiss_summary,q2);
         xcomax0=table(ptc_twiss_summary,xcomax);
+        xcomin0=table(ptc_twiss_summary,xcomin);
         value, qx0, qy0;
         ptc_end;
 };
@@ -253,7 +254,7 @@ value, tune_x, tune_y, Qxp, Qyp;
 /***********************************************************************
  * Injection Bump
  **********************************************************************/
-create, table=mytable, column=BSEXT_t, BSStren, BSW40, BSW42, BSW43, BSW44, xmax, xcomax0, Qx, Qy, Qx0, Qy0, K2_S40, K2_S42, K2_S43, K2_S44;
+create, table=mytable, column=BSEXT_t, BSStren, BSW40, BSW42, BSW43, BSW44, xmax, xcomin0, xcomax0, Qx, Qy, Qx0, Qy0, K2_S40, K2_S42, K2_S43, K2_S44;
 
 Apply_Injection_Bump(): macro={
 
@@ -340,6 +341,7 @@ Apply_Injection_Bump(): macro={
          **********************************************************************/
 
         plot, table=mytable, haxis=BSEXT_t, vaxis=xmax;
+        plot, table=mytable, haxis=BSEXT_t, vaxis=xcomin0;
         plot, table=mytable, haxis=BSEXT_t, vaxis=xcomax0;
         plot, table=mytable, haxis=BSEXT_t, vaxis=Qx0;
         plot, table=mytable, haxis=BSEXT_t, vaxis=Qy0;
