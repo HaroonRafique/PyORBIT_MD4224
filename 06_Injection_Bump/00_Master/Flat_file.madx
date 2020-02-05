@@ -27,7 +27,6 @@ call, file="PS_Lattice/ps_mu.seq";
 IF(BCMS==1){call, file="PS_Lattice/ps_ss_h9.seq";}
 ELSE{call, file="PS_Lattice/ps_ss_h7.seq";}
 call, file="PS_Lattice/ps.str";
-!call, file="PS_Lattice/ps_pro_bare_machine.str";
 call, file="PS_Lattice/ps_inj_lhc.str";
 call, file="PS_Lattice/macros.ptc";
 call, file="tunes.str";
