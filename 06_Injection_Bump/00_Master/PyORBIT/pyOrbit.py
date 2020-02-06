@@ -5,8 +5,8 @@ import orbit_mpi
 import timeit
 import numpy as np
 import scipy.io as sio
-from scipy.stats import moment
 import os
+import pickle
 
 # Use switches in simulation_parameters.py in current folder
 #-------------------------------------------------------------
@@ -117,7 +117,10 @@ else:
 #-----------------------------------------------------------------------
 print '\nStart MADX on MPI process: ', rank
 if not rank:
-	os.system("/afs/cern.ch/eng/sl/MAD-X/pro/releases/5.02.00/madx-linux64 < Flat_file.madx")
+	if os.path.exists('PTC-PyORBIT_flat_file.flt'):
+		pass
+	else:
+		os.system("./Create_FF_and_Tables.sh")
 orbit_mpi.MPI_Barrier(comm)
 
 # Generate PTC RF table
@@ -135,9 +138,10 @@ Lattice = PTC_Lattice("PS")
 Lattice.readPTC(PTC_File)
 
 print '\n\t\tRead PTC files on MPI process: ', rank
-CheckAndReadPTCFile('PTC/fringe.ptc')
-CheckAndReadPTCFile('PTC/time.ptc')
-CheckAndReadPTCFile('PTC/ramp_cavities.ptc')
+CheckAndReadPTCFile('../PTC/time.ptc')
+CheckAndReadPTCFile('../PTC/fringe.ptc')
+CheckAndReadPTCFile('../PTC/ramp_magnet.ptc')
+CheckAndReadPTCFile('../PTC/ramp_cavities.ptc')
 
 # Create a dictionary of parameters
 #-----------------------------------------------------------------------
@@ -176,28 +180,29 @@ if sts['turn'] < 0:
 	for i in p:
 		print '\t', i, '\t = \t', p[i]
 
-	twiss_dict = dict()	
-	twiss_dict['alpha_x'] 			= Lattice.alphax0
-	twiss_dict['alpha_y'] 			= Lattice.alphay0 * p['beta_mismatch']
-	twiss_dict['beta_x'] 			= Lattice.betax0
-	twiss_dict['beta_y'] 			= Lattice.betay0 * p['beta_mismatch']
-	twiss_dict['D_x'] 				= Lattice.etax0
-	twiss_dict['D_y'] 				= Lattice.etay0
-	twiss_dict['D_xp'] 				= Lattice.etapx0
-	twiss_dict['D_yp'] 				= Lattice.etapy0
-	twiss_dict['x0'] 				= Lattice.orbitx0
-	twiss_dict['xp0'] 				= Lattice.orbitpx0
-	twiss_dict['y0'] 				= Lattice.orbity0
-	twiss_dict['yp0'] 				= Lattice.orbitpy0
+	twiss_dict = dict()
+	twiss_dict['alpha_x'] 		= Lattice.alphax0
+	twiss_dict['alpha_y'] 		= Lattice.alphay0 
+	twiss_dict['beta_x'] 		= Lattice.betax0
+	twiss_dict['beta_y'] 		= Lattice.betay0
+	twiss_dict['D_x'] 		= Lattice.etax0
+	twiss_dict['D_y'] 		= Lattice.etay0
+	twiss_dict['D_xp'] 		= Lattice.etapx0
+	twiss_dict['D_yp'] 		= Lattice.etapy0
+	twiss_dict['x0'] 		= Lattice.orbitx0
+	twiss_dict['xp0'] 		= Lattice.orbitpx0
+	twiss_dict['y0'] 		= Lattice.orbity0
+	twiss_dict['yp0'] 		= Lattice.orbitpy0
 	twiss_dict['gamma_transition'] 	= Lattice.gammaT
-	twiss_dict['circumference']    	= Lattice.getLength()
-	twiss_dict['length'] 			= Lattice.getLength()/Lattice.nHarm
+	twiss_dict['circumference']     = Lattice.getLength()
+	twiss_dict['length'] 		= Lattice.getLength()/Lattice.nHarm
 
 	if s['CreateDistn']:
 # Create the initial distribution 
 #-----------------------------------------------------------------------
 		print '\ngenerate_initial_distribution on MPI process: ', rank
-		Particle_distribution_file = generate_initial_distribution_from_tomo_manual_Twiss(p, twiss_dict, 1, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
+		# ~ Particle_distribution_file = generate_initial_distribution_from_tomo_manual_Twiss(p, twiss_dict, 1, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
+		Particle_distribution_file = generate_initial_distribution_from_tomo(p, 1, output_file='input/ParticleDistribution.in', summary_file='input/ParticleDistribution_summary.txt')
 
 		print '\bunch_orbit_to_pyorbit on MPI process: ', rank
 		bunch_orbit_to_pyorbit(paramsDict["length"], kin_Energy, Particle_distribution_file, bunch, p['n_macroparticles'] + 1) #read in only first N_mp particles.
