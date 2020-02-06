@@ -403,7 +403,9 @@ last_time = time.time()
 print '\n\t\tstart time = ', start_time
 
 for turn in range(sts['turn']+1, sts['turns_max']):
-	if not rank:	last_time = time.time()
+	if not rank:
+                PTC_Twiss.UpdatePTCTwiss(Lattice, turn)
+                last_time = time.time()
 
 	Lattice.trackBunch(bunch, paramsDict)
 	bunchtwissanalysis.analyzeBunch(bunch)  # analyze twiss and emittance
@@ -424,3 +426,5 @@ for turn in range(sts['turn']+1, sts['turns_max']):
 		if not rank:
 			with open(status_file, 'w') as fid:
 				pickle.dump(sts, fid)
+                        with open(ptc_dictionary_file, 'w') as sid:
+                                pickle.dump(PTC_Twiss, sid)
