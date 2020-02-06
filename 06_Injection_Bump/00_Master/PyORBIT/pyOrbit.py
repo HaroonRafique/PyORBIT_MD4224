@@ -201,6 +201,8 @@ if sts['turn'] < 0:
 	twiss_dict['gamma_transition'] 	= Lattice.gammaT
 	twiss_dict['circumference']     = Lattice.getLength()
 	twiss_dict['length'] 		= Lattice.getLength()/Lattice.nHarm
+        
+        print twiss_dict
 
 	if s['CreateDistn']:
 # Create the initial distribution 
