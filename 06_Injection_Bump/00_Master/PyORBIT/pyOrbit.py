@@ -128,7 +128,12 @@ orbit_mpi.MPI_Barrier(comm)
 print '\n\t\tCreate RF file on MPI process: ', rank
 from lib.write_ptc_table import write_RFtable
 from simulation_parameters import RFparameters as RF 
-write_RFtable('../PTC-PyORBIT_Tables/RF_table.ptc', *[RF[k] for k in ['harmonic_factors','time','Ekin_GeV','voltage_MV','phase']])
+if not rank:
+	if os.path.exists('../PTC-PyORBIT_Tables/'):
+		pass
+	else:
+                mpi_mkdir_p('../PTC-PyORBIT_Tables')
+        write_RFtable('../PTC-PyORBIT_Tables/RF_table.ptc', *[RF[k] for k in ['harmonic_factors','time','Ekin_GeV','voltage_MV','phase']])
 
 # Initialize a Teapot-Style PTC lattice
 #-----------------------------------------------------------------------
