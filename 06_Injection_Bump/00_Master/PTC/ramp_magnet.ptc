@@ -1,10 +1,10 @@
 SET ORBIT RAMPING
 ramp
-PI.BSM40     "../PTC-PyORBIT_Tables/BSEXT40.dat"      1
+PI.BSW40     "../PTC-PyORBIT_Tables/BSEXT40.dat"      1
 ramp
-PI.BSM42     "../PTC-PyORBIT_Tables/BSEXT42.dat"      1
+PI.BSW42     "../PTC-PyORBIT_Tables/BSEXT42.dat"      1
 ramp
-PI.BSM43     "../PTC-PyORBIT_Tables/BSEXT43.dat"      1
+PI.BSW43     "../PTC-PyORBIT_Tables/BSEXT43.dat"      1
 ramp
-PI.BSM44     "../PTC-PyORBIT_Tables/BSEXT44.dat"      1
+PI.BSW44     "../PTC-PyORBIT_Tables/BSEXT44.dat"      1
 return
