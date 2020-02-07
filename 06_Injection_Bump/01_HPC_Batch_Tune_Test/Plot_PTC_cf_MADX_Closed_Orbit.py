@@ -3,6 +3,8 @@
 # select, flag=ptc_twiss, column=name, s, betx, px, bety, py, disp3, disp3p, disp1, disp1p, x, y;
 # 26.08.19 Haroon Rafique CERN BE-ABP-HSI 
 
+import matplotlib
+matplotlib.use('Agg')   # suppress opening of plots
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import matplotlib.cm as cm
