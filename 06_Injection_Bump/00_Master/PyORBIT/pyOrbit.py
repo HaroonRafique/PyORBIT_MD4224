@@ -147,6 +147,7 @@ CheckAndReadPTCFile('../PTC/time.ptc')
 CheckAndReadPTCFile('../PTC/fringe.ptc')
 CheckAndReadPTCFile('../PTC/ramp_magnet.ptc')
 CheckAndReadPTCFile('../PTC/ramp_cavities.ptc')
+CheckAndReadPTCFile('../PTC/energize_lattice.ptc')
 
 # Create a dictionary of parameters
 #-----------------------------------------------------------------------
