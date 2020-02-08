@@ -92,6 +92,8 @@ def GetTunesFromPTC():
 #-----------------------------------------------------------------------
 print '\n\t\tmkdir on MPI process: ', rank
 from lib.mpi_helpers import mpi_mkdir_p
+mpi_mkdir_p('Plots')
+mpi_mkdir_p('All_Twiss')
 mpi_mkdir_p('input')
 mpi_mkdir_p('bunch_output')
 mpi_mkdir_p('output')
