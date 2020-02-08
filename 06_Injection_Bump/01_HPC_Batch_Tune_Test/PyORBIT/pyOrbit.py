@@ -8,6 +8,10 @@ import scipy.io as sio
 import os
 import pickle
 
+# plotting 
+import matplotlib
+matplotlib.use('Agg')
+
 # Use switches in simulation_parameters.py in current folder
 #-------------------------------------------------------------
 from simulation_parameters import switches as s
@@ -298,32 +302,32 @@ output = Output_dictionary()
 output.addParameter('turn', lambda: turn)
 output.addParameter('Qx', lambda: GetTunesFromPTC()[0])
 output.addParameter('Qy', lambda: GetTunesFromPTC()[1])
-# ~ output.addParameter('epsn_x', lambda: bunchtwissanalysis.getEmittanceNormalized(0))
-# ~ output.addParameter('epsn_y', lambda: bunchtwissanalysis.getEmittanceNormalized(1))
-# ~ output.addParameter('eps_z', lambda: get_eps_z(bunch, bunchtwissanalysis))
-# ~ output.addParameter('intensity', lambda: bunchtwissanalysis.getGlobalMacrosize())
-# ~ output.addParameter('n_mp', lambda: bunchtwissanalysis.getGlobalCount())
-# ~ output.addParameter('D_x', lambda: bunchtwissanalysis.getDispersion(0))
-# ~ output.addParameter('D_y', lambda: bunchtwissanalysis.getDispersion(1))
-# ~ output.addParameter('bunchlength', lambda: get_bunch_length(bunch, bunchtwissanalysis))
-# ~ output.addParameter('dpp_rms', lambda: get_dpp(bunch, bunchtwissanalysis))
-# ~ output.addParameter('beta_x', lambda: bunchtwissanalysis.getBeta(0))
-# ~ output.addParameter('beta_y', lambda: bunchtwissanalysis.getBeta(1))
-# ~ output.addParameter('alpha_x', lambda: bunchtwissanalysis.getAlpha(0))
-# ~ output.addParameter('alpha_y', lambda: bunchtwissanalysis.getAlpha(1))
-# ~ output.addParameter('mean_x', lambda: bunchtwissanalysis.getAverage(0))
-# ~ output.addParameter('mean_xp', lambda: bunchtwissanalysis.getAverage(1))
-# ~ output.addParameter('mean_y', lambda: bunchtwissanalysis.getAverage(2))
-# ~ output.addParameter('mean_yp', lambda: bunchtwissanalysis.getAverage(3))
-# ~ output.addParameter('mean_z', lambda: bunchtwissanalysis.getAverage(4))
-# ~ output.addParameter('mean_dE', lambda: bunchtwissanalysis.getAverage(5))
-# ~ output.addParameter('eff_beta_x', lambda: bunchtwissanalysis.getEffectiveBeta(0))
-# ~ output.addParameter('eff_beta_y', lambda: bunchtwissanalysis.getEffectiveBeta(1))
-# ~ output.addParameter('eff_epsn_x', lambda: bunchtwissanalysis.getEffectiveEmittance(0))
-# ~ output.addParameter('eff_epsn_y', lambda: bunchtwissanalysis.getEffectiveEmittance(1))
-# ~ output.addParameter('eff_alpha_x', lambda: bunchtwissanalysis.getEffectiveAlpha(0))
-# ~ output.addParameter('eff_alpha_y', lambda: bunchtwissanalysis.getEffectiveAlpha(1))
-# ~ output.addParameter('gamma', lambda: bunch.getSyncParticle().gamma())
+output.addParameter('epsn_x', lambda: bunchtwissanalysis.getEmittanceNormalized(0))
+output.addParameter('epsn_y', lambda: bunchtwissanalysis.getEmittanceNormalized(1))
+output.addParameter('eps_z', lambda: get_eps_z(bunch, bunchtwissanalysis))
+output.addParameter('intensity', lambda: bunchtwissanalysis.getGlobalMacrosize())
+output.addParameter('n_mp', lambda: bunchtwissanalysis.getGlobalCount())
+output.addParameter('D_x', lambda: bunchtwissanalysis.getDispersion(0))
+output.addParameter('D_y', lambda: bunchtwissanalysis.getDispersion(1))
+output.addParameter('bunchlength', lambda: get_bunch_length(bunch, bunchtwissanalysis))
+output.addParameter('dpp_rms', lambda: get_dpp(bunch, bunchtwissanalysis))
+output.addParameter('beta_x', lambda: bunchtwissanalysis.getBeta(0))
+output.addParameter('beta_y', lambda: bunchtwissanalysis.getBeta(1))
+output.addParameter('alpha_x', lambda: bunchtwissanalysis.getAlpha(0))
+output.addParameter('alpha_y', lambda: bunchtwissanalysis.getAlpha(1))
+output.addParameter('mean_x', lambda: bunchtwissanalysis.getAverage(0))
+output.addParameter('mean_xp', lambda: bunchtwissanalysis.getAverage(1))
+output.addParameter('mean_y', lambda: bunchtwissanalysis.getAverage(2))
+output.addParameter('mean_yp', lambda: bunchtwissanalysis.getAverage(3))
+output.addParameter('mean_z', lambda: bunchtwissanalysis.getAverage(4))
+output.addParameter('mean_dE', lambda: bunchtwissanalysis.getAverage(5))
+output.addParameter('eff_beta_x', lambda: bunchtwissanalysis.getEffectiveBeta(0))
+output.addParameter('eff_beta_y', lambda: bunchtwissanalysis.getEffectiveBeta(1))
+output.addParameter('eff_epsn_x', lambda: bunchtwissanalysis.getEffectiveEmittance(0))
+output.addParameter('eff_epsn_y', lambda: bunchtwissanalysis.getEffectiveEmittance(1))
+output.addParameter('eff_alpha_x', lambda: bunchtwissanalysis.getEffectiveAlpha(0))
+output.addParameter('eff_alpha_y', lambda: bunchtwissanalysis.getEffectiveAlpha(1))
+output.addParameter('gamma', lambda: bunch.getSyncParticle().gamma())
 
 
 # Pre Track Bunch Twiss Analysis & Add BunchGather outputs
@@ -334,47 +338,47 @@ bunchtwissanalysis.analyzeBunch(bunch)
 moments = BunchGather(bunch, turn, p) # Calculate bunch moments and kurtosis
 
 # Add moments and kurtosis
-# ~ output.addParameter('sig_x', lambda: moments['Sig_x'])
-# ~ output.addParameter('sig_xp', lambda: moments['Sig_xp'])
-# ~ output.addParameter('sig_y', lambda: moments['Sig_y'])
-# ~ output.addParameter('sig_yp', lambda: moments['Sig_yp'])
-# ~ output.addParameter('sig_z', lambda: moments['Sig_z'])
-# ~ output.addParameter('sig_dE', lambda: moments['Sig_dE'])
+output.addParameter('sig_x', lambda: moments['Sig_x'])
+output.addParameter('sig_xp', lambda: moments['Sig_xp'])
+output.addParameter('sig_y', lambda: moments['Sig_y'])
+output.addParameter('sig_yp', lambda: moments['Sig_yp'])
+output.addParameter('sig_z', lambda: moments['Sig_z'])
+output.addParameter('sig_dE', lambda: moments['Sig_dE'])
 
-# ~ output.addParameter('mu_x', lambda: moments['Mu_x'])
-# ~ output.addParameter('mu_xp', lambda: moments['Mu_xp'])
-# ~ output.addParameter('mu_y', lambda: moments['Mu_y'])
-# ~ output.addParameter('mu_yp', lambda: moments['Mu_yp'])
-# ~ output.addParameter('mu_z', lambda: moments['Mu_z'])
-# ~ output.addParameter('mu_dE', lambda: moments['Mu_dE'])
+output.addParameter('mu_x', lambda: moments['Mu_x'])
+output.addParameter('mu_xp', lambda: moments['Mu_xp'])
+output.addParameter('mu_y', lambda: moments['Mu_y'])
+output.addParameter('mu_yp', lambda: moments['Mu_yp'])
+output.addParameter('mu_z', lambda: moments['Mu_z'])
+output.addParameter('mu_dE', lambda: moments['Mu_dE'])
 
-# ~ output.addParameter('min_x', lambda: moments['Min_x'])
-# ~ output.addParameter('min_xp', lambda: moments['Min_xp'])
-# ~ output.addParameter('min_y', lambda: moments['Min_y'])
-# ~ output.addParameter('min_yp', lambda: moments['Min_yp'])
-# ~ output.addParameter('min_z', lambda: moments['Min_z'])
-# ~ output.addParameter('min_dE', lambda: moments['Min_dE'])
+output.addParameter('min_x', lambda: moments['Min_x'])
+output.addParameter('min_xp', lambda: moments['Min_xp'])
+output.addParameter('min_y', lambda: moments['Min_y'])
+output.addParameter('min_yp', lambda: moments['Min_yp'])
+output.addParameter('min_z', lambda: moments['Min_z'])
+output.addParameter('min_dE', lambda: moments['Min_dE'])
 
-# ~ output.addParameter('max_x', lambda: moments['Max_x'])
-# ~ output.addParameter('max_xp', lambda: moments['Max_xp'])
-# ~ output.addParameter('max_y', lambda: moments['Max_y'])
-# ~ output.addParameter('max_yp', lambda: moments['Max_yp'])
-# ~ output.addParameter('max_z', lambda: moments['Max_z'])
-# ~ output.addParameter('max_dE', lambda: moments['Max_dE'])
+output.addParameter('max_x', lambda: moments['Max_x'])
+output.addParameter('max_xp', lambda: moments['Max_xp'])
+output.addParameter('max_y', lambda: moments['Max_y'])
+output.addParameter('max_yp', lambda: moments['Max_yp'])
+output.addParameter('max_z', lambda: moments['Max_z'])
+output.addParameter('max_dE', lambda: moments['Max_dE'])
 
-# ~ output.addParameter('kurtosis_x', lambda: moments['Kurtosis_x'])
-# ~ output.addParameter('kurtosis_xp', lambda: moments['Kurtosis_xp'])
-# ~ output.addParameter('kurtosis_y', lambda: moments['Kurtosis_y'])
-# ~ output.addParameter('kurtosis_yp', lambda: moments['Kurtosis_yp'])
-# ~ output.addParameter('kurtosis_z', lambda: moments['Kurtosis_z'])
-# ~ output.addParameter('kurtosis_dE', lambda: moments['Kurtosis_dE'])
+output.addParameter('kurtosis_x', lambda: moments['Kurtosis_x'])
+output.addParameter('kurtosis_xp', lambda: moments['Kurtosis_xp'])
+output.addParameter('kurtosis_y', lambda: moments['Kurtosis_y'])
+output.addParameter('kurtosis_yp', lambda: moments['Kurtosis_yp'])
+output.addParameter('kurtosis_z', lambda: moments['Kurtosis_z'])
+output.addParameter('kurtosis_dE', lambda: moments['Kurtosis_dE'])
 
-# ~ output.addParameter('kurtosis_x_6sig', lambda: moments['Kurtosis_x_6sig'])
-# ~ output.addParameter('kurtosis_xp_6sig', lambda: moments['Kurtosis_xp_6sig'])
-# ~ output.addParameter('kurtosis_y_6sig', lambda: moments['Kurtosis_y_6sig'])
-# ~ output.addParameter('kurtosis_yp_6sig', lambda: moments['Kurtosis_yp_6sig'])
-# ~ output.addParameter('kurtosis_z_6sig', lambda: moments['Kurtosis_z_6sig'])
-# ~ output.addParameter('kurtosis_dE_6sig', lambda: moments['Kurtosis_dE_6sig'])
+output.addParameter('kurtosis_x_6sig', lambda: moments['Kurtosis_x_6sig'])
+output.addParameter('kurtosis_xp_6sig', lambda: moments['Kurtosis_xp_6sig'])
+output.addParameter('kurtosis_y_6sig', lambda: moments['Kurtosis_y_6sig'])
+output.addParameter('kurtosis_yp_6sig', lambda: moments['Kurtosis_yp_6sig'])
+output.addParameter('kurtosis_z_6sig', lambda: moments['Kurtosis_z_6sig'])
+output.addParameter('kurtosis_dE_6sig', lambda: moments['Kurtosis_dE_6sig'])
 
 start_time = time.time()
 last_time = time.time()
@@ -429,3 +433,84 @@ for turn in range(sts['turn']+1, sts['turns_max']):
 				pickle.dump(sts, fid)
                         with open(ptc_dictionary_file, 'w') as sid:
                                 pickle.dump(PTC_Twiss, sid)
+
+# make sure simulation terminates properly
+orbit_mpi.MPI_Barrier(comm)
+
+# Plotting
+#-----------------------------------------------------------------------
+if not rank:
+	PTC_Twiss.PrintOrbitExtrema('.')
+	PTC_Twiss.PrintAllPTCTwiss('All_Twiss')
+	TwissDict = PTC_Twiss.ReturnTwissDict()
+	TurnList = PTC_Twiss.ReturnTurnList()
+
+	colors = matplotlib.cm.rainbow(np.linspace(0, 1, len(TurnList)))
+
+	# some gymnastics to avoid plotting offset elements ...
+	roll = 284
+	circumference = 25*2*np.pi
+	s = TwissDict[0]['s']
+	s[roll:] -= circumference
+	s[roll] = np.nan
+	i2plot = range(len(s))
+	for i in [2,3,6,7,569,570,573,574]: i2plot.remove(i) # avoid plotting elements with offset
+
+
+	f, ax = matplotlib.pylab.subplots()
+	for t in TurnList:
+		ax.plot(s[i2plot], 1e3*np.array(TwissDict[t]['orbit_x'])[i2plot], color=colors[t])
+	ax.set_xlabel('s (m)')
+	ax.set_ylabel('horizontal CO (mm)')
+	# ~ ax.set_xlim(-15,15)
+	savename = str('Plots/closedOrbit_evolution_' + str(sts['turns_max']) + '_turns.png')
+	matplotlib.pylab.savefig(savename, dpi=400)
+
+
+	i2plot = range(len(s))
+	for i in [134,135,235,236,305,306,358,359]: i2plot.remove(i)
+
+
+	f, ax = matplotlib.pylab.subplots()
+	for t in TurnList:
+		ax.plot(s[i2plot], np.array(TwissDict[t]['beta_x'])[i2plot], color=colors[t])
+	ax.set_xlabel('s (m)')
+	ax.set_ylabel('beta_x (m)')
+	ax.set_ylim(bottom=0)
+	savename = str('Plots/betax_evolution_' + str(sts['turns_max']) + '_turns.png')
+	matplotlib.pylab.savefig(savename, dpi=400)
+
+
+	f, ax = matplotlib.pylab.subplots()
+	for t in TurnList:
+		ax.plot(s[i2plot], np.array(TwissDict[t]['beta_x'])[i2plot], color=colors[t])
+	ax.set_xlabel('s (m)')
+	ax.set_ylabel('beta_y (m)')
+	ax.set_ylim(bottom=0)
+	savename = str('Plots/betay_evolution_' + str(sts['turns_max']) + '_turns.png')
+	matplotlib.pylab.savefig(savename, dpi=400)
+
+
+	f, ax = matplotlib.pylab.subplots()
+	for t in TurnList:
+		beta_y_ref = np.array(TwissDict[TurnList[-1]]['beta_y'])
+		beta_y = np.array(TwissDict[t]['beta_y'])
+		ax.plot(s[i2plot], 100*((beta_y - beta_y_ref)/beta_y_ref)[i2plot], color=colors[t])
+	ax.set_xlabel('s (m)')
+	ax.set_ylabel('beta_y (m)')
+	savename = str('Plots/betay_beating_evolution_' + str(sts['turns_max']) + '_turns.png')
+	matplotlib.pylab.savefig(savename, dpi=400)
+
+
+	f, ax = matplotlib.pylab.subplots()
+	for t in TurnList:
+		beta_x_ref = np.array(TwissDict[TurnList[-1]]['beta_x'])
+		beta_x = np.array(TwissDict[t]['beta_x'])
+		ax.plot(s[i2plot], 100*((beta_x - beta_x_ref)/beta_x_ref)[i2plot], color=colors[t])
+	ax.set_xlabel('s (m)')
+	ax.set_ylabel('beta_y (m)')
+	savename = str('Plots/betax_beating_evolution_' + str(sts['turns_max']) + '_turns.png')
+	matplotlib.pylab.savefig(savename, dpi=400)
+
+
+	matplotlib.pylab.close('all')
