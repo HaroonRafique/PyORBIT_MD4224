@@ -1,0 +1,84 @@
+readlink: missing operand
+Try 'readlink --help' for more information.
+rm: cannot remove ‘output’: No such file or directory
+rm: cannot remove ‘bunch_output’: No such file or directory
+rm: cannot remove ‘lost’: No such file or directory
+rm: cannot remove ‘input’: No such file or directory
+rm: cannot remove ‘*.tfs’: No such file or directory
+rm: cannot remove ‘*.ptc’: No such file or directory
+rm: cannot remove ‘PTC-PyORBIT_flat_file.flt’: No such file or directory
+rm: cannot remove ‘tunespread.dat’: No such file or directory
+rm: cannot remove ‘madx.ps’: No such file or directory
+rm: cannot remove ‘PTC/*~’: No such file or directory
+rm: cannot remove ‘Input/*~’: No such file or directory
+rm: cannot remove ‘lib/*~’: No such file or directory
+rm: cannot remove ‘lib/spacecharge_tunespread/*.pyc’: No such file or directory
+rm: cannot remove ‘lib/*.pyc’: No such file or directory
+rm: cannot remove ‘*.pyc’: No such file or directory
+rm: cannot remove ‘junk.txt’: No such file or directory
+rm: cannot remove ‘Maxwellian_bend_for_ptc.txt’: No such file or directory
+rm: cannot remove ‘Negative_node.OUT’: No such file or directory
+rm: cannot remove ‘internal_mag_pot.txt’: No such file or directory
+rm: cannot remove ‘fort.18’: No such file or directory
+rm: cannot remove ‘PTC/*~’: No such file or directory
+rm: cannot remove ‘Input/*~’: No such file or directory
+rm: cannot remove ‘lib/*~’: No such file or directory
+rm: cannot remove ‘lib/spacecharge_tunespread/*.pyc’: No such file or directory
+rm: cannot remove ‘lib/*.pyc’: No such file or directory
+rm: cannot remove ‘*.pyc’: No such file or directory
+rm: cannot remove ‘junk.txt’: No such file or directory
+rm: cannot remove ‘Maxwellian_bend_for_ptc.txt’: No such file or directory
+rm: cannot remove ‘Negative_node.OUT’: No such file or directory
+rm: cannot remove ‘internal_mag_pot.txt’: No such file or directory
+rm: cannot remove ‘fort.18’: No such file or directory
+rm: cannot remove ‘Condor_Logfiles’: No such file or directory
+srun: TOPOLOGY: warning -- no switch can reach all nodes through its descendants.Do not use route/topology
+./Create_FF_and_Tables.sh: line 6: Flat_File.madx: No such file or directory
+mv: cannot stat ‘BSEXT40.tfs’: No such file or directory
+mv: cannot stat ‘BSEXT42.tfs’: No such file or directory
+mv: cannot stat ‘BSEXT43.tfs’: No such file or directory
+mv: cannot stat ‘BSEXT44.tfs’: No such file or directory
+mv: cannot stat ‘BSEXT_Out.tfs’: No such file or directory
+mv: cannot stat ‘MADX_Twiss/madx_twiss.tfs’: No such file or directory
+mv: cannot stat ‘*.ptc’: No such file or directory
+mv: cannot stat ‘PTC-PyORBIT_flat_file.flt’: No such file or directory
+rm: cannot remove ‘fort.18’: No such file or directory
+rm: cannot remove ‘Maxwellian_bend_for_ptc.txt’: No such file or directory
+Traceback (most recent call last):
+  File "Plot_PTC_cf_MADX_Closed_Orbit.py", line 163, in <module>
+    fig, ax1 = plt.subplots();
+  File "/afs/cern.ch/user/p/pyorbit/public/PyOrbit_env/virtualenvs/py2.7/lib/python2.7/site-packages/matplotlib/pyplot.py", line 1184, in subplots
+    fig = figure(**fig_kw)
+  File "/afs/cern.ch/user/p/pyorbit/public/PyOrbit_env/virtualenvs/py2.7/lib/python2.7/site-packages/matplotlib/pyplot.py", line 533, in figure
+    **kwargs)
+  File "/afs/cern.ch/user/p/pyorbit/public/PyOrbit_env/virtualenvs/py2.7/lib/python2.7/site-packages/matplotlib/backend_bases.py", line 161, in new_figure_manager
+    return cls.new_figure_manager_given_figure(num, fig)
+  File "/afs/cern.ch/user/p/pyorbit/public/PyOrbit_env/virtualenvs/py2.7/lib/python2.7/site-packages/matplotlib/backends/_backend_tk.py", line 1046, in new_figure_manager_given_figure
+    window = Tk.Tk(className="matplotlib")
+  File "/afs/cern.ch/user/p/pyorbit/public/PyOrbit_env/lib/python2.7/lib-tk/Tkinter.py", line 1815, in __init__
+    self.tk = _tkinter.create(screenName, baseName, className, interactive, wantobjects, useTk, sync, use)
+_tkinter.TclError: couldn't connect to display "localhost:13.0"
+[hpc-be126.cern.ch:mpi_rank_7][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_16][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_3][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_2][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_19][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_8][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_9][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_6][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_18][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_1][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_4][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_15][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_5][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_10][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_12][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_17][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_13][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_14][error_sighandler] Caught error: Segmentation fault (signal 11)
+[hpc-be126.cern.ch:mpi_rank_11][error_sighandler] Caught error: Segmentation fault (signal 11)
+srun: error: hpc-be126: tasks 1-19: Segmentation fault (core dumped)
+srun: Terminating job step 701989.0
+slurmstepd: error: *** STEP 701989.0 ON hpc-be126 CANCELLED AT 2020-02-07T12:58:06 ***
+srun: error: hpc-be126: task 0: Terminated
+srun: Force Terminated job step 701989.0

@@ -1,0 +1,40 @@
+readlink: missing operand
+Try 'readlink --help' for more information.
+rm: cannot remove ‘output’: No such file or directory
+rm: cannot remove ‘bunch_output’: No such file or directory
+rm: cannot remove ‘lost’: No such file or directory
+rm: cannot remove ‘input’: No such file or directory
+rm: cannot remove ‘*.tfs’: No such file or directory
+rm: cannot remove ‘*.ptc’: No such file or directory
+rm: cannot remove ‘PTC-PyORBIT_flat_file.flt’: No such file or directory
+rm: cannot remove ‘tunespread.dat’: No such file or directory
+rm: cannot remove ‘madx.ps’: No such file or directory
+rm: cannot remove ‘PTC/*~’: No such file or directory
+rm: cannot remove ‘Input/*~’: No such file or directory
+rm: cannot remove ‘lib/*~’: No such file or directory
+rm: cannot remove ‘lib/spacecharge_tunespread/*.pyc’: No such file or directory
+rm: cannot remove ‘lib/*.pyc’: No such file or directory
+rm: cannot remove ‘*.pyc’: No such file or directory
+rm: cannot remove ‘junk.txt’: No such file or directory
+rm: cannot remove ‘Maxwellian_bend_for_ptc.txt’: No such file or directory
+rm: cannot remove ‘Negative_node.OUT’: No such file or directory
+rm: cannot remove ‘internal_mag_pot.txt’: No such file or directory
+rm: cannot remove ‘fort.18’: No such file or directory
+rm: cannot remove ‘PTC/*~’: No such file or directory
+rm: cannot remove ‘Input/*~’: No such file or directory
+rm: cannot remove ‘lib/*~’: No such file or directory
+rm: cannot remove ‘lib/spacecharge_tunespread/*.pyc’: No such file or directory
+rm: cannot remove ‘lib/*.pyc’: No such file or directory
+rm: cannot remove ‘*.pyc’: No such file or directory
+rm: cannot remove ‘junk.txt’: No such file or directory
+rm: cannot remove ‘Maxwellian_bend_for_ptc.txt’: No such file or directory
+rm: cannot remove ‘Negative_node.OUT’: No such file or directory
+rm: cannot remove ‘internal_mag_pot.txt’: No such file or directory
+rm: cannot remove ‘fort.18’: No such file or directory
+rm: cannot remove ‘Condor_Logfiles’: No such file or directory
+srun: TOPOLOGY: warning -- no switch can reach all nodes through its descendants.Do not use route/topology
+mv: cannot stat ‘MADX_Twiss/madx_twiss.tfs’: No such file or directory
+rm: cannot remove ‘fort.18’: No such file or directory
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** JOB 705502 ON hpc-be112 CANCELLED AT 2020-02-08T09:48:11 ***
+slurmstepd: error: *** STEP 705502.0 ON hpc-be112 CANCELLED AT 2020-02-08T09:48:11 ***
