@@ -93,8 +93,7 @@ endedit;
 
 seqedit, sequence=PS;
 	flatten;
-	cycle , start=PR.BWSV64;
-	!cycle , start=PR.BWSH65;
+	cycle , start=PI.BSG48;
 	flatten;
 endedit;
 
@@ -104,8 +103,7 @@ IF(start_lattice_marker==1){
 
 	seqedit,sequence = PS;
 		flatten;
-		!REPLACE, ELEMENT=PR.BWSH65, BY=START_LATTICE;
-		REPLACE, ELEMENT=PR.BWSV64, BY=START_LATTICE;
+		REPLACE, ELEMENT=PI.BSG48, BY=START_LATTICE;
 		cycle , start = START_LATTICE;
 	endedit;
 }
