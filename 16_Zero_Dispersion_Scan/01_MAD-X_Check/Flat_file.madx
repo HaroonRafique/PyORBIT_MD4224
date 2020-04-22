@@ -323,7 +323,7 @@ Zero_Dispersion_Ramp(): macro={
         /***********************************************************************
          * Iterate over steps from input table
          **********************************************************************/
-        while(row<nrows){ !while(row<1)
+        while(row<nrows){ !while(row<27){
                 row = row + 1;
                 iteration = 0;
                 value, iteration;
@@ -338,7 +338,7 @@ Zero_Dispersion_Ramp(): macro={
                 KQFW31 := KQF_W31;
                 KQDW32 := KQD_W32;
                 KQFN35 := KQF_N35;
-                KQDN36 := KQD_W36;
+                KQDN36 := KQD_N36;
                 KQFN39 := KQF_N39;
                 KQDN40 := KQD_N40;
                 KQFN45 := KQF_N45;
@@ -361,6 +361,8 @@ Zero_Dispersion_Ramp(): macro={
                 fill, table=KQFN45;
                 fill, table=KQDN46;
                 fill, table=KQFN49;
+                
+                value, KQDW28, KQD_W28;
         }
 
 
