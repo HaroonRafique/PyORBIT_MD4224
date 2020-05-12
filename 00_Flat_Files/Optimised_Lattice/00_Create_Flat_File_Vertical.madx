@@ -20,7 +20,7 @@ BRHO      := BEAM->PC * 3.3356;
 RFV := 0.021;
 
 tune_x = 0.21;
-tune_y = 0.10;
+tune_y = 0.24;
  
 /*******************************************************************************
 **                        SBEND K1 and multipoles in MUs                      **
@@ -117,3 +117,19 @@ select, flag=ptc_twiss, clear;
 select, flag=ptc_twiss, column=name, s, betx, bety, alfx, alfy, disp1, disp3, x, px, y, py;
 ptc_twiss, icase=5, no=4, deltap_dependency, closed_orbit, file=optimised_LEQ_final_V_again.tfs, table=ptc_twiss;
 ptc_end;
+
+setplot, font=4, xsize=34, ysize=25;
+
+plot, table=ptc_twiss, haxis=s, vaxis=betx, hmin=0, hmax=630, vmin=10, vmax=30, title='Horizontal Beta', colour=2, NOLINE=False, NOVERSION=False;
+plot, table=ptc_twiss, haxis=s, vaxis=bety, hmin=0, hmax=630, vmin=10, vmax=30, title='Vertical Beta', colour=4, NOLINE=False, NOVERSION=False;
+! Vertical Scan
+plot, table=ptc_twiss, haxis=s, vaxis=disp1, hmin=0, hmax=630, vmin=2.2, vmax=3.8, title='Horizontal Dispersion', colour=2, NOLINE=False, NOVERSION=False;
+! Horizontal Scan
+!plot, table=ptc_twiss, haxis=s, vaxis=disp1, hmin=0, hmax=630, vmin=1.0, vmax=5.5, title='Horizontal Dispersion', colour=2, NOLINE=False, NOVERSION=False;
+plot, table=ptc_twiss, haxis=s, vaxis=disp2, hmin=0, hmax=630, vmin=-0.4, vmax=0.4,  title='Horizontal Dispersion Prime', colour=2, NOLINE=False, NOVERSION=False;
+plot, table=ptc_twiss, haxis=s, vaxis=x, hmin=0, hmax=630, title='x', colour=2, NOLINE=False, NOVERSION=False;
+plot, table=ptc_twiss, haxis=s, vaxis=y, hmin=0, hmax=630, title='y', colour=4, NOLINE=False, NOVERSION=False;
+plot, table=ptc_twiss, haxis=s, vaxis=px, hmin=0, hmax=630, title='px', colour=2, NOLINE=False, NOVERSION=False;
+plot, table=ptc_twiss, haxis=s, vaxis=py, hmin=0, hmax=630, title='py', colour=4, NOLINE=False, NOVERSION=False;
+plot, table=ptc_twiss, haxis=s, vaxis=disp3, hmin=0, hmax=630, title='Vertical Dispersion Prime', colour=2, NOLINE=False, NOVERSION=False;
+plot, table=ptc_twiss, haxis=s, vaxis=disp4, hmin=0, hmax=630, title='Vertical Dispersion Prime', colour=4, NOLINE=False, NOVERSION=False;
