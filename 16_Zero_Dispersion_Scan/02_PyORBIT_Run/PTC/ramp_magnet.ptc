@@ -1,0 +1,22 @@
+SET ORBIT RAMPING
+ramp
+PR.QDW28     "../PTC-PyORBIT_Tables/KQDW28.dat"      1
+ramp
+PR.QFW31     "../PTC-PyORBIT_Tables/KQFW31.dat"      1
+ramp
+PR.QDW32     "../PTC-PyORBIT_Tables/KQDW32.dat"      1
+ramp
+PR.QFN35     "../PTC-PyORBIT_Tables/KQFN35.dat"      1
+ramp
+PR.QDN36     "../PTC-PyORBIT_Tables/KQDN36.dat"      1
+ramp
+PR.QFN39     "../PTC-PyORBIT_Tables/KQFN39.dat"      1
+ramp
+PR.QDN40     "../PTC-PyORBIT_Tables/KQDN40.dat"      1
+ramp
+PR.QFN45     "../PTC-PyORBIT_Tables/KQFN45.dat"      1
+ramp
+PR.QDN46     "../PTC-PyORBIT_Tables/KQDN46.dat"      1
+ramp
+PR.QFN49     "../PTC-PyORBIT_Tables/KQFN49.dat"      1
+return
