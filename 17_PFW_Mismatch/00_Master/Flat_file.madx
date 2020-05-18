@@ -5,10 +5,10 @@ TITLE, "Flat file generation for PTC-PyORBIT";
  **********************************************************************/
 !RFV := 0.021;
 
-quad_error = 1;	! Add quadrupolar error on QDN72
+quad_error = 0;	! Add quadrupolar error on QDN72
 
 match_tunes = 1;
-use_pfw = 1;	!Match tunes with PFW or LEQ
+use_pfw = 0;	!Match tunes with PFW or LEQ
 match_chroma = 0;
 
 BCMS = 1;		!Harmonic 9 for BCMS, 7 for Standard LHC beams
