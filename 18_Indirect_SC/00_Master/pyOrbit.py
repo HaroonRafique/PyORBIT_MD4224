@@ -261,9 +261,9 @@ if s['Space_Charge']:
 	calcsbs = SpaceChargeCalcSliceBySlice2D(s['GridSizeX'], s['GridSizeY'], s['GridSizeZ'], useLongitudinalKick=True)
 	sc_path_length_min = 1E-8
         
-        # Boundary for indirect space charge
+        # Boundary for indirect space charge: cannot exceed limit 2*nModes_+1 <= nPoints
         npoints = 128           # number of points on the boundary
-        nModes = 1               # number of modes in the free-space field. LSQM array and matrix. 2*nModes_+1 - number of functions in LSQM 
+        nModes = 1              # number of modes in the free-space field. LSQM array and matrix. 2*nModes_+1 - number of functions in LSQM 
         shape = 'Ellipse'
         xDimension = 0.73       # full width
         yDimension = 0.35       # full height
