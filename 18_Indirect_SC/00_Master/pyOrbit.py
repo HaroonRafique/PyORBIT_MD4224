@@ -95,6 +95,7 @@ mpi_mkdir_p('input')
 mpi_mkdir_p('bunch_output')
 mpi_mkdir_p('output')
 mpi_mkdir_p('lost')
+mpi_mkdir_p('space_charge_output')
 
 # Lattice function dictionary to print closed orbit
 #-----------------------------------------------------------------------
@@ -120,7 +121,8 @@ else:
 #-----------------------------------------------------------------------
 print '\nStart MADX on MPI process: ', rank
 if not rank:
-	os.system("/afs/cern.ch/eng/sl/MAD-X/pro/releases/5.02.00/madx-linux64 < Flat_file.madx")
+        madx_command = '/afs/cern.ch/eng/sl/MAD-X/pro/releases/5.02.00/madx-linux64 < ', p['MADX_File']
+	os.system(madx_command)
 orbit_mpi.MPI_Barrier(comm)
 
 # Generate PTC RF table
@@ -259,19 +261,26 @@ if s['Space_Charge']:
 	
         # Make a SC solver
 	calcsbs = SpaceChargeCalcSliceBySlice2D(s['GridSizeX'], s['GridSizeY'], s['GridSizeZ'], useLongitudinalKick=True)
-	sc_path_length_min = 1E-8
-        
-        # Boundary for indirect space charge: cannot exceed limit 2*nModes_+1 <= nPoints
-        npoints = 128           # number of points on the boundary
-        nModes = 1              # number of modes in the free-space field. LSQM array and matrix. 2*nModes_+1 - number of functions in LSQM 
-        shape = 'Ellipse'
-        xDimension = 0.73       # full width
-        yDimension = 0.35       # full height
-        PS_aperture_boundary = Boundary2D(npoints, nModes, shape, xDimension, yDimension)
-        
+	sc_path_length_min = 1E-8      
+
 	# Add the space charge solver to the lattice as child nodes
-	sc_nodes = scLatticeModifications.setSC2p5DAccNodes(Lattice, sc_path_length_min, calcsbs, boundary = PS_aperture_boundary)
-	print '\n\t\tInstalled', len(sc_nodes), 'space charge nodes ...'
+        if s['Indirect_Space_Charge']:
+                
+                # Boundary for indirect space charge: cannot exceed limit 2*nModes_+1 <= nPoints
+                npoints = 128           # number of points on the boundary
+                nModes = 10              # number of modes in the free-space field. LSQM array and matrix. 2*nModes_+1 - number of functions in LSQM 
+                shape = 'Ellipse'
+                xDimension = 0.73       # full width
+                yDimension = 0.35       # full height
+                PS_aperture_boundary = Boundary2D(npoints, nModes, shape, xDimension, yDimension)
+                
+                print '\n\t\tIncluding indirect space charge boundary of type ', shape, ' in the lattice'
+                
+                sc_nodes = scLatticeModifications.setSC2p5DAccNodes(Lattice, sc_path_length_min, calcsbs, boundary = PS_aperture_boundary)
+	else:
+                sc_nodes = scLatticeModifications.setSC2p5DAccNodes(Lattice, sc_path_length_min, calcsbs)
+	
+        print '\n\t\tInstalled', len(sc_nodes), 'space charge nodes in the lattice'
 
 
 # Add tune analysis child node
@@ -414,6 +423,25 @@ for turn in range(sts['turn']+1, sts['turns_max']):
 	if turn in sts['turns_update']:	sts['turn'] = turn
 
 	output.update()
+
+        if(s['Print_SC_Grid']):
+                if not rank:
+                        phiGrid = calcsbs.getPhiGrid()
+                        phi_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
+                        Ex_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
+                        Ey_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
+                        x_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
+                        y_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
+                        for ix in xrange(s['GridSizeX']):
+                                for iy in xrange(s['GridSizeY']): 
+                                        phi_grid[ix, iy] = phiGrid.getValueOnGrid(ix, iy)
+                                        x_grid[ix, iy] = phiGrid.getGridX(ix)
+                                        y_grid[ix, iy] = phiGrid.getGridY(iy)
+                                        Ex_grid[ix, iy], Ey_grid[ix, iy] = phiGrid.calcGradient(x_grid[ix, iy], y_grid[ix, iy])
+                                        Ex_grid[ix, iy] *= -1 
+                                        Ey_grid[ix, iy] *= -1
+                        phi_grid_savename = 'space_charge_output/Phi_grid_', turn
+                        sio.savemat(phi_grid_savename,{'phi_grid': phi_grid, 'Ex_grid': Ex_grid, 'Ey_grid': Ey_grid, 'x_grid': x_grid, 'y_grid': y_grid},oned_as='row')
 
 	if turn in sts['turns_print']:
 		saveBunchAsMatfile(bunch, "input/mainbunch")

@@ -12,18 +12,24 @@ script_name = "SLURM_submission_script.sh"
 # Switches
 hyperthreading = False	# Enable hyperthreading
 exclusive = True		# Exclusive (see SLURM documentation)
-autotime = True			# 2 days for short queues, 2 weeks for long queues
+autotime = True			# 2 days for batch-short, 5 days for inf-short, 2 weeks for long queues
 autotask = True			# Automatically set nodes to maximum tasks
 clean_all = True		# Clean simulation folder before running (False when resuming pickle checkpoint)
 
 # Must be chosen
+n_nodes = 4
+
+cwd = os.getcwd() # Get the present directory
+folder = cwd.split('/')[-1] # Last part of cwd is folder name
+# name folder like 1_0_3, or 01_00_03
+dir_sc = int(folder.split('_')[0]) # First number is sc flag
+indir_sc = int(folder.split('_')[1]) # Second number is indirect sc flag
+case = int(folder.split('_')[2]) # Last number is case flag
+
+jobname = '18_'+str(case)+'_'+str(dir_sc)+'_'+str(indir_sc)
 
 # ~ queue = 'inf-long', 'inf-short', 'batch-long', 'batch-short'
-queue = 'inf-long'
-
-n_nodes = 4 
-
-jobname = '17_03_25'
+queue = 'inf-short'
 
 path_to_simulation = os.path.dirname(os.path.realpath(__file__)) # This directory
 
