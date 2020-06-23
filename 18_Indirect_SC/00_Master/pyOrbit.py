@@ -426,22 +426,22 @@ for turn in range(sts['turn']+1, sts['turns_max']):
 
         if(s['Print_SC_Grid']):
                 if not rank:
-                        phiGrid = calcsbs.getPhiGrid()
-                        phi_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
+                        rhoGrid = calcsbs.getRhoGrid()
+                        rho_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
                         Ex_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
                         Ey_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
                         x_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
                         y_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
                         for ix in xrange(s['GridSizeX']):
                                 for iy in xrange(s['GridSizeY']): 
-                                        phi_grid[ix, iy] = phiGrid.getValueOnGrid(ix, iy)
-                                        x_grid[ix, iy] = phiGrid.getGridX(ix)
-                                        y_grid[ix, iy] = phiGrid.getGridY(iy)
-                                        Ex_grid[ix, iy], Ey_grid[ix, iy] = phiGrid.calcGradient(x_grid[ix, iy], y_grid[ix, iy])
+                                        rho_grid[ix, iy] = rhoGrid.getValueOnGrid(ix, iy)
+                                        x_grid[ix, iy] = rhoGrid.getGridX(ix)
+                                        y_grid[ix, iy] = rhoGrid.getGridY(iy)
+                                        Ex_grid[ix, iy], Ey_grid[ix, iy] = rhoiGrid.calcGradient(x_grid[ix, iy], y_grid[ix, iy])
                                         Ex_grid[ix, iy] *= -1 
                                         Ey_grid[ix, iy] *= -1
-                        phi_grid_savename = 'space_charge_output/Phi_grid_', turn
-                        sio.savemat(phi_grid_savename,{'phi_grid': phi_grid, 'Ex_grid': Ex_grid, 'Ey_grid': Ey_grid, 'x_grid': x_grid, 'y_grid': y_grid},oned_as='row')
+                        rho_grid_savename = 'space_charge_output/Phi_grid_', turn
+                        sio.savemat(rho_grid_savename,{'rho_grid': rho_grid, 'Ex_grid': Ex_grid, 'Ey_grid': Ey_grid, 'x_grid': x_grid, 'y_grid': y_grid},oned_as='row')
 
 	if turn in sts['turns_print']:
 		saveBunchAsMatfile(bunch, "input/mainbunch")
