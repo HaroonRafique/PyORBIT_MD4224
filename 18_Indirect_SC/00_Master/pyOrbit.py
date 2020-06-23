@@ -445,7 +445,7 @@ for turn in range(sts['turn']+1, sts['turns_max']):
                                                 Ex_grid[ix, iy, iz] *= -1 
                                                 Ey_grid[ix, iy, iz] *= -1
                                                 Ez_grid[ix, iy, iz] *= -1
-                        rho_grid_savename = str('space_charge_output/Rho_grid_' + turn +'.mat')
+                        rho_grid_savename = str('space_charge_output/Rho_grid_' + str(turn) +'.mat')
                         sio.savemat(rho_grid_savename,{'rho_grid': rho_grid, 'Ex_grid': Ex_grid, 'Ey_grid': Ey_grid, 'Ez_grid': Ez_grid, 'x_grid': x_grid, 'y_grid': y_grid, 'z_grid': z_grid}, oned_as='row')
 
 	if turn in sts['turns_print']:
