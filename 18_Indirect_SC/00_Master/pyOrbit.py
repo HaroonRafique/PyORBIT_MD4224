@@ -427,21 +427,26 @@ for turn in range(sts['turn']+1, sts['turns_max']):
         if(s['Space_Charge'] and s['Print_SC_Grid']):
                 if not rank:
                         rhoGrid = calcsbs.getRhoGrid()
-                        rho_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
-                        Ex_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
-                        Ey_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
-                        x_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
-                        y_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
+                        rho_grid = np.zeros((s['GridSizeX'], s['GridSizeY'], s['GridSizeZ']))
+                        Ex_grid = np.zeros((s['GridSizeX'], s['GridSizeY'], s['GridSizeZ']))
+                        Ey_grid = np.zeros((s['GridSizeX'], s['GridSizeY'], s['GridSizeZ']))
+                        Ez_grid = np.zeros((s['GridSizeX'], s['GridSizeY'], s['GridSizeZ']))
+                        x_grid = np.zeros((s['GridSizeX'], s['GridSizeY'], s['GridSizeZ']))
+                        y_grid = np.zeros((s['GridSizeX'], s['GridSizeY'], s['GridSizeZ']))
+                        z_grid = np.zeros((s['GridSizeX'], s['GridSizeY'], s['GridSizeZ']))
                         for ix in xrange(s['GridSizeX']):
                                 for iy in xrange(s['GridSizeY']): 
-                                        rho_grid[ix, iy] = rhoGrid.getValueOnGrid(ix, iy)
-                                        x_grid[ix, iy] = rhoGrid.getGridX(ix)
-                                        y_grid[ix, iy] = rhoGrid.getGridY(iy)
-                                        Ex_grid[ix, iy], Ey_grid[ix, iy] = rhoiGrid.calcGradient(x_grid[ix, iy], y_grid[ix, iy])
-                                        Ex_grid[ix, iy] *= -1 
-                                        Ey_grid[ix, iy] *= -1
-                        rho_grid_savename = 'space_charge_output/Phi_grid_', turn
-                        sio.savemat(rho_grid_savename,{'rho_grid': rho_grid, 'Ex_grid': Ex_grid, 'Ey_grid': Ey_grid, 'x_grid': x_grid, 'y_grid': y_grid},oned_as='row')
+                                        for iz in xrange(s['GridSizeZ']): 
+                                                rho_grid[ix, iy, iz] = rhoGrid.getValueOnGrid(ix, iy, iz)
+                                                x_grid[ix, iy, iz] = rhoGrid.getGridX(ix)
+                                                y_grid[ix, iy, iz] = rhoGrid.getGridY(iy)
+                                                z_grid[ix, iy, iz] = rhoGrid.getGridY(iz)
+                                                Ex_grid[ix, iy, iz], Ey_grid[ix, iy, iz], Ez_grid[ix, iy, iz] = rhoGrid.calcGradient(x_grid[ix, iy, iz], y_grid[ix, iy, iz], z_grid[ix, iy, iz])
+                                                Ex_grid[ix, iy, iz] *= -1 
+                                                Ey_grid[ix, iy, iz] *= -1
+                                                Ez_grid[ix, iy, iz] *= -1
+                        rho_grid_savename = 'space_charge_output/Rho_grid_', turn
+                        sio.savemat(rho_grid_savename,{'rho_grid': rho_grid, 'Ex_grid': Ex_grid, 'Ey_grid': Ey_grid, 'Ez_grid': Ez_grid, 'x_grid': x_grid, 'y_grid': y_grid, 'z_grid': z_grid}, oned_as='row')
 
 	if turn in sts['turns_print']:
 		saveBunchAsMatfile(bunch, "input/mainbunch")
