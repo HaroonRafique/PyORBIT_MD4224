@@ -121,7 +121,7 @@ else:
 #-----------------------------------------------------------------------
 print '\nStart MADX on MPI process: ', rank
 if not rank:
-        madx_command = '/afs/cern.ch/eng/sl/MAD-X/pro/releases/5.02.00/madx-linux64 < ', p['MADX_File']
+        madx_command = str('/afs/cern.ch/eng/sl/MAD-X/pro/releases/5.02.00/madx-linux64 < ' + p['MADX_File'])
 	os.system(madx_command)
 orbit_mpi.MPI_Barrier(comm)
 
