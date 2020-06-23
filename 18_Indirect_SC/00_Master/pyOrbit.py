@@ -424,7 +424,7 @@ for turn in range(sts['turn']+1, sts['turns_max']):
 
 	output.update()
 
-        if(s['Print_SC_Grid']):
+        if(s['Space_Charge'] and s['Print_SC_Grid']):
                 if not rank:
                         rhoGrid = calcsbs.getRhoGrid()
                         rho_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
