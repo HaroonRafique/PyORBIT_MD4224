@@ -183,9 +183,9 @@ if sts['turn'] < 0:
 
 	twiss_dict = dict()	
 	twiss_dict['alpha_x'] 			= Lattice.alphax0
-	twiss_dict['alpha_y'] 			= Lattice.alphay0 * p['beta_mismatch']
+	twiss_dict['alpha_y'] 			= Lattice.alphay0
 	twiss_dict['beta_x'] 			= Lattice.betax0
-	twiss_dict['beta_y'] 			= Lattice.betay0 * p['beta_mismatch']
+	twiss_dict['beta_y'] 			= Lattice.betay0
 	twiss_dict['D_x'] 				= Lattice.etax0
 	twiss_dict['D_y'] 				= Lattice.etay0
 	twiss_dict['D_xp'] 				= Lattice.etapx0

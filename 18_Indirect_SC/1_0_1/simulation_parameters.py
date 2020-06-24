@@ -32,7 +32,7 @@ elif case is 2:
         print 'simulation_parameters.py:: file read for PFW Single Quad Error simulation'
         parameters['MADX_File']	= 'PFW_Single_Quad_Error_Flat_file.madx'
 
-elif csae is 3:
+elif case is 3:
         print 'simulation_parameters.py:: file read for PFW Distributed Quad Error simulation'
         parameters['MADX_File']	= 'PFW_Distributed_Quad_Error_Flat_file.madx'
 
