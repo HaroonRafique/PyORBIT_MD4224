@@ -100,8 +100,8 @@ else:
 if indir_sc:
         switches['Indirect_Space_Charge'] = True
         parameters['Indirect_Space_Charge_Flag'] = True
-        switches['GridSizeX'] = 468
-        switches['GridSizeY'] = 180
+        switches['GridSizeX'] = 312
+        switches['GridSizeY'] = 206
 else:
         switches['Indirect_Space_Charge'] = False
         parameters['Indirect_Space_Charge_Flag'] = False

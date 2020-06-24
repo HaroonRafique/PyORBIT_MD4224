@@ -85,16 +85,15 @@ else:
 if indir_sc:
         switches['Indirect_Space_Charge'] = True
         parameters['Indirect_Space_Charge_Flag'] = True
-        switches['GridSizeX'] = 468
-        switches['GridSizeY'] = 180
+        switches['GridSizeX'] = 312
+        switches['GridSizeY'] = 206
 else:
         switches['Indirect_Space_Charge'] = False
         parameters['Indirect_Space_Charge_Flag'] = False
 
 parameters['Space_Charge_GridSizeX'] = switches['GridSizeX']
 parameters['Space_Charge_GridSizeY'] = switches['GridSizeY']
-parameters['Space_Charge_GridSizeZ'] = switches['GridSizeZ']
-        
+parameters['Space_Charge_GridSizeZ'] = switches['GridSizeZ']        
 
 # PTC RF Table Parameters
 harmonic_factors = [1] # this times the base harmonic defines the RF harmonics (for SPS = 4620, PS 10MHz 7, 8, or 9)
