@@ -17,7 +17,7 @@ autotask = True			# Automatically set nodes to maximum tasks
 clean_all = True		# Clean simulation folder before running (False when resuming pickle checkpoint)
 
 # Must be chosen
-n_nodes = 4
+n_nodes = 2
 
 cwd = os.getcwd() # Get the present directory
 folder = cwd.split('/')[-1] # Last part of cwd is folder name
@@ -29,7 +29,7 @@ case = int(folder.split('_')[2]) # Last number is case flag
 jobname = '19_'+str(case)+'_'+str(dir_sc)+'_'+str(indir_sc)
 
 # ~ queue = 'inf-long', 'inf-short', 'batch-long', 'batch-short'
-queue = 'inf-short'
+queue = 'batch-long'
 
 path_to_simulation = os.path.dirname(os.path.realpath(__file__)) # This directory
 

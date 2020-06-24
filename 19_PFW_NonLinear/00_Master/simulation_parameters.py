@@ -69,7 +69,7 @@ parameters['turns_update'] = tu
 switches = {
 	'CreateDistn':		True,
 	'Update_Twiss':		False,
-	'Print_SC_Grid':	True,
+	'Print_SC_Grid':	False,
 	'GridSizeX': 128,
 	'GridSizeY': 128,
 	'GridSizeZ': 64
