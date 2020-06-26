@@ -450,7 +450,7 @@ for turn in range(sts['turn']+1, sts['turns_max']):
                                                         rho_grid[ix, iy, iz] = rhoGrid.getValueOnGrid(ix, iy, iz)
                                                         x_grid[ix, iy, iz] = rhoGrid.getGridX(ix)
                                                         y_grid[ix, iy, iz] = rhoGrid.getGridY(iy)
-                                                        z_grid[ix, iy, iz] = rhoGrid.getGridY(iz)
+                                                        z_grid[ix, iy, iz] = rhoGrid.getGridZ(iz)
                                                         Ex_grid[ix, iy, iz], Ey_grid[ix, iy, iz], Ez_grid[ix, iy, iz] = rhoGrid.calcGradient(x_grid[ix, iy, iz], y_grid[ix, iy, iz], z_grid[ix, iy, iz])
                                                         Ex_grid[ix, iy, iz] *= -1 
                                                         Ey_grid[ix, iy, iz] *= -1
