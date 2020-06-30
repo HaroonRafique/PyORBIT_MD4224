@@ -436,8 +436,7 @@ for turn in range(sts['turn']+1, sts['turns_max']):
                 
                 if(s['Space_Charge'] and s['Print_SC_Grid']):
                         if not rank:
-                                phiGrid = sc_calc.getPhiGrid()
-                        
+                                phiGrid = calcsbs.getPhiGrid()                        
                                 phi_grid = np.zeros((sizeX, sizeY))
                                 Ex_grid = np.zeros((sizeX, sizeY))
                                 Ey_grid = np.zeros((sizeX, sizeY))
