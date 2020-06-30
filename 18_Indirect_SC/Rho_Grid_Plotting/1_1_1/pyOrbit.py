@@ -441,7 +441,7 @@ for turn in range(sts['turn']+1, sts['turns_max']):
                                 Ex_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
                                 Ey_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
                                 x_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
-                                y_grid = np.zeros((s['GridSizeX'], s['GridSizeY'])
+                                y_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
                                 for ix in xrange(s['GridSizeX']):
                                         for iy in xrange(s['GridSizeY']): 
                                                 phi_grid[ix, iy] = phiGrid.getValueOnGrid(ix, iy)
