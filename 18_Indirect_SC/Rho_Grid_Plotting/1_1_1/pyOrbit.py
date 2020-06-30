@@ -437,13 +437,13 @@ for turn in range(sts['turn']+1, sts['turns_max']):
                 if(s['Space_Charge'] and s['Print_SC_Grid']):
                         if not rank:
                                 phiGrid = calcsbs.getPhiGrid()                        
-                                phi_grid = np.zeros((sizeX, sizeY))
-                                Ex_grid = np.zeros((sizeX, sizeY))
-                                Ey_grid = np.zeros((sizeX, sizeY))
-                                x_grid = np.zeros((sizeX, sizeY))
-                                y_grid = np.zeros((sizeX, sizeY))
-                                for ix in xrange(sizeX):
-                                        for iy in xrange(sizeY): 
+                                phi_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
+                                Ex_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
+                                Ey_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
+                                x_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
+                                y_grid = np.zeros((s['GridSizeX'], s['GridSizeY'])
+                                for ix in xrange(s['GridSizeX']):
+                                        for iy in xrange(s['GridSizeY']): 
                                                 phi_grid[ix, iy] = phiGrid.getValueOnGrid(ix, iy)
                                                 x_grid[ix, iy] = phiGrid.getGridX(ix)
                                                 y_grid[ix, iy] = phiGrid.getGridY(iy)
