@@ -437,21 +437,26 @@ for turn in range(sts['turn']+1, sts['turns_max']):
                 if(s['Space_Charge'] and s['Print_SC_Grid']):
                         if not rank:
                                 phiGrid = calcsbs.getPhiGrid()                        
-                                phi_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
-                                Ex_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
-                                Ey_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
-                                x_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
-                                y_grid = np.zeros((s['GridSizeX'], s['GridSizeY']))
+                                phi_grid = np.zeros((s['GridSizeX'], s['GridSizeY'], s['GridSizeZ']))
+                                Ex_grid = np.zeros((s['GridSizeX'], s['GridSizeY'], s['GridSizeZ']))
+                                Ey_grid = np.zeros((s['GridSizeX'], s['GridSizeY'], s['GridSizeZ']))
+                                Ez_grid = np.zeros((s['GridSizeX'], s['GridSizeY'], s['GridSizeZ']))
+                                x_grid = np.zeros((s['GridSizeX'], s['GridSizeY'], s['GridSizeZ']))
+                                y_grid = np.zeros((s['GridSizeX'], s['GridSizeY'], s['GridSizeZ']))
+                                z_grid = np.zeros((s['GridSizeX'], s['GridSizeY'], s['GridSizeZ']))
                                 for ix in xrange(s['GridSizeX']):
                                         for iy in xrange(s['GridSizeY']): 
-                                                phi_grid[ix, iy] = phiGrid.getValueOnGrid(ix, iy)
-                                                x_grid[ix, iy] = phiGrid.getGridX(ix)
-                                                y_grid[ix, iy] = phiGrid.getGridY(iy)
-                                                Ex_grid[ix, iy], Ey_grid[ix, iy] = phiGrid.calcGradient(x_grid[ix, iy], y_grid[ix, iy])
-                                                Ex_grid[ix, iy] *= -1
-                                                Ey_grid[ix, iy] *= -1
+                                                for iz in xrange(s['GridSizeZ']): 
+                                                        phi_grid[ix, iy, iz] = phiGrid.getValueOnGrid(ix, iy, iz)
+                                                        x_grid[ix, iy, iz] = phiGrid.getGridX(ix)
+                                                        y_grid[ix, iy, iz] = phiGrid.getGridY(iy)
+                                                        z_grid[ix, iy, iz] = phiGrid.getGridZ(iz)
+                                                        Ex_grid[ix, iy, iz], Ey_grid[ix, iy, iz], Ez_grid[ix, iy, iz] = phiGrid.calcGradient(x_grid[ix, iy, iz], y_grid[ix, iy, iz], z_grid[ix, iy, iz])
+                                                        Ex_grid[ix, iy, iz] *= -1 
+                                                        Ey_grid[ix, iy, iz] *= -1
+                                                        Ez_grid[ix, iy, iz] *= -1
                                 phi_grid_savename = str('space_charge_output/Phi_grid_' + str(turn) +'.mat')
-                                sio.savemat(phi_grid_savename,{'phi_grid': phi_grid, 'Ex_grid': Ex_grid, 'Ey_grid': Ey_grid, 'x_grid': x_grid, 'y_grid': y_grid},oned_as='row')
+                                sio.savemat(phi_grid_savename,{'phi_grid': phi_grid, 'Ex_grid': Ex_grid, 'Ey_grid': Ey_grid, 'Ez_grid': Ez_grid, 'x_grid': x_grid, 'y_grid': y_grid, 'z_grid': z_grid}, oned_as='row')
 
                                 rhoGrid = calcsbs.getRhoGrid()
                                 rho_grid = np.zeros((s['GridSizeX'], s['GridSizeY'], s['GridSizeZ']))
