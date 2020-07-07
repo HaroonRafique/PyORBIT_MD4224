@@ -7,9 +7,9 @@ c = 299792458
 cwd = os.getcwd() # Get the present directory
 folder = cwd.split('/')[-1] # Last part of cwd is folder name
 # name folder like 1_0_3, or 01_00_03
-dir_sc = int(folder.split('_')[0]) # First number is sc flag
-indir_sc = int(folder.split('_')[1]) # Second number is indirect sc flag
-case = int(folder.split('_')[2]) # Last number is case flag
+dir_sc = 1 # int(folder.split('_')[0]) # First number is sc flag
+indir_sc = 1 # int(folder.split('_')[1]) # Second number is indirect sc flag
+case = 1 # int(folder.split('_')[2]) # Last number is case flag
 
 #### Cases
 # 0 PFW

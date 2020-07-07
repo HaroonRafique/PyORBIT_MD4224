@@ -271,8 +271,8 @@ if s['Space_Charge']:
                 npoints = 128           # number of points on the boundary
                 nModes = 10              # number of modes in the free-space field. LSQM array and matrix. 2*nModes_+1 - number of functions in LSQM 
                 shape = 'Ellipse'
-                xDimension = 0.73       # full width
-                yDimension = 0.35       # full height
+                xDimension = 0.73*2       # full width
+                yDimension = 0.35*2       # full height
                 PS_aperture_boundary = Boundary2D(npoints, nModes, shape, xDimension, yDimension)
                 
                 print '\n\t\tIncluding indirect space charge boundary of type ', shape, ' in the lattice'
