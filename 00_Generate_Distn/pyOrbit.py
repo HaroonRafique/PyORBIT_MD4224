@@ -2,9 +2,9 @@
 #	PTC-PyORBIT simulation script that creates initial distributions   #
 #	for CERN Proton Synchrotron Injection simulations of Machine       #
 #	Development study MD4224.                                          #
-#																	   #
+#									 #
 #	Script creates a Gaussian, Joho, and Tomo distribution for each set#
-#	of input parameters.											   #
+#	of input parameters.						 #
 #	Created 16.10.19: Haroon Rafique CERN BE-ABP-HSI                   #
 ########################################################################
 
